@@ -7,22 +7,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class sim extends Application {
+public class Simulator extends Application {
 
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
     private HBox simSettings = new HBox(5);
     private Robot robot;
+    private Rectangle robotRect;
 
     private double x;
     private double y;
@@ -52,38 +52,46 @@ public class sim extends Application {
         AnimationTimer moveRobot = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                double oldX = robotRect.getX(); double oldY = robotRect.getY();
+
                 Double[] updatedInfo = robot.calcNextPoint();
-                robot.getRobotRect().setX(updatedInfo[0]);
-                robot.getRobotRect().setY(updatedInfo[1]);
-                robot.getRobotRect().setRotate(updatedInfo[2]);
+                robotRect.setX(updatedInfo[0]);
+                robotRect.setY(updatedInfo[1]);
+                robotRect.setRotate(updatedInfo[2]);
+
+                simPane.getChildren().add(new Line(oldX, oldY, robotRect.getX(), robotRect.getY()));
             }
         };
 
         submit.setOnAction(e -> {
-            /*x = Double.parseDouble(tfX.getText());
+            x = Double.parseDouble(tfX.getText());
             y = Double.parseDouble(tfY.getText());
             angle = Double.parseDouble(tfAngle.getText());
             velocity = Double.parseDouble(tfVelocity.getText());
-            angleVelocity = Double.parseDouble(tfAngleVelocity.getText());*/
+            angleVelocity = Double.parseDouble(tfAngleVelocity.getText());
 
-            x = 300;
+            /*x = 400;
             y = 300;
-            angle = 90;
-            velocity = 10;
-            angleVelocity = 45;
+            angle = 0;
+            velocity = 100;
+            angleVelocity = 0;*/
 
             simPane.getChildren().clear();
+
             robot = new Robot(x, y, angle, velocity, angleVelocity);
-            simPane.getChildren().addAll(robot);
+            robotRect = new Rectangle(x, y, 50, 50);
+            robotRect.setRotate(angle);
+
+            simPane.getChildren().add(robotRect);
             moveRobot.start();
         });
 
         simPane.setBackground(new Background(
-                new BackgroundImage(new Image("ftcfield.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                new BackgroundImage(new Image("field.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
-        Scene scene = new Scene(mainPane, 620, 650);
+        Scene scene = new Scene(mainPane, 600, 635);
         primaryStage.setTitle("robot sim");
         primaryStage.setScene(scene);
         primaryStage.show();
