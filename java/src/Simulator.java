@@ -29,27 +29,43 @@ public class Simulator extends Application {
     private double angle;
     private double velocity;
     private double angleVelocity;
-    private double time;
 
     private TextField tfX = new TextField();
     private TextField tfY = new TextField();
     private TextField tfAngle = new TextField();
     private TextField tfVelocity = new TextField();
     private TextField tfAngleVelocity = new TextField();
-    private TextField tfTime = new TextField();
+    private Label lbTime = new Label();
+
+    public final static double pixelToInch = 4.16;
 
     @Override
     public void start(Stage primaryStage) {
         tfX.setPrefWidth(50); tfY.setPrefWidth(50); tfAngle.setPrefWidth(50);
-        tfVelocity.setPrefWidth(50); tfAngleVelocity.setPrefWidth(50); tfTime.setPrefWidth(50);
+        tfVelocity.setPrefWidth(50); tfAngleVelocity.setPrefWidth(50);
 
         simSettings.setPadding(new Insets(5, 5, 5, 5));
         Button submit = new Button("Submit");
         simSettings.getChildren().addAll(new Label("X:"), tfX, new Label("Y:"), tfY,
                 new Label("Angle:"), tfAngle, new Label("Velocity:"), tfVelocity,
-                new Label("Angular Velocity:"), tfAngleVelocity, submit);
+                new Label("Angular Velocity:"), tfAngleVelocity, submit, lbTime);
 
         AnimationTimer moveRobot = new AnimationTimer() {
+            private long startTime;
+            private long timeDiff = 0;
+
+            @Override
+            public void start() {
+                startTime = System.currentTimeMillis();
+                super.start();
+            }
+
+            @Override
+            public void stop() {
+                super.stop();
+                timeDiff = 0;
+            }
+
             @Override
             public void handle(long now) {
                 double oldX = robotRect.getX(); double oldY = robotRect.getY();
@@ -60,8 +76,26 @@ public class Simulator extends Application {
                 robotRect.setRotate(updatedInfo[2]);
 
                 simPane.getChildren().add(new Line(oldX, oldY, robotRect.getX(), robotRect.getY()));
+
+                long newTime = System.currentTimeMillis();
+                timeDiff = (newTime - startTime) / 1000;
+                lbTime.setText(timeDiff + " s");
+
+                if (robotRect.getX() < 0 || robotRect.getX() > 600 || robotRect.getY() < 0 || robotRect.getY() > 600) {
+                    this.stop();
+                }
             }
         };
+
+        // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
+        // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ≈ 1 in
+        // if 36 in/sec, it should take 4 sec to traverse length
+
+        tfX.setText("300");
+        tfY.setText("300");
+        tfAngle.setText("45");
+        tfVelocity.setText("10");
+        tfAngleVelocity.setText("0");
 
         submit.setOnAction(e -> {
             x = Double.parseDouble(tfX.getText());
@@ -69,12 +103,6 @@ public class Simulator extends Application {
             angle = Double.parseDouble(tfAngle.getText());
             velocity = Double.parseDouble(tfVelocity.getText());
             angleVelocity = Double.parseDouble(tfAngleVelocity.getText());
-
-            /*x = 400;
-            y = 300;
-            angle = 0;
-            velocity = 100;
-            angleVelocity = 0;*/
 
             simPane.getChildren().clear();
 

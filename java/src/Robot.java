@@ -1,19 +1,15 @@
 public class Robot {
 
-    private double newX, newY, angle, velocity, angleVelocity, distance, t;
+    private double newX, newY, angle, velocity, angleVelocity, distance;
     private double lastTime = (double) System.currentTimeMillis() / 1000.0;
-
-    // use inches velocity, coordinates
-    // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-    // field- 600x600, every 50 pixels = 1 ft, every 0.35 pixels = 1 in
 
     /**
      * Creates a new robot
      * @param stX starting x coordinate
      * @param stY starting y coordinate
-     * @param a starting angle
-     * @param v velocity
-     * @param av angular velocity
+     * @param a starting angle in degrees
+     * @param v velocity in inches/second
+     * @param av angular velocity in degrees/second
      */
     public Robot(double stX, double stY, double a, double v, double av) {
         angle = a; velocity = v; angleVelocity = av;
@@ -22,14 +18,14 @@ public class Robot {
     }
 
     /**
-     * Based on the robot's initialized values, this calculates its next position
-     * @return the robot's next x/y coordinates and angle
+     * Based on the robot's initialized values, this function calculates its next position
+     * @return the robot's next x/y coordinate and angle
      */
     public Double[] calcNextPoint() {
         double time = (double) System.currentTimeMillis() / 1000.0;
         double timeDiff = time - lastTime;
 
-        distance = velocity * timeDiff;
+        distance = velocity * timeDiff * Simulator.pixelToInch;
         angle += angleVelocity * timeDiff;
 
         if (angle >= 360) angle -= 360;
