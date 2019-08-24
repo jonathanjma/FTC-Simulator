@@ -1,6 +1,6 @@
 public class Robot {
 
-    private double newX, newY, angle, velocity, angleVelocity, distance;
+    private double newX, newY, angle, velocity, angleVelocity, timeFactor;
     private double lastTime = (double) System.currentTimeMillis() / 1000.0;
 
     /**
@@ -14,7 +14,7 @@ public class Robot {
     public Robot(double stX, double stY, double a, double v, double av) {
         angle = a; velocity = v; angleVelocity = av;
         newX = stX; newY = stY;
-        distance = 0;
+        timeFactor = 0;
     }
 
     /**
@@ -23,24 +23,15 @@ public class Robot {
      */
     public Double[] calcNextPoint() {
         double time = (double) System.currentTimeMillis() / 1000.0;
-        double timeDiff = time - lastTime;
+        double timeDiff = time - lastTime; //without, movement too fast
 
-        distance = velocity * timeDiff * Simulator.pixelToInch;
+        timeFactor = velocity * timeDiff * Simulator.pixelToInch; //without, movement too slow
         angle += angleVelocity * timeDiff;
 
         if (angle >= 360) angle -= 360;
 
-        newX += Math.cos(Math.toRadians(angle)) * distance;
-        newY += Math.sin(Math.toRadians(angle)) * distance;
-
-        /* for error checking
-        System.out.println(Double.parseDouble(String.format("%.1f", distance)) + " " + angle + " "
-                + Double.parseDouble(String.format("%.3f", newX)) + ", " + Double.parseDouble(String.format("%.3f", newY)));
-        double pythagoreanLeft = Math.pow(newX - stX, 2) + Math.pow(newY - stY, 2);
-        if (!(Math.abs(pythagoreanLeft - Math.pow(distance, 2)) < 0.1)) {
-            System.out.println("error");
-            System.exit(-1);
-        }*/
+        newX += Math.cos(Math.toRadians(angle)) * timeFactor;
+        newY += Math.sin(Math.toRadians(angle)) * timeFactor;
 
         lastTime = time;
 

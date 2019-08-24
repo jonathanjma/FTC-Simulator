@@ -35,7 +35,7 @@ public class Simulator extends Application {
     private TextField tfAngle = new TextField();
     private TextField tfVelocity = new TextField();
     private TextField tfAngleVelocity = new TextField();
-    private Label lbTime = new Label();
+    private Label lbTime = new Label("0 s");
 
     public final static double pixelToInch = 4.16;
 
@@ -81,7 +81,8 @@ public class Simulator extends Application {
                 timeDiff = (newTime - startTime) / 1000;
                 lbTime.setText(timeDiff + " s");
 
-                if (robotRect.getX() < 0 || robotRect.getX() > 600 || robotRect.getY() < 0 || robotRect.getY() > 600) {
+                if (robotRect.getX() < 0 || robotRect.getX() + robotRect.getWidth() > 600
+                        || robotRect.getY() < 0 || robotRect.getY() + robotRect.getHeight() > 600) {
                     this.stop();
                 }
             }
@@ -114,14 +115,20 @@ public class Simulator extends Application {
             moveRobot.start();
         });
 
+        mainPane.setOnMouseClicked(e -> {
+            tfX.setText(String.format("%.2f", e.getSceneX()));
+            tfY.setText(String.format("%.2f", e.getSceneY()));
+        });
+
         simPane.setBackground(new Background(
                 new BackgroundImage(new Image("field.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
         Scene scene = new Scene(mainPane, 600, 635);
-        primaryStage.setTitle("robot sim");
+        primaryStage.setTitle("Robot Simulator");
         primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image("field.png"));
         primaryStage.show();
     }
 
