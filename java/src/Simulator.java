@@ -89,7 +89,7 @@ public class Simulator extends Application {
         };
 
         // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-        // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ≈ 1 in
+        // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
         // if 36 in/sec, it should take 4 sec to traverse length
 
         tfX.setText("300");
@@ -121,14 +121,14 @@ public class Simulator extends Application {
         });
 
         simPane.setBackground(new Background(
-                new BackgroundImage(new Image("field.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
         Scene scene = new Scene(mainPane, 600, 635);
         primaryStage.setTitle("Robot Simulator");
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image("field.png"));
+        primaryStage.getIcons().add(new Image("field.jpg"));
         primaryStage.show();
     }
 

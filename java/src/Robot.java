@@ -1,6 +1,6 @@
 public class Robot {
 
-    private double newX, newY, angle, velocity, angleVelocity, timeFactor;
+    private double newX, newY, angle, velocity, angleVelocity, distanceFactor;
     private double lastTime = (double) System.currentTimeMillis() / 1000.0;
 
     /**
@@ -14,7 +14,7 @@ public class Robot {
     public Robot(double stX, double stY, double a, double v, double av) {
         angle = a; velocity = v; angleVelocity = av;
         newX = stX; newY = stY;
-        timeFactor = 0;
+        distanceFactor = 0;
     }
 
     /**
@@ -25,13 +25,13 @@ public class Robot {
         double time = (double) System.currentTimeMillis() / 1000.0;
         double timeDiff = time - lastTime; //without, movement too fast
 
-        timeFactor = velocity * timeDiff * Simulator.pixelToInch; //without, movement too slow
+        distanceFactor = velocity * Simulator.pixelToInch * timeDiff; //without, movement too slow
         angle += angleVelocity * timeDiff;
 
         if (angle >= 360) angle -= 360;
 
-        newX += Math.cos(Math.toRadians(angle)) * timeFactor;
-        newY += Math.sin(Math.toRadians(angle)) * timeFactor;
+        newX += Math.cos(Math.toRadians(angle)) * distanceFactor;
+        newY += Math.sin(Math.toRadians(angle)) * distanceFactor;
 
         lastTime = time;
 
