@@ -16,7 +16,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class Simulator extends Application {
+public class RobotSimulator extends Application {
 
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
@@ -108,7 +108,7 @@ public class Simulator extends Application {
             simPane.getChildren().clear();
 
             robot = new Robot(x, y, angle, velocity, angleVelocity);
-            robotRect = new Rectangle(x, y, 50, 50);
+            robotRect = new Rectangle(x, y, 18 * pixelToInch, 18 * pixelToInch);
             robotRect.setRotate(angle);
 
             simPane.getChildren().add(robotRect);
