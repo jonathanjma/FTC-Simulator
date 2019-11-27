@@ -1,3 +1,5 @@
+import Splines.Spline;
+import Splines.SplineGenerator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -39,6 +42,7 @@ public class AutoPlanner extends Application {
     private Pane simPane = new Pane();
     private HBox simSettings = new HBox(5);
     private Rectangle robotRect;
+    private SplineGenerator splineGenerator = new SplineGenerator();
     
     private double xCor, yCor, xInch, yInch, angle;
     
@@ -55,6 +59,9 @@ public class AutoPlanner extends Application {
     private final static double pixelToInch = 4.16;
     private final static double robotLength = 18 * pixelToInch;
     private final static double robotRadius = robotLength / 2;
+
+    private int colorValue = 255; private final static double colorInterval = 15;
+    private boolean isRed = true;
     
     @Override
     public void start(Stage primaryStage) {
@@ -68,17 +75,18 @@ public class AutoPlanner extends Application {
         simSettings.getChildren().addAll(corLb, xInchTf, commaLb, yInchTf, angleLb1, angleTf, angleLb2);
         
         updateRobotPos(2, null);
+        drawAutoPaths();
         
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
         
         mainPane.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) updateRobotPos(2, null);
-            if (e.getCode() == KeyCode.ALT_GRAPH) {
+            if (e.getCode() == KeyCode.ALT) {
                 angleTf.setText(String.format("%.2f", Double.parseDouble(angleTf.getText()) + 0.1));
                 updateRobotPos(3, null);
             }
-            if (e.getCode() == KeyCode.CONTROL) {
+            if (e.getCode() == KeyCode.ALT_GRAPH) {
                 angleTf.setText(String.format("%.2f", Double.parseDouble(angleTf.getText()) - 0.1));
                 updateRobotPos(3, null);
             }
@@ -134,6 +142,39 @@ public class AutoPlanner extends Application {
         if (angle > 360) {angle %= 360;}
         robotRect.setRotate(angle);
         simPane.getChildren().add(robotRect);
+    }
+    
+    public void drawAutoPaths() {
+
+    }
+    
+    public void drawSpline(Spline[] splines, double time) {
+        for (double currentTime = 0; currentTime < time; currentTime+=0.01) {
+
+            double x_inch = splines[0].position(currentTime);
+            if (currentTime == 0) System.out.println("Spine: " + (144-x_inch));
+            if (currentTime > time-0.01) System.out.println("\t" + (144-x_inch));
+
+            double x = splines[0].position(currentTime) * pixelToInch;
+            double y = (144-splines[1].position(currentTime)) * pixelToInch;
+            Line splineSegmentLine = new Line(x, y, x, y);
+            if (isRed) splineSegmentLine.setStroke(Color.rgb(colorValue, 0, 0));
+            else splineSegmentLine.setStroke(Color.rgb(0, 0, colorValue));
+            simPane.getChildren().add(splineSegmentLine);
+        }
+        colorValue -= colorInterval;
+    }
+
+    public void drawToPoint(double x1, double y1, double x2, double y2) {
+        System.out.println("To Point: " + (144-x1) + " " + (144-x2));
+
+        x1 *= pixelToInch; x2 *= pixelToInch;
+        y1 = (144-y1) * pixelToInch;  y2 = (144-y2) * pixelToInch;
+        Line toPointLine = new Line(x1, y1, x2, y2);
+        if (isRed) toPointLine.setStroke(Color.rgb(colorValue, 0, 0));
+        else toPointLine.setStroke(Color.rgb(0, 0, colorValue));
+        simPane.getChildren().add(toPointLine);
+        colorValue -= colorInterval;
     }
     
     public static void main(String[] args) {
