@@ -20,6 +20,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import static java.lang.Thread.sleep;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class MatchReplayer extends Application {
     
@@ -48,30 +50,24 @@ public class MatchReplayer extends Application {
 
     private PositionUtil posUtil = new PositionUtil();
     private boolean pause = false; private int counter = 0;
-    private Thread followPosData = new Thread() {
+
+    private FollowPosData runnable = new FollowPosData();
+    private Thread thread = new Thread(runnable);
+    public class FollowPosData implements Runnable {
         public void run() {
             for (; counter < posUtil.getNumOfPoints();) {
                 if (!pause) {
                     Platform.runLater(() -> updateRobotPos(posUtil.getNextPos()));
-                    try {sleep(100);} catch (InterruptedException ex) {ex.printStackTrace();}
+                    try {sleep(40);} catch (InterruptedException ex) {ex.printStackTrace();}
                     counter++;
                 }
                 System.out.print("");
             }
         }
-    };
+    }
 
     @Override
     public void start(Stage primaryStage) {
-
-        // write test file
-        /*posUtil.startLogging();
-        int x = 9, y = 111; double theta = 0;
-        for (int i = 0; i < 91; i++) {
-            posUtil.writePos(x, y, Double.parseDouble(String.format("%.2f", theta)));
-            x++; y--; theta -= 0.1;
-        }
-        posUtil.stopLogging();*/
 
         simSettings.setPadding(new Insets(5, 5, 5, 5));
         simSettings.setAlignment(Pos.CENTER);
@@ -84,12 +80,12 @@ public class MatchReplayer extends Application {
         simSettings.getChildren().addAll(corLb, xInchLb, commaLb, yInchLb, angleLb1, angleLb, angleLb2,
                 startStopBtn, restartBtn);
 
-        posUtil.parsePosFile();
+        posUtil.parseLogFile();
 
         startStopBtn.setOnAction(e -> {
             switch (startStopBtn.getText()) {
                 case "Start":
-                    followPosData.start();
+                    thread.start();
                     startStopBtn.setText("Pause");
                     restartBtn.setVisible(true);
                     break;
@@ -105,6 +101,10 @@ public class MatchReplayer extends Application {
         });
 
         restartBtn.setOnAction(e -> {
+            if (counter == posUtil.getNumOfPoints()) {
+                thread = new Thread(runnable);
+                thread.start();
+            }
             counter = 0; posUtil.setGetCounter(0); pause = false;
         });
 
@@ -139,12 +139,14 @@ public class MatchReplayer extends Application {
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
 
-        angle = -((posData[2] * 180) + 0.5);
+        angle = -((posData[2] * 180/Math.PI) + 0.5);
         if (angle > 360) {angle %= 360;}
         robotRect.setRotate(angle);
         simPane.getChildren().add(robotRect);
 
-        xInchLb.setText(posData[0] + ""); yInchLb.setText(posData[1] + ""); angleLb.setText(posData[2] + "");
+        xInchLb.setText(String.format("%.2f", posData[0]));
+        yInchLb.setText(String.format("%.2f", posData[1]));
+        angleLb.setText(String.format("%.2f", posData[2]));
     }
     
     public static void main(String[] args) {
