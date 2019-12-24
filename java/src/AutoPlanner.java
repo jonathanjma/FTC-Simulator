@@ -56,8 +56,8 @@ public class AutoPlanner extends Application {
     
     // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
     // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
-    private final static double pixelToInch = 4.16;
-    private final static double robotLength = 18 * pixelToInch;
+    private final static double inchToPixel = 4.16;
+    private final static double robotLength = 18 * inchToPixel;
     private final static double robotRadius = robotLength / 2;
 
     private int colorValue = 255; private final static double colorInterval = 15;
@@ -110,8 +110,8 @@ public class AutoPlanner extends Application {
                 xCor = Double.parseDouble(String.format("%.2f", e.getSceneX()));
                 yCor = Double.parseDouble(String.format("%.2f", e.getSceneY()));
             } else {
-                xCor = Double.parseDouble(xInchTf.getText()) * pixelToInch;
-                yCor = (144 - Double.parseDouble(yInchTf.getText())) * pixelToInch;
+                xCor = Double.parseDouble(xInchTf.getText()) * inchToPixel;
+                yCor = (144 - Double.parseDouble(yInchTf.getText())) * inchToPixel;
             }
     
             if (xCor - robotRadius < 0) xCor = robotRadius; //left
@@ -120,9 +120,9 @@ public class AutoPlanner extends Application {
             if (yCor + robotRadius > 600) yCor = 600 - robotRadius; //down
     
             if (code == 1) {
-                xInch = Double.parseDouble(String.format("%.2f", xCor / pixelToInch));
+                xInch = Double.parseDouble(String.format("%.2f", xCor / inchToPixel));
                 double yCorAdjusted = 600 - yCor;
-                yInch = Double.parseDouble(String.format("%.2f", yCorAdjusted / pixelToInch));
+                yInch = Double.parseDouble(String.format("%.2f", yCorAdjusted / inchToPixel));
         
                 xInchTf.setText(xInch + "");
                 yInchTf.setText(yInch + "");
@@ -151,12 +151,12 @@ public class AutoPlanner extends Application {
     public void drawSpline(Spline[] splines, double time) {
         for (double currentTime = 0; currentTime < time; currentTime+=0.01) {
 
-            double x_inch = splines[0].position(currentTime);
+            /*double x_inch = splines[0].position(currentTime);
             if (currentTime == 0) System.out.println("Spine: " + (144-x_inch));
-            if (currentTime > time-0.01) System.out.println("\t" + (144-x_inch));
+            if (currentTime > time-0.01) System.out.println("\t" + (144-x_inch));*/
 
-            double x = splines[0].position(currentTime) * pixelToInch;
-            double y = (144-splines[1].position(currentTime)) * pixelToInch;
+            double x = splines[0].position(currentTime) * inchToPixel;
+            double y = (144-splines[1].position(currentTime)) * inchToPixel;
             Line splineSegmentLine = new Line(x, y, x, y);
             if (isRed) splineSegmentLine.setStroke(Color.rgb(colorValue, 0, 0));
             else splineSegmentLine.setStroke(Color.rgb(0, 0, colorValue));
@@ -166,10 +166,10 @@ public class AutoPlanner extends Application {
     }
 
     public void drawToPoint(double x1, double y1, double x2, double y2) {
-        System.out.println("To Point: " + (144-x1) + " " + (144-x2));
+        //System.out.println("To Point: " + (144-x1) + " " + (144-x2));
 
-        x1 *= pixelToInch; x2 *= pixelToInch;
-        y1 = (144-y1) * pixelToInch;  y2 = (144-y2) * pixelToInch;
+        x1 *= inchToPixel; x2 *= inchToPixel;
+        y1 = (144-y1) * inchToPixel;  y2 = (144-y2) * inchToPixel;
         Line toPointLine = new Line(x1, y1, x2, y2);
         if (isRed) toPointLine.setStroke(Color.rgb(colorValue, 0, 0));
         else toPointLine.setStroke(Color.rgb(0, 0, colorValue));

@@ -37,7 +37,7 @@ public class RobotSimulator extends Application {
     private TextField tfAngleVelocity = new TextField();
     private Label lbTime = new Label("0 s");
 
-    public final static double pixelToInch = 4.16;
+    public final static double inchToPixel = 4.16;
 
     @Override
     public void start(Stage primaryStage) {
@@ -108,7 +108,7 @@ public class RobotSimulator extends Application {
             simPane.getChildren().clear();
 
             robot = new Robot(x, y, angle, velocity, angleVelocity);
-            robotRect = new Rectangle(x, y, 18 * pixelToInch, 18 * pixelToInch);
+            robotRect = new Rectangle(x, y, 18 * inchToPixel, 18 * inchToPixel);
             robotRect.setRotate(angle);
 
             simPane.getChildren().add(robotRect);
