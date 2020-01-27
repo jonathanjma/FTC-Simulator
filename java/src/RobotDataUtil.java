@@ -8,8 +8,7 @@ import java.util.ArrayList;
 @SuppressWarnings("FieldCanBeLocal")
 public class RobotDataUtil {
 
-    private File robotDataLog = new File("java/src/Logs/RobotData8.csv");
-    private File accelLog = new File("java/src/Logs/Accel.csv");
+    private String basePath = "java/src/Logs/";
     private FileWriter fileWriter;
     private BufferedReader bufferedReader;
 
@@ -17,7 +16,10 @@ public class RobotDataUtil {
     private int getCounter = 0;
     private boolean logAccel;
 
-    public RobotDataUtil(boolean logAccel) {this.logAccel = logAccel;}
+    public RobotDataUtil(String logName, boolean logAccel) {
+        basePath += logName + ".csv";
+        this.logAccel = logAccel;
+    }
 
     public void parseLogFile() {
         String curLine;
@@ -26,9 +28,11 @@ public class RobotDataUtil {
         double prevXV = 0, prevYV = 0, prevThetaV = 0, prevTime = 0;
 
         try {
+            File robotDataLog = new File(basePath);
             bufferedReader = new BufferedReader(new FileReader(robotDataLog));
 
             if (logAccel) {
+                File accelLog = new File("java/src/Logs/Accel.csv");
                 fileWriter = new FileWriter(accelLog);
                 fileWriter.write("AccelX,AccelY,AccelTheta\n");
             }

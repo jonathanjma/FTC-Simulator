@@ -60,8 +60,8 @@ public class AutoPlanner extends Application {
     private final static double robotLength = 18 * inchToPixel;
     private final static double robotRadius = robotLength / 2;
 
-    private int colorValue = 255; private final static double colorInterval = 10;
-    private boolean isRed = true;
+    private int colorValue = 255;
+    private final static double colorInterval = 10;
     
     @Override
     public void start(Stage primaryStage) {
@@ -75,7 +75,7 @@ public class AutoPlanner extends Application {
         simSettings.getChildren().addAll(corLb, xInchTf, commaLb, yInchTf, angleLb1, angleTf, angleLb2);
         
         updateRobotPos(2, null);
-        drawAutoPaths();
+        drawAutoPath(); // <-----------------------------------------
         
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
@@ -144,34 +144,24 @@ public class AutoPlanner extends Application {
         simPane.getChildren().add(robotRect);
     }
     
-    public void drawAutoPaths() {
+    public void drawAutoPath() {
 
         double skystone1Time = 2.5;
         double backToCenterTime = 1;
+        double foundationPullTime = 4;
         double toQuarryTime = 2;
         double skystone2Time = 2;
-        double foundationPullTime = 4;
         
         double skystoneY = -1, skystonePos = 1;
-        if (skystonePos == 1) {
-            skystoneY = 132;
-        } else if (skystonePos == 2) {
-            skystoneY = 123;
-        } else if (skystonePos == 3) {
-            skystoneY = 114;
-        }
+        if (skystonePos == 1) skystoneY = 132;
+        else if (skystonePos == 2) skystoneY = 123;
+        else if (skystonePos == 3) skystoneY = 114;
 
-        Spline[] foundationPullSpline = splineGenerator.SplineBetweenTwoPoints(44, 24,
-                30, 55, Math.PI, Math.PI / 2, 10, 100,
-                15, 100, 0, 0, foundationPullTime);
-        drawSpline(foundationPullSpline, foundationPullTime);
-
-        // red -----------------------------------------------------------------------------------------------------
-        /*Spline[] skystone1Spline = splineGenerator.SplineBetweenTwoPoints(9, 111,
+        Spline[] skystone1Spline = splineGenerator.SplineBetweenTwoPoints(9, 111,
                 45, skystoneY, 0, Math.PI / 4, 0, 0,
                 20, 0, 0, 0, skystone1Time);
         drawSpline(skystone1Spline, skystone1Time);
-    
+
         Spline[] backToCenterSpline = splineGenerator.SplineBetweenTwoPoints(45, skystoneY,
                 33, skystoneY - 12, Math.PI / 4, Math.PI / 2, 0, -70,
                 -20, -50, 0, 0, backToCenterTime);
@@ -180,11 +170,13 @@ public class AutoPlanner extends Application {
         drawToPoint(33, skystoneY - 12, 36, 55); // to foundation
         drawToPoint(36, 55, 38, 33); // foundation turn
         drawToPoint(38, 33, 44, 23); // approach foundation
-        drawToPoint(44, 23, 26, 35); // pull foundation
-        drawToPoint(26,  35, 35, 35); // turn foundation
-        drawToPoint(35, 35, 35, 29); // push foundation
 
-        Spline[] toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(35, 29,
+        Spline[] foundationPullSpline = splineGenerator.SplineBetweenTwoPoints(44, 23,
+                30, 55, Math.PI, Math.PI / 2, 10, 100,
+                15, 100, 0, 0, foundationPullTime);
+        drawSpline(foundationPullSpline, foundationPullTime);
+
+        Spline[] toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(30, 55,
                 24, skystoneY - 30, Math.PI / 2, Math.PI / 4, 0, 0,
                 20, 0, 0, 0, toQuarryTime);
         drawSpline(toQuarrySpline, toQuarryTime);
@@ -193,90 +185,35 @@ public class AutoPlanner extends Application {
                 45, skystoneY - 26, Math.PI / 2, Math.PI / 4, 30, 0,
                 20, 0, 0, 0, skystone2Time);
         drawSpline(skystone2Spline, skystone2Time);
-        
+
         drawToPoint(45, skystoneY - 26, 33, 91); // back to center
         drawToPoint(33, 91, 33, 33); // go to foundation
-
-        toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(33, 33,
-                24, skystoneY - 30, Math.PI / 2, Math.PI / 4, 0, 0,
-                20, 0, 0, 0, toQuarryTime);
-        drawSpline(toQuarrySpline, toQuarryTime);
-
-        Spline[] skystone3Spline = splineGenerator.SplineBetweenTwoPoints(24, skystoneY - 30,
-                45, skystoneY - 15, Math.PI / 2, Math.PI / 4, 30, 0,
-                20, 0, 0, 0, skystone2Time);
-        drawSpline(skystone3Spline, skystone2Time);
-
-        drawToPoint(45, skystoneY - 15, 33, 91); // back to center
-        drawToPoint(33, 91, 33, 33); // go to foundation
         drawToPoint(33, 33, 30, 72); // go to tape
-
-        /*colorValue = 255; isRed = false;
-
-        // blue -----------------------------------------------------------------------------------------------------
-        skystone1Spline = splineGenerator.SplineBetweenTwoPoints(135, 111,
-                99, skystoneY, Math.PI, 3*Math.PI / 4, 0, 0,
-                20, 0, 0, 0, skystone1Time);
-        drawSpline(skystone1Spline, skystone1Time);
-
-        backToCenterSpline = splineGenerator.SplineBetweenTwoPoints(99, skystoneY,
-                111, skystoneY - 12, 3*Math.PI / 4, Math.PI / 2, 0, -70,
-                -20, -50, 0, 0, backToCenterTime);
-        drawSpline(backToCenterSpline, backToCenterTime);
-
-        drawToPoint(111, skystoneY - 12, 108, 55); // to foundation
-
-        foundationTurnSpline = splineGenerator.SplineBetweenTwoPoints(108, 55,
-                113, 36, Math.PI / 2, 0, -70, -30,
-                -50, -20, 0, 0, foundationTurnTime);
-        drawSpline(foundationTurnSpline, foundationTurnTime);
-
-        drawToPoint(113, 36, 100, 25); // approach foundation
-        drawToPoint(100, 25, 118, 25); // pull foundation
-        drawToPoint(118,  25, 109, 35); // turn foundation
-        drawToPoint(109, 35, 109, 29); // push foundation
-
-        toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(109, 29,
-                120, skystoneY - 30, Math.PI / 2, 3*Math.PI / 4, 0, 0,
-                20, 0, 0, 0, toQuarryTime);
-        drawSpline(toQuarrySpline, toQuarryTime);
-
-        skystone2Spline = splineGenerator.SplineBetweenTwoPoints(120, skystoneY - 30,
-                99, skystoneY - 26, Math.PI / 2, 3*Math.PI / 4, 30, 0,
-                20, 0, 0, 0, skystone2Time);
-        drawSpline(skystone2Spline, skystone2Time);
-
-        drawToPoint(99, skystoneY - 26, 111, 85); // back to center
-        drawToPoint(111, 85, 111, 33); // go to foundation
-        drawToPoint(111, 33, 114, 62); // go to tape*/
     }
     
     public void drawSpline(Spline[] splines, double time) {
-        for (double currentTime = 0; currentTime < time; currentTime+=0.01) {
-
-            /*double x_inch = splines[0].position(currentTime);
-            if (currentTime == 0) System.out.println("Spine: " + (144-x_inch));
-            if (currentTime > time-0.01) System.out.println("\t" + (144-x_inch));*/
+        for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
 
             double x = splines[0].position(currentTime) * inchToPixel;
             double y = (144-splines[1].position(currentTime)) * inchToPixel;
-            Line splineSegmentLine = new Line(x, y, x, y);
-            if (isRed) splineSegmentLine.setStroke(Color.rgb(colorValue, 0, 0));
-            else splineSegmentLine.setStroke(Color.rgb(0, 0, colorValue));
-            simPane.getChildren().add(splineSegmentLine);
+            Line splineSegmentLineRed = new Line(x, y, x, y);
+            splineSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
+            Line splineSegmentLineBlue = new Line((144*inchToPixel)-x, y, (144*inchToPixel)-x, y);
+            splineSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
+            simPane.getChildren().addAll(splineSegmentLineRed, splineSegmentLineBlue);
         }
         colorValue -= colorInterval;
     }
 
     public void drawToPoint(double x1, double y1, double x2, double y2) {
-        //System.out.println("To Point: " + (144-x1) + " " + (144-x2));
 
         x1 *= inchToPixel; x2 *= inchToPixel;
         y1 = (144-y1) * inchToPixel;  y2 = (144-y2) * inchToPixel;
-        Line toPointLine = new Line(x1, y1, x2, y2);
-        if (isRed) toPointLine.setStroke(Color.rgb(colorValue, 0, 0));
-        else toPointLine.setStroke(Color.rgb(0, 0, colorValue));
-        simPane.getChildren().add(toPointLine);
+        Line toPointLineRed = new Line(x1, y1, x2, y2);
+        toPointLineRed.setStroke(Color.rgb(colorValue, 0, 0));
+        Line toPointLineBlue = new Line((144*inchToPixel)-x1, y1, (144*inchToPixel)-x2, y2);
+        toPointLineBlue.setStroke(Color.rgb(0, 0, colorValue));
+        simPane.getChildren().addAll(toPointLineRed, toPointLineBlue);
         colorValue -= colorInterval;
     }
     

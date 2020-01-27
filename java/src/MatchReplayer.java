@@ -81,7 +81,7 @@ public class MatchReplayer extends Application {
 
     private double xCor, yCor, theta;
 
-    private RobotDataUtil dataUtil = new RobotDataUtil(logAccel);
+    private RobotDataUtil dataUtil = new RobotDataUtil(logName, logAcceleration);
     private boolean pause = false; private int counter = 0;
 
     // update robot thread
@@ -102,7 +102,10 @@ public class MatchReplayer extends Application {
         }
     }
 
-    private final static boolean logAccel = true; //<----------------------------------
+    // *****************************************************
+    private final static String logName = "RobotData8";
+    private final static boolean logAcceleration = true;
+    // *****************************************************
 
     @Override
     public void start(Stage primaryStage) {
