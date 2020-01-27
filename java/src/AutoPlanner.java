@@ -33,7 +33,7 @@ public class AutoPlanner extends Application {
     2. Run Game, close once loaded (done to refresh class files generated from build)
     3. Copy files to jarfiles (C:\Users\jonat\AndroidStudioProjects\FTC_Simulator\jarfiles)
     4. In cmd, run
-       jar cfe Planner.jar AutoPlanner *
+       jar cvfm Planner.jar manifest.txt AutoPlanner.class field.jpg
     5. Run jar by clicking on it or running
        java -jar Planner.jar
      */
@@ -60,7 +60,7 @@ public class AutoPlanner extends Application {
     private final static double robotLength = 18 * inchToPixel;
     private final static double robotRadius = robotLength / 2;
 
-    private int colorValue = 255; private final static double colorInterval = 15;
+    private int colorValue = 255; private final static double colorInterval = 10;
     private boolean isRed = true;
     
     @Override
@@ -133,8 +133,8 @@ public class AutoPlanner extends Application {
         simPane.getChildren().remove(robotRect);
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
     
-        Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
-                new Stop(1, Color.rgb(192, 192, 192, 0.85))};
+        Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
+                new Stop(1, Color.rgb(192, 192, 192, 0.75))};
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
@@ -146,6 +146,109 @@ public class AutoPlanner extends Application {
     
     public void drawAutoPaths() {
 
+        double skystone1Time = 2.5;
+        double backToCenterTime = 1;
+        double toQuarryTime = 2;
+        double skystone2Time = 2;
+        double foundationPullTime = 4;
+        
+        double skystoneY = -1, skystonePos = 1;
+        if (skystonePos == 1) {
+            skystoneY = 132;
+        } else if (skystonePos == 2) {
+            skystoneY = 123;
+        } else if (skystonePos == 3) {
+            skystoneY = 114;
+        }
+
+        Spline[] foundationPullSpline = splineGenerator.SplineBetweenTwoPoints(44, 24,
+                30, 55, Math.PI, Math.PI / 2, 10, 100,
+                15, 100, 0, 0, foundationPullTime);
+        drawSpline(foundationPullSpline, foundationPullTime);
+
+        // red -----------------------------------------------------------------------------------------------------
+        /*Spline[] skystone1Spline = splineGenerator.SplineBetweenTwoPoints(9, 111,
+                45, skystoneY, 0, Math.PI / 4, 0, 0,
+                20, 0, 0, 0, skystone1Time);
+        drawSpline(skystone1Spline, skystone1Time);
+    
+        Spline[] backToCenterSpline = splineGenerator.SplineBetweenTwoPoints(45, skystoneY,
+                33, skystoneY - 12, Math.PI / 4, Math.PI / 2, 0, -70,
+                -20, -50, 0, 0, backToCenterTime);
+        drawSpline(backToCenterSpline, backToCenterTime);
+
+        drawToPoint(33, skystoneY - 12, 36, 55); // to foundation
+        drawToPoint(36, 55, 38, 33); // foundation turn
+        drawToPoint(38, 33, 44, 23); // approach foundation
+        drawToPoint(44, 23, 26, 35); // pull foundation
+        drawToPoint(26,  35, 35, 35); // turn foundation
+        drawToPoint(35, 35, 35, 29); // push foundation
+
+        Spline[] toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(35, 29,
+                24, skystoneY - 30, Math.PI / 2, Math.PI / 4, 0, 0,
+                20, 0, 0, 0, toQuarryTime);
+        drawSpline(toQuarrySpline, toQuarryTime);
+
+        Spline[] skystone2Spline = splineGenerator.SplineBetweenTwoPoints(24, skystoneY - 30,
+                45, skystoneY - 26, Math.PI / 2, Math.PI / 4, 30, 0,
+                20, 0, 0, 0, skystone2Time);
+        drawSpline(skystone2Spline, skystone2Time);
+        
+        drawToPoint(45, skystoneY - 26, 33, 91); // back to center
+        drawToPoint(33, 91, 33, 33); // go to foundation
+
+        toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(33, 33,
+                24, skystoneY - 30, Math.PI / 2, Math.PI / 4, 0, 0,
+                20, 0, 0, 0, toQuarryTime);
+        drawSpline(toQuarrySpline, toQuarryTime);
+
+        Spline[] skystone3Spline = splineGenerator.SplineBetweenTwoPoints(24, skystoneY - 30,
+                45, skystoneY - 15, Math.PI / 2, Math.PI / 4, 30, 0,
+                20, 0, 0, 0, skystone2Time);
+        drawSpline(skystone3Spline, skystone2Time);
+
+        drawToPoint(45, skystoneY - 15, 33, 91); // back to center
+        drawToPoint(33, 91, 33, 33); // go to foundation
+        drawToPoint(33, 33, 30, 72); // go to tape
+
+        /*colorValue = 255; isRed = false;
+
+        // blue -----------------------------------------------------------------------------------------------------
+        skystone1Spline = splineGenerator.SplineBetweenTwoPoints(135, 111,
+                99, skystoneY, Math.PI, 3*Math.PI / 4, 0, 0,
+                20, 0, 0, 0, skystone1Time);
+        drawSpline(skystone1Spline, skystone1Time);
+
+        backToCenterSpline = splineGenerator.SplineBetweenTwoPoints(99, skystoneY,
+                111, skystoneY - 12, 3*Math.PI / 4, Math.PI / 2, 0, -70,
+                -20, -50, 0, 0, backToCenterTime);
+        drawSpline(backToCenterSpline, backToCenterTime);
+
+        drawToPoint(111, skystoneY - 12, 108, 55); // to foundation
+
+        foundationTurnSpline = splineGenerator.SplineBetweenTwoPoints(108, 55,
+                113, 36, Math.PI / 2, 0, -70, -30,
+                -50, -20, 0, 0, foundationTurnTime);
+        drawSpline(foundationTurnSpline, foundationTurnTime);
+
+        drawToPoint(113, 36, 100, 25); // approach foundation
+        drawToPoint(100, 25, 118, 25); // pull foundation
+        drawToPoint(118,  25, 109, 35); // turn foundation
+        drawToPoint(109, 35, 109, 29); // push foundation
+
+        toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(109, 29,
+                120, skystoneY - 30, Math.PI / 2, 3*Math.PI / 4, 0, 0,
+                20, 0, 0, 0, toQuarryTime);
+        drawSpline(toQuarrySpline, toQuarryTime);
+
+        skystone2Spline = splineGenerator.SplineBetweenTwoPoints(120, skystoneY - 30,
+                99, skystoneY - 26, Math.PI / 2, 3*Math.PI / 4, 30, 0,
+                20, 0, 0, 0, skystone2Time);
+        drawSpline(skystone2Spline, skystone2Time);
+
+        drawToPoint(99, skystoneY - 26, 111, 85); // back to center
+        drawToPoint(111, 85, 111, 33); // go to foundation
+        drawToPoint(111, 33, 114, 62); // go to tape*/
     }
     
     public void drawSpline(Spline[] splines, double time) {

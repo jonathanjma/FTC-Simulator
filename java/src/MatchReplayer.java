@@ -35,14 +35,13 @@ public class MatchReplayer extends Application {
     private VBox simInfoHousing = new VBox(2.5);
     private HBox simInfo1 = new HBox(5);
     private HBox simInfo2 = new HBox(5);
+
     private Rectangle robotRect;
 
-    private Group pathPoints = new Group();
+    private Group pathPointGroup = new Group();
     private Circle pathPoint;
-    
-    private double xCor, yCor, theta;
-    private final static boolean logAccel = true; //<----------------------------------
-    
+
+    // ui labels
     private Label corLb = new Label("Position: (");
     private Label xInchLb = new Label("n/a");
     private Label commaLb1 = new Label(",");
@@ -80,15 +79,18 @@ public class MatchReplayer extends Application {
     private final static double robotLength = 18 * inchToPixel;
     private final static double robotRadius = robotLength / 2; //37.44
 
+    private double xCor, yCor, theta;
+
     private RobotDataUtil dataUtil = new RobotDataUtil(logAccel);
     private boolean pause = false; private int counter = 0;
 
+    // update robot thread
     private FollowPosData runnable = new FollowPosData();
     private Thread thread = new Thread(runnable);
     public class FollowPosData implements Runnable {
         public void run() {
             for (; counter < dataUtil.getNumOfPoints();) {
-                if (counter == 1) {Platform.runLater(() -> pathPoints.getChildren().clear());}
+                if (counter == 1) {Platform.runLater(() -> pathPointGroup.getChildren().clear());}
                 if (!pause) {
                     Platform.runLater(() -> updateRobot(dataUtil.getNextPos()));
                     try {sleep(55);} catch (InterruptedException ex) {ex.printStackTrace();} // sleep
@@ -99,6 +101,8 @@ public class MatchReplayer extends Application {
             Platform.runLater(() -> startStopBtn.setVisible(false));
         }
     }
+
+    private final static boolean logAccel = true; //<----------------------------------
 
     @Override
     public void start(Stage primaryStage) {
@@ -127,7 +131,7 @@ public class MatchReplayer extends Application {
                 startStopBtn, restartBtn);
         simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThetaLb,
                 armLb, armState, commaLb6, stoneClamped);
-        simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPoints);
+        simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
 
         dataUtil.parseLogFile();
 
@@ -173,10 +177,15 @@ public class MatchReplayer extends Application {
 
     private void updateRobot(Object[] data) {
 
+        // remove old rectangle
+        simPane.getChildren().removeAll(robotRect);
+
+        // update current node, time since start
         nodeNum.setText(counter +"");
         double time = (double) data[0];
         curTime.setText(String.format("%.2f", time / 1000));
 
+        // update robot xy
         xCor = (double) data[1] * inchToPixel;
         yCor = (144 - (double) data[2]) * inchToPixel;
         if (xCor - robotRadius < 0) xCor = robotRadius; //left
@@ -184,9 +193,10 @@ public class MatchReplayer extends Application {
         if (yCor - robotRadius < 0) yCor = robotRadius; //up
         if (yCor + robotRadius > 600) yCor = 600 - robotRadius; //down
 
-        simPane.getChildren().removeAll(robotRect);
-
+        // define updated rectangle
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+
+        // color robot yellow if stone in robot
         Stop[] stops;
         if ((boolean) data[10]) {
             stops = new Stop[] {new Stop(0, Color.rgb(255, 225, 53, 0.85)),
@@ -199,24 +209,31 @@ public class MatchReplayer extends Application {
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
 
+        // update robot theta
         theta = -(((double) data[3] * 180/Math.PI) + 0.5);
         if (theta > 360) {theta %= 360;}
         robotRect.setRotate(theta);
+
+        // draw updated robot on screen
         simPane.getChildren().add(robotRect);
 
+        // update xy and theta text
         xInchLb.setText(String.format("%.2f", (double) data[1]));
         yInchLb.setText(String.format("%.2f", (double) data[2]));
         thetaLb.setText(String.format("%.2f", (double) data[3]));
 
+        // update velocity text
         double velocityX = (double) data[4], velocityY = (double) data[5], velocityTheta = (double) data[6];
         velocityXLb.setText(String.format("%.2f", velocityX));
         velocityYLb.setText(String.format("%.2f", velocityY));
         velocityThetaLb.setText(String.format("%.2f", velocityTheta));
 
+        // draw robot path dots, color based on velocity (red = slow, green = fast)
         int velocityFactor = (int) Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
         pathPoint = new Circle(xCor, yCor, 2, Color.hsb(velocityFactor * 1.5, 1, 1));
-        pathPoints.getChildren().add(pathPoint);
+        pathPointGroup.getChildren().add(pathPoint);
 
+        // update acceleration text
         double accelX = (double) data[7];
         double accelY = (double) data[8];
         double accelTheta = (double) data[9];
@@ -224,9 +241,11 @@ public class MatchReplayer extends Application {
         accelYLb.setText(String.format("%.2f", accelY));
         accelThetaLb.setText(String.format("%.2f", accelTheta));
 
+        // update stone clamped text
         if ((boolean) data[11]) stoneClamped.setText("Clamped");
         else stoneClamped.setText("Not Clamped");
 
+        // update arm state text
         if ((boolean) data[12]) armState.setText("Home");
         else if ((boolean) data[13]) armState.setText("Down");
         else if ((boolean) data[14]) armState.setText("Out");
