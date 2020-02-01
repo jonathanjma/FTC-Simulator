@@ -8,7 +8,7 @@ import java.util.ArrayList;
 @SuppressWarnings("FieldCanBeLocal")
 public class RobotDataUtil {
 
-    private String basePath = "java/src/Logs/";
+    private String basePath = "src/Logs/";
     private FileWriter fileWriter;
     private BufferedReader bufferedReader;
 
@@ -32,7 +32,7 @@ public class RobotDataUtil {
             bufferedReader = new BufferedReader(new FileReader(robotDataLog));
 
             if (logAccel) {
-                File accelLog = new File("java/src/Logs/Accel.csv");
+                File accelLog = new File("src/Logs/Accel.csv");
                 fileWriter = new FileWriter(accelLog);
                 fileWriter.write("AccelX,AccelY,AccelTheta\n");
             }
@@ -47,7 +47,7 @@ public class RobotDataUtil {
                     double accelY = (prevYV - velocityY) / ((prevTime - time) / 1000);
                     double accelTheta = (prevThetaV - velocityTheta) / ((prevTime - time) / 1000);
 
-                    dataArray.add(new Object[]{time, Double.parseDouble(data[2]), Double.parseDouble(data[3]), Double.parseDouble(data[4]), velocityX, velocityY, velocityTheta, accelX, accelY, accelTheta, Boolean.parseBoolean(data[8]), Boolean.parseBoolean(data[9]), Boolean.parseBoolean(data[10]), Boolean.parseBoolean(data[11]), Boolean.parseBoolean(data[12])});
+                    dataArray.add(new Object[]{time, Double.parseDouble(data[2]), Double.parseDouble(data[3]), Double.parseDouble(data[4]), velocityX, velocityY, velocityTheta, accelX, accelY, accelTheta, Boolean.parseBoolean(data[8]), Boolean.parseBoolean(data[9]), Boolean.parseBoolean(data[10]), Boolean.parseBoolean(data[11]), Boolean.parseBoolean(data[12]), Boolean.parseBoolean(data[13])});
 
                     if (logAccel) {
                         fileWriter.write(accelX + "," + accelY + "," + accelTheta + "\n");

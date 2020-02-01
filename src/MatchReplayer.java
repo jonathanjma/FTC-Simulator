@@ -29,6 +29,11 @@ import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class MatchReplayer extends Application {
+
+    // **************************************************************************************************
+    private final static String logName = "RobotData42";
+    private final static boolean logAcceleration = true;
+    // **************************************************************************************************
     
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
@@ -46,9 +51,9 @@ public class MatchReplayer extends Application {
     private Label xInchLb = new Label("n/a");
     private Label commaLb1 = new Label(",");
     private Label yInchLb = new Label("n/a");
-    private Label thetaLb1 = new Label(") Theta:");
+    private Label thetaLb1 = new Label(")  Theta:");
     private Label thetaLb = new Label("n/a");
-    private Label velocityLb = new Label("Velocity:");
+    private Label velocityLb = new Label("  Velocity:");
     private Label velocityXLb = new Label("n/a");
     private Label commaLb2 = new Label(",");
     private Label velocityYLb = new Label("n/a");
@@ -63,10 +68,12 @@ public class MatchReplayer extends Application {
     private Label accelYLb = new Label("n/a");
     private Label commaLb5 = new Label(",");
     private Label accelThetaLb = new Label("n/a");
-    private Label armLb = new Label("Arm: ");
+    private Label armLb = new Label("  Arm: ");
     private Label armState = new Label("n/a");
     private Label commaLb6 = new Label(",");
     private Label stoneClamped = new Label("n/a");
+    private Label commaLb7 = new Label(",");
+    private Label tryingToDeposit = new Label("n/a");
 
     private Text nodeLb = new Text(507, 25, "Node:");
     private Text nodeNum = new Text(550, 25, "n/a");
@@ -102,11 +109,6 @@ public class MatchReplayer extends Application {
         }
     }
 
-    // *****************************************************
-    private final static String logName = "RobotData8";
-    private final static boolean logAcceleration = true;
-    // *****************************************************
-
     @Override
     public void start(Stage primaryStage) {
 
@@ -124,7 +126,7 @@ public class MatchReplayer extends Application {
         restartBtn.setVisible(false);
 
         accelLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14)); accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14)); accelThetaLb.setFont(Font.font(14));
-        armLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14)); stoneClamped.setFont(Font.font(14));
+        armLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14)); stoneClamped.setFont(Font.font(14)); commaLb7.setFont(Font.font(14)); tryingToDeposit.setFont(Font.font(14));
 
         nodeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); nodeNum.setFont(Font.font(14));
         timeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); curTime.setFont(Font.font(14));
@@ -133,7 +135,7 @@ public class MatchReplayer extends Application {
                 velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3, velocityThetaLb,
                 startStopBtn, restartBtn);
         simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThetaLb,
-                armLb, armState, commaLb6, stoneClamped);
+                armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit);
         simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
 
         dataUtil.parseLogFile();
@@ -248,10 +250,14 @@ public class MatchReplayer extends Application {
         if ((boolean) data[11]) stoneClamped.setText("Clamped");
         else stoneClamped.setText("Not Clamped");
 
+        // update trying to deposit text
+        if ((boolean) data[12]) tryingToDeposit.setText("Depositing");
+        else tryingToDeposit.setText("Not Depositing");
+
         // update arm state text
-        if ((boolean) data[12]) armState.setText("Home");
-        else if ((boolean) data[13]) armState.setText("Down");
-        else if ((boolean) data[14]) armState.setText("Out");
+        if ((boolean) data[13]) armState.setText("Home");
+        else if ((boolean) data[14]) armState.setText("Down");
+        else if ((boolean) data[15]) armState.setText("Out");
     }
     
     public static void main(String[] args) {Application.launch(args);}

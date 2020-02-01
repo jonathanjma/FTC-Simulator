@@ -61,7 +61,7 @@ public class AutoPlanner extends Application {
     private final static double robotRadius = robotLength / 2;
 
     private int colorValue = 255;
-    private final static double colorInterval = 10;
+    private final static double colorInterval = 15;
     
     @Override
     public void start(Stage primaryStage) {
@@ -75,7 +75,7 @@ public class AutoPlanner extends Application {
         simSettings.getChildren().addAll(corLb, xInchTf, commaLb, yInchTf, angleLb1, angleTf, angleLb2);
         
         updateRobotPos(2, null);
-        drawAutoPath(); // <-----------------------------------------
+        drawAutoPath(); // <-------------------------------------------------
         
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
@@ -152,43 +152,43 @@ public class AutoPlanner extends Application {
         double toQuarryTime = 2;
         double skystone2Time = 2;
         
-        double skystoneY = -1, skystonePos = 1;
+        double skystoneY = -1, skystonePos = 3;
         if (skystonePos == 1) skystoneY = 132;
         else if (skystonePos == 2) skystoneY = 123;
         else if (skystonePos == 3) skystoneY = 114;
 
         Spline[] skystone1Spline = splineGenerator.SplineBetweenTwoPoints(9, 111,
-                45, skystoneY, 0, Math.PI / 4, 0, 0,
-                20, 0, 0, 0, skystone1Time);
+                45, skystoneY, 0, Math.PI / 4 + 0.2, 0, 0,
+                100, -100, 0, 0, skystone1Time);
         drawSpline(skystone1Spline, skystone1Time);
 
         Spline[] backToCenterSpline = splineGenerator.SplineBetweenTwoPoints(45, skystoneY,
-                33, skystoneY - 12, Math.PI / 4, Math.PI / 2, 0, -70,
+                30, skystoneY - 15.5, Math.PI / 4, Math.PI / 2, 0, -70,
                 -20, -50, 0, 0, backToCenterTime);
         drawSpline(backToCenterSpline, backToCenterTime);
 
-        drawToPoint(33, skystoneY - 12, 36, 55); // to foundation
-        drawToPoint(36, 55, 38, 33); // foundation turn
-        drawToPoint(38, 33, 44, 23); // approach foundation
+        drawToPoint(30, skystoneY - 15.5, 36, 55); // to foundation
+        drawToPoint(36, 55, 42, 18); // foundation turn
+        drawToPoint(42, 18, 47, 18); // approach foundation
 
-        Spline[] foundationPullSpline = splineGenerator.SplineBetweenTwoPoints(44, 23,
+        Spline[] foundationPullSpline = splineGenerator.SplineBetweenTwoPoints(47, 18,
                 30, 55, Math.PI, Math.PI / 2, 10, 100,
                 15, 100, 0, 0, foundationPullTime);
         drawSpline(foundationPullSpline, foundationPullTime);
 
         Spline[] toQuarrySpline = splineGenerator.SplineBetweenTwoPoints(30, 55,
-                24, skystoneY - 30, Math.PI / 2, Math.PI / 4, 0, 0,
+                26.5, skystoneY - 30, Math.PI / 2, Math.PI / 4 + 0.2, 0, 0,
                 20, 0, 0, 0, toQuarryTime);
         drawSpline(toQuarrySpline, toQuarryTime);
 
-        Spline[] skystone2Spline = splineGenerator.SplineBetweenTwoPoints(24, skystoneY - 30,
-                45, skystoneY - 26, Math.PI / 2, Math.PI / 4, 30, 0,
+        Spline[] skystone2Spline = splineGenerator.SplineBetweenTwoPoints(26.5, skystoneY - 30,
+                45, skystoneY - 26, Math.PI / 2, Math.PI / 4 + 0.2, 30, 0,
                 20, 0, 0, 0, skystone2Time);
         drawSpline(skystone2Spline, skystone2Time);
 
-        drawToPoint(45, skystoneY - 26, 33, 91); // back to center
-        drawToPoint(33, 91, 33, 33); // go to foundation
-        drawToPoint(33, 33, 30, 72); // go to tape
+        drawToPoint(45, skystoneY - 26, 29, 88); // back to center
+        drawToPoint(29, 88, 30, 55); // go to foundation
+        drawToPoint(30, 55, 30, 72); // go to tape
     }
     
     public void drawSpline(Spline[] splines, double time) {
