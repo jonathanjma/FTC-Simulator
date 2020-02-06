@@ -1,3 +1,4 @@
+import iLQR.Optimizer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -15,6 +16,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import org.ejml.simple.SimpleMatrix;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import static java.lang.Thread.sleep;
 
@@ -58,15 +61,28 @@ public class output extends Application {
     private boolean firstUpdate = true;
 
     private final double timestep = 20;
+    private SimpleMatrix[] Klis;
+    private SimpleMatrix[] dlis;
+    private SimpleMatrix[] xlis;
+    private double [][] x0 = {{9},{111}};
+    private double [][] xf = {{20},{30}};
+    private double[][] uarr = {{0},{0}};
+    private SimpleMatrix u = new SimpleMatrix(uarr);
+
 
     // update robot thread
     private FollowPosData runnable = new FollowPosData();
     private Thread thread = new Thread(runnable);
     public class FollowPosData implements Runnable {
         public void run() {
-            for (; counter < 100;) {
+            for (; counter < 250;) {
                 if (!pause) {
-                    Platform.runLater(() -> updateRobot(50,0));
+                    Platform.runLater(() -> {
+                        double [][] xarr = {{xCor*(1/inchToPixel)},{(600-yCor)*(1/inchToPixel)}};
+                        SimpleMatrix x = new SimpleMatrix(xarr);
+                        u = (Klis[counter].mult(xlis[counter].minus(x)).negative()).plus(dlis[counter]);
+                        updateRobot(u.get(0,0),u.get(1,0));
+                    });
                     try {sleep((long) timestep);} catch (InterruptedException ex) {ex.printStackTrace();}
                     counter++;
                 }
@@ -77,6 +93,26 @@ public class output extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        //ilqr stuff
+        double timestep = 0.02;
+
+        SimpleMatrix[] Klis;
+        SimpleMatrix [] dlis;
+        SimpleMatrix [] lastxlis;
+        SimpleMatrix A = SimpleMatrix.identity(2);
+        SimpleMatrix B = SimpleMatrix.identity(2).scale(timestep);
+
+
+        Optimizer optim = new Optimizer(A,B,timestep);
+
+
+        SimpleMatrix startx = new SimpleMatrix(x0);
+        SimpleMatrix finalx = new SimpleMatrix(xf);
+
+        Object[] a = optim.optimizePath(startx,finalx,5);
+        Klis = (SimpleMatrix[])a[0];
+        dlis = (SimpleMatrix[])a[1];
+        xlis = (SimpleMatrix[])a[2];
 
         //simPane.setOnMouseClicked(event -> System.out.println(event.getX()+","+event.getY()));
 
