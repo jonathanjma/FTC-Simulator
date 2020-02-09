@@ -1,3 +1,6 @@
+package Old;
+
+@Deprecated
 public class Robot {
 
     private double newX, newY, angle, velocity, angleVelocity, distanceFactor;

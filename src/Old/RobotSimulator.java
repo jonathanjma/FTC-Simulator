@@ -1,3 +1,5 @@
+package Old;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -16,6 +18,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+@Deprecated
 public class RobotSimulator extends Application {
 
     private BorderPane mainPane = new BorderPane();
