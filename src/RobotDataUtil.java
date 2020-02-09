@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class RobotDataUtil {
 
     private String basePath = "src/Logs/";
+    //private String basePath ="C:/Users/jonat/Downloads/motorola-moto_e__4_-192.168.49.1_7303/sdcard/FIRST/robotLogs/";
     private FileWriter fileWriter;
     private BufferedReader bufferedReader;
 
     private ArrayList dataArray;
-    private int getCounter = 0;
     private boolean logAccel;
 
     public RobotDataUtil(String logName, boolean logAccel) {
@@ -61,13 +61,15 @@ public class RobotDataUtil {
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    public Object[] getNextPos() {
-        Object[] data = (Object[]) dataArray.get(Math.min(getCounter, dataArray.size() - 1));
-        getCounter++;
-        return data;
+    public Object[] getData(int index) {
+        return (Object[]) dataArray.get(index);
     }
 
-    public void setGetCounter(int getCounter) {this.getCounter = getCounter;}
+    public double getTimeDiff(int index) {
+        Object[] prev = (Object[]) dataArray.get(index-1);
+        Object[] cur = (Object[]) dataArray.get(index);
+        return (double) cur[0] - (double) prev[0];
+    }
 
     public int getNumOfPoints() {return dataArray.size();}
 }

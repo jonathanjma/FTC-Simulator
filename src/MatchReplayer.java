@@ -1,4 +1,3 @@
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -6,7 +5,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
@@ -28,11 +29,11 @@ import javafx.stage.Stage;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class MatchReplayer extends Application {
+public class MatchReplayer {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData42";
-    private final static boolean logAcceleration = true;
+    private final static String logName = "RobotData77";
+    private final static boolean logAcceleration = false;
     // **************************************************************************************************
     
     private BorderPane mainPane = new BorderPane();
@@ -45,6 +46,10 @@ public class MatchReplayer extends Application {
 
     private Group pathPointGroup = new Group();
     private Circle pathPoint;
+
+//    private Slider nodeSlider;
+//    private boolean isFollow = true;
+//    private boolean startBtnPressed = false;
 
     // ui labels
     private Label corLb = new Label("Position: (");
@@ -79,7 +84,9 @@ public class MatchReplayer extends Application {
     private Text nodeNum = new Text(550, 25, "n/a");
     private Text timeLb = new Text(507, 45, "Time:");
     private Text curTime = new Text(545, 45, "n/a");
-    
+
+    private Button backBtn = new Button("Back");
+
     // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
     // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
     private final static double inchToPixel = 4.16;
@@ -91,26 +98,39 @@ public class MatchReplayer extends Application {
     private RobotDataUtil dataUtil = new RobotDataUtil(logName, logAcceleration);
     private boolean pause = false; private int counter = 0;
 
+    private double timeDiff;
+    private boolean firstUpdate = true;
+
     // update robot thread
     private FollowPosData runnable = new FollowPosData();
     private Thread thread = new Thread(runnable);
     public class FollowPosData implements Runnable {
+        private boolean active = true;
+
         public void run() {
             for (; counter < dataUtil.getNumOfPoints();) {
-                if (counter == 1) {Platform.runLater(() -> pathPointGroup.getChildren().clear());}
-                if (!pause) {
-                    Platform.runLater(() -> updateRobot(dataUtil.getNextPos()));
-                    try {sleep(55);} catch (InterruptedException ex) {ex.printStackTrace();} // sleep
-                    counter++;
-                }
-                System.out.print("");
+                if (active) {
+                    if (counter == 1) {Platform.runLater(() -> pathPointGroup.getChildren().clear());}
+                    if (!pause) {
+                        Platform.runLater(() -> updateRobot(dataUtil.getData(counter)));
+                        if (firstUpdate) {timeDiff = 0; firstUpdate = false;}
+                        else timeDiff = dataUtil.getTimeDiff(counter);
+
+                        try {sleep((long) timeDiff);}
+                        catch (InterruptedException ex) {ex.printStackTrace(); }
+                        counter++;
+                    }
+                    System.out.print("");
+                    //System.out.println(isFollow + " " + pause);
+                } else {thread.interrupt();}
             }
             Platform.runLater(() -> startStopBtn.setVisible(false));
         }
+
+        public void endThread() {active = false;}
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+    public void launch(Stage primaryStage) {
 
         //simPane.setOnMouseClicked(event -> System.out.println(event.getX()+","+event.getY()));
 
@@ -119,7 +139,7 @@ public class MatchReplayer extends Application {
         simInfo2.setPadding(new Insets(0, 5, 2.5, 5));
         simInfo2.setAlignment(Pos.CENTER);
         simInfoHousing.getChildren().addAll(simInfo1, simInfo2);
-        
+
         corLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); commaLb1.setFont(Font.font(14)); xInchLb.setFont(Font.font(14)); yInchLb.setFont(Font.font(14));
         thetaLb1.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); thetaLb.setFont(Font.font(14));
         velocityLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); velocityXLb.setFont(Font.font(14)); commaLb2.setFont(Font.font(14)); velocityYLb.setFont(Font.font(14)); commaLb3.setFont(Font.font(14)); velocityThetaLb.setFont(Font.font(14));
@@ -138,12 +158,37 @@ public class MatchReplayer extends Application {
                 armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit);
         simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
 
+        backBtn.setLayoutX(10); backBtn.setLayoutY(10);
+        simPane.getChildren().addAll(backBtn);
+
         dataUtil.parseLogFile();
+
+//        nodeSlider = new Slider(1, dataUtil.getNumOfPoints(), 0);
+//        nodeSlider.setLayoutX(435); nodeSlider.setLayoutY(575); nodeSlider.setPrefWidth(150);
+//        nodeSlider.valueProperty().addListener((obs, oldval, newVal) -> {
+//            if (!isFollow) {
+//                nodeSlider.setValue(newVal.intValue());
+//                counter = (int) nodeSlider.getValue(); //- 1;
+//                pathPointGroup.getChildren().clear();
+//                updateRobot(dataUtil.getData(counter));
+//            }
+//        });
+//
+//        nodeSlider.setOnMouseDragged(e -> {
+//            isFollow = false;
+//            pause = true; startStopBtn.setText("Resume");
+//        });
+//        nodeSlider.setOnKeyPressed(e -> {
+//            isFollow = false;
+//            pause = true; startStopBtn.setText("Resume");
+//        });
+//
+//        simPane.getChildren().add(nodeSlider);
 
         startStopBtn.setOnAction(e -> {
             switch (startStopBtn.getText()) {
                 case "Start":
-                    thread.start();
+                    thread.start(); thread.setName("UpdateRobotThread");
                     startStopBtn.setText("Pause");
                     restartBtn.setVisible(true);
                     break;
@@ -154,6 +199,7 @@ public class MatchReplayer extends Application {
                 case "Resume":
                     pause = false;
                     startStopBtn.setText("Pause");
+                    //isFollow = true;
                     break;
             }
         });
@@ -161,11 +207,24 @@ public class MatchReplayer extends Application {
         restartBtn.setOnAction(e -> {
             if (counter == dataUtil.getNumOfPoints()) {
                 thread = new Thread(runnable);
-                thread.start();
+                thread.start(); thread.setName("UpdateRobotThread");
                 startStopBtn.setVisible(true);
             }
             startStopBtn.setText("Pause");
-            counter = 0; dataUtil.setGetCounter(0); pause = false;
+            counter = 0; pause = false; firstUpdate = true;
+        });
+
+        backBtn.setOnMouseClicked(e -> {
+            runnable.endThread();
+            CombinedApp app = new CombinedApp();
+            app.start(primaryStage);
+        });
+        backBtn.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                runnable.endThread();
+                CombinedApp app = new CombinedApp();
+                app.start(primaryStage);
+            }
         });
 
         simPane.setBackground(new Background(
@@ -176,8 +235,6 @@ public class MatchReplayer extends Application {
         Scene scene = new Scene(mainPane, 600, 655);
         primaryStage.setTitle("Match Replayer");
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image("field.jpg"));
-        primaryStage.show();
     }
 
     private void updateRobot(Object[] data) {
@@ -187,6 +244,12 @@ public class MatchReplayer extends Application {
 
         // update current node, time since start
         nodeNum.setText(counter +"");
+
+//        if (isFollow) {
+//            nodeSlider.setValue(counter);
+//            isFollow = true;
+//        }
+
         double time = (double) data[0];
         curTime.setText(String.format("%.2f", time / 1000));
 
@@ -259,6 +322,4 @@ public class MatchReplayer extends Application {
         else if ((boolean) data[14]) armState.setText("Down");
         else if ((boolean) data[15]) armState.setText("Out");
     }
-    
-    public static void main(String[] args) {Application.launch(args);}
 }
