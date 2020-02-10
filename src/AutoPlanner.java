@@ -165,55 +165,50 @@ public class AutoPlanner {
 
         double skystone1Time = 1.5;
         double toFoundation1Time = 3;
-        double approachFoundationTime = 1;
         double skystone2Time = 2;
         double toFoundation2Time = 3;
         
-        double skystoneY = -1, skystonePos = 3;
+        double skystoneY = -1, skystonePos = 1;
         if (skystonePos == 1) skystoneY = 128;
         else if (skystonePos == 2) skystoneY = 120;
         else if (skystonePos == 3) skystoneY = 112;
 
         Waypoint[] skystone1PathWaypoints = {
-                new Waypoint(9,111,0,15,100,0),
-                new Waypoint(33, skystoneY-5, Math.PI / 6, 10,  60, 1),
-                new Waypoint(45,skystoneY,Math.PI / 4 + 0.2,10,-100, skystone1Time)
+                new Waypoint(9,111,0,15,100,0,0),
+                new Waypoint(33, skystoneY-5, Math.PI / 6, 10,  60, 0,1),
+                new Waypoint(45,skystoneY,Math.PI / 4 + 0.2,10,-100,0, skystone1Time)
         };
         Path skystone1Path = new Path(new ArrayList<>(Arrays.asList(skystone1PathWaypoints)));
         drawPath(skystone1Path,skystone1Time);
 
         Waypoint[] toFoundation1PathWaypoints = new Waypoint[] {
-                new Waypoint(45, skystoneY, Math.PI / 4 + 0.2, -30, -100, 0),
-                new Waypoint(34, skystoneY - 25, Math.PI / 2, -50, -10, 1),
-                new Waypoint(36, 30, Math.PI / 2, -30, 10, toFoundation1Time)
+                new Waypoint(45, skystoneY, Math.PI / 4 + 0.2, -30, -100,0, 0),
+                new Waypoint(36, skystoneY - 25, Math.PI / 3, -50, -50,0, 1),
+                new Waypoint(36, 35, Math.PI / 2, -30, -50,0, 2),
+                new Waypoint(47, 18, Math.PI, -30, 100,0, toFoundation1Time)
         };
         Path toFoundation1Path = new Path(new ArrayList<>(Arrays.asList(toFoundation1PathWaypoints)));
         drawPath(toFoundation1Path,toFoundation1Time);
 
-        Waypoint[] approachFoundationPathWaypoints = new Waypoint[] {
-                new Waypoint(36, 30, Math.PI / 2, -30, 50, 0),
-                new Waypoint(47, 18, Math.PI, -30, -10, approachFoundationTime)
-        };
-        Path approachFoundationPath = new Path(new ArrayList<>(Arrays.asList(approachFoundationPathWaypoints)));
-        drawPath(approachFoundationPath,approachFoundationTime);
-
         drawToPoint(47,18,30,45);
 
         Waypoint[] skystone2PathWaypoints = new Waypoint[] {
-                new Waypoint(30, 45, Math.PI / 2, 30, 100, 0),
-                new Waypoint(33, skystoneY - 34, Math.PI / 3, 30, 10, 1.25),
-                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, 30, -10, skystone2Time)
+                new Waypoint(30, 45, Math.PI / 2, 30, 100,0, 0),
+                new Waypoint(33, skystoneY - 34, Math.PI / 3, 30, 10,0, 1.25),
+                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, 30, -10,0, skystone2Time)
         };
         Path skystone2Path = new Path(new ArrayList<>(Arrays.asList(skystone2PathWaypoints)));
         drawPath(skystone2Path,skystone2Time);
 
         Waypoint[] toFoundation2PathWaypoints = new Waypoint[] {
-                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, -30, -100, 0),
-                new Waypoint(34, skystoneY - 40, Math.PI / 2, -50, -10, 1),
-                new Waypoint(30, 45, Math.PI / 2, -30, 50, toFoundation2Time)
+                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, -30, -100,0, 0),
+                new Waypoint(34, skystoneY - 40, Math.PI / 2, -50, -10,0, 1),
+                new Waypoint(30, 45, Math.PI / 2, -30, 50,0, toFoundation2Time)
         };
         Path toFoundation2Path = new Path(new ArrayList<>(Arrays.asList(toFoundation2PathWaypoints)));
         drawPath(toFoundation2Path,toFoundation2Time);
+
+        drawToPoint(30,45,30,72);
     }
 
     public void drawPath(Path path, double time) {
