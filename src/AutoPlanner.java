@@ -165,7 +165,7 @@ public class AutoPlanner {
 
         double skystone1Time = 1.5;
         double toFoundation1Time = 3;
-        double skystone2Time = 2;
+        double skystone2Time = 2.75;
         double toFoundation2Time = 3;
         
         double skystoneY = -1, skystonePos = 1;
@@ -194,8 +194,8 @@ public class AutoPlanner {
 
         Waypoint[] skystone2PathWaypoints = new Waypoint[] {
                 new Waypoint(30, 45, Math.PI / 2, 30, 100,0, 0),
-                new Waypoint(33, skystoneY - 34, Math.PI / 3, 30, 10,0, 1.25),
-                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, 30, -10,0, skystone2Time)
+                new Waypoint(34, skystoneY - 26, Math.PI / 3, 10, 10,0, 2),
+                new Waypoint(49, skystoneY - 20, Math.PI / 4 + 0.2, 10, -10,0, skystone2Time)
         };
         Path skystone2Path = new Path(new ArrayList<>(Arrays.asList(skystone2PathWaypoints)));
         drawPath(skystone2Path,skystone2Time);
