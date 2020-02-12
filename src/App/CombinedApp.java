@@ -1,3 +1,5 @@
+package App;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,9 +18,11 @@ public class CombinedApp extends Application {
     private BorderPane mainPane = new BorderPane();
     private Pane startPane = new Pane();
 
-    private Rectangle options = new Rectangle(175, 225, 250, 200);
+    private Rectangle optionsRect = new Rectangle(175, 225, 250, 200);
+
     private Text title = new Text(230, 260, "Choose One");
     private Button autoPlannerBtn = new Button("Auto Planner");
+    private Button autoPlayerBtn = new Button("Auto Player");
     private Button matchReplayerBtn = new Button("Match Replayer");
 
     @Override
@@ -26,15 +30,20 @@ public class CombinedApp extends Application {
 
         //startPane.setOnMouseClicked(event -> System.out.println(event.getX()+", "+event.getY()));
 
-        options.setFill(Color.rgb(255,255,255,0.85));
+        optionsRect.setFill(Color.rgb(255,255,255,0.85));
 
         title.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 25));
+
         autoPlannerBtn.setLayoutX(250); autoPlannerBtn.setLayoutY(280);
         autoPlannerBtn.setFont(Font.font(Font.getDefault()+"", 15));
-        matchReplayerBtn.setLayoutX(240); matchReplayerBtn.setLayoutY(320);
+
+        autoPlayerBtn.setLayoutX(255); autoPlayerBtn.setLayoutY(320);
+        autoPlayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
+
+        matchReplayerBtn.setLayoutX(240); matchReplayerBtn.setLayoutY(360);
         matchReplayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
 
-        startPane.getChildren().addAll(options, title, autoPlannerBtn, matchReplayerBtn);
+        startPane.getChildren().addAll(optionsRect, title, autoPlannerBtn, autoPlayerBtn, matchReplayerBtn);
 
         autoPlannerBtn.setOnMouseClicked(e -> {
             AutoPlanner planner = new AutoPlanner();
@@ -44,6 +53,17 @@ public class CombinedApp extends Application {
             if (e.getCode() == KeyCode.ENTER) {
                 AutoPlanner planner = new AutoPlanner();
                 planner.launch(primaryStage);
+            }
+        });
+
+        autoPlayerBtn.setOnMouseClicked(e -> {
+            AutoPlayer player = new AutoPlayer();
+            player.launch(primaryStage);
+        });
+        autoPlayerBtn.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                AutoPlayer player = new AutoPlayer();
+                player.launch(primaryStage);
             }
         });
 

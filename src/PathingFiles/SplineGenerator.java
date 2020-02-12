@@ -1,4 +1,4 @@
-package Splines;
+package PathingFiles;
 
 
 public class SplineGenerator {
