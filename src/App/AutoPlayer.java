@@ -41,7 +41,7 @@ public class AutoPlayer {
     private Button startStopBtn = new Button("Start");
     private Label timeLb = new Label("  Time:");
     private Label curTimeLb = new Label("n/a");
-    //private Button restartBtn = new Button("Restart");
+    private Button restartBtn = new Button("Restart");
 
     private Button backBtn = new Button("Back");
 
@@ -57,34 +57,52 @@ public class AutoPlayer {
 
     private double xCor, yCor, theta, timeForText;
 
-    //private boolean pause = false;
+    private boolean pause = false;
 
     // update robot thread
     private FollowPosData runnable = new FollowPosData();
     private Thread thread = new Thread(runnable);
     public class FollowPosData implements Runnable {
-        Path curPath;
-        Pose curPose;
-        double time;
+        private int pathNum = 0;
+        private double currentTime = 0;
+        private Path curPath;
+        private Pose curPose;
+        private double time;
+        private boolean active = true;
 
         public void run() {
-            for (int paths = 0; paths < pathsUtil.getPathList().size(); paths++) {
-                curPath = pathsUtil.getPathList().get(paths);
-                time = pathsUtil.getTimeList().get(paths);
-                System.out.println(paths + " "+ time);
-                double startTime = System.currentTimeMillis();
+            for (; pathNum < pathsUtil.getPathList().size(); pathNum++) {
+                curPath = pathsUtil.getPathList().get(pathNum);
+                time = pathsUtil.getTimeList().get(pathNum);
+                //System.out.println(paths + " "+ time);
+                //double startTime = System.currentTimeMillis();
 
-                for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
-                    curPose = curPath.getRobotPose(currentTime);
-                    //System.out.println(curPose.getX() +" "+ curPose.getY() +" "+ curPose.getTheta());
-                    Platform.runLater(() -> updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta()));
-                    timeForText = currentTime;
+                for (; currentTime < time;) {
+                    if (active) {
+                        if (!pause) {
+                            curPose = curPath.getRobotPose(currentTime);
+                            //System.out.println(curPose.getX() +" "+ curPose.getY() +" "+ curPose.getTheta());
+                            Platform.runLater(() -> updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta()));
+                            timeForText += 0.01;
+                            currentTime += 0.01;
 
-                    try {sleep(10);}
-                    catch (InterruptedException ex) {ex.printStackTrace();}
+                            try {sleep(10);}
+                            catch (InterruptedException ex) {ex.printStackTrace();}
+                        }
+                        System.out.print("");
+                    }
+                    else {thread.interrupt();}
                 }
-                System.out.println(System.currentTimeMillis()-startTime);
+                currentTime = 0;
+                //System.out.println(System.currentTimeMillis()-startTime);
             }
+        }
+        public void endThread() {active = false;}
+        public int getPathNum() {return pathNum;}
+        public void resetPathNum() {
+            pathNum = 0; currentTime = 0;
+            curPath = pathsUtil.getPathList().get(pathNum);
+            time = pathsUtil.getTimeList().get(pathNum);
         }
     }
 
@@ -99,9 +117,10 @@ public class AutoPlayer {
         xInchLb.setFont(Font.font(14)); yInchLb.setFont(Font.font(14));
         thetaLb1.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); thetaLb.setFont(Font.font(14));
         timeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); curTimeLb.setFont(Font.font(14));
-        //restartBtn.setVisible(false);
+        restartBtn.setVisible(false);
 
-        simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb, timeLb, curTimeLb, startStopBtn/*, restartBtn*/);
+        simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb, timeLb, curTimeLb,
+                startStopBtn, restartBtn);
 
         backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().addAll(backBtn);
@@ -113,37 +132,35 @@ public class AutoPlayer {
             switch (startStopBtn.getText()) {
                 case "Start":
                     thread.start(); thread.setName("UpdateRobotThread");
-                    startStopBtn.setVisible(false);
-                    //startStopBtn.setText("Pause");
-                    //restartBtn.setVisible(true);
+                    startStopBtn.setText("Pause"); restartBtn.setVisible(true);
                     break;
-//                case "Pause":
-//                    pause = true;
-//                    startStopBtn.setText("Resume");
-//                    break;
-//                case "Resume":
-//                    pause = false;
-//                    startStopBtn.setText("Pause");
-//                    break;
+                case "Pause":
+                    pause = true; startStopBtn.setText("Resume");
+                    break;
+                case "Resume":
+                    pause = false; startStopBtn.setText("Pause");
+                    break;
             }
         });
 
-//        restartBtn.setOnAction(e -> {
-//            if (counter == dataUtil.getNumOfPoints()) {
-//                thread = new Thread(runnable);
-//                thread.start(); thread.setName("UpdateRobotThread");
-//                startStopBtn.setVisible(true);
-//            }
-//            startStopBtn.setText("Pause");
-//            counter = 0; pause = false; firstUpdate = true;
-//        });
+        restartBtn.setOnAction(e -> {
+            if (runnable.getPathNum() == pathsUtil.getPathList().size()) {
+                thread = new Thread(runnable);
+                thread.start(); thread.setName("UpdateRobotThread");
+            }
+            startStopBtn.setText("Pause");
+            runnable.resetPathNum(); timeForText = 0;
+            pause = false;
+        });
 
         backBtn.setOnMouseClicked(e-> {
+            runnable.endThread();
             CombinedApp app = new CombinedApp();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e-> {
             if (e.getCode() == KeyCode.ENTER) {
+                runnable.endThread();
                 CombinedApp app = new CombinedApp();
                 app.start(primaryStage);
             }
