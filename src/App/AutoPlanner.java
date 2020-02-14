@@ -1,5 +1,6 @@
 package App;
 
+import Utilities.AutoPathsUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,6 +24,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import static Utilities.InchToPixelUtil.*;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class AutoPlanner {
     
@@ -42,7 +45,7 @@ public class AutoPlanner {
     private HBox simSettings = new HBox(5);
     private Rectangle robotRect;
     
-    private double xCor, yCor, xInch, yInch, angle;
+    private double xCor, yCor;
     
     private Label corLb = new Label("Position: (");
     private Label commaLb = new Label(",");
@@ -51,14 +54,7 @@ public class AutoPlanner {
     private TextField xInchTf = new TextField("9");
     private TextField yInchTf = new TextField("111");
     private TextField angleTf = new TextField("0");
-
     private Button backBtn = new Button("Back");
-
-    // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-    // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
-    private final static double inchToPixel = 4.16;
-    private final static double robotLength = 18 * inchToPixel;
-    private final static double robotRadius = robotLength / 2;
 
     private int colorValue = 255;
     private final static double colorInterval = 20;
@@ -79,8 +75,8 @@ public class AutoPlanner {
         backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().addAll(backBtn);
 
-        updateRobotPos(2, null);
         pathsUtil.drawAutoPaths();
+        updateRobotPos(2, null);
         
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
@@ -119,13 +115,14 @@ public class AutoPlanner {
     }
     
     private void updateRobotPos(int code, MouseEvent e) { // 1 = mouse, 2 = pos input, 3 = angle input
+
         if (code == 1 || code == 2) {
             if (code == 1) {
                 xCor = Double.parseDouble(String.format("%.2f", e.getSceneX()));
                 yCor = Double.parseDouble(String.format("%.2f", e.getSceneY()));
             } else {
-                xCor = Double.parseDouble(xInchTf.getText()) * inchToPixel;
-                yCor = (144 - Double.parseDouble(yInchTf.getText())) * inchToPixel;
+                xCor = getXPixel(Double.parseDouble(xInchTf.getText()));
+                yCor = getYPixel(Double.parseDouble(yInchTf.getText()));
             }
 
             if (xCor - robotRadius < 0) xCor = robotRadius; //left
@@ -134,9 +131,9 @@ public class AutoPlanner {
             if (yCor + robotRadius > 600) yCor = 600 - robotRadius; //down
 
             if (code == 1) {
-                xInch = Double.parseDouble(String.format("%.2f", xCor / inchToPixel));
+                double xInch = Double.parseDouble(String.format("%.2f", xCor / inchToPixel));
                 double yCorAdjusted = 600 - yCor;
-                yInch = Double.parseDouble(String.format("%.2f", yCorAdjusted / inchToPixel));
+                double yInch = Double.parseDouble(String.format("%.2f", yCorAdjusted / inchToPixel));
 
                 xInchTf.setText(xInch + "");
                 yInchTf.setText(yInch + "");
@@ -145,16 +142,19 @@ public class AutoPlanner {
         }
 
         simPane.getChildren().remove(robotRect);
+
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+
+        double theta = -((Double.parseDouble(angleTf.getText()) * 180) + 0.5);
+        if (theta > 360) {theta %= 360;}
+        robotRect.setRotate(theta);
 
         Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
                 new Stop(1, Color.rgb(192, 192, 192, 0.75))};
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-        angle = -((Double.parseDouble(angleTf.getText()) * 180) + 0.5);
-        if (angle > 360) {angle %= 360;}
-        robotRect.setRotate(angle);
+
         simPane.getChildren().add(robotRect);
     }
 }

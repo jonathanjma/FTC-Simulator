@@ -1,5 +1,6 @@
 package App;
 
+import Utilities.RobotDataUtil;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,6 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import static Utilities.InchToPixelUtil.*;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -88,24 +90,16 @@ public class MatchReplayer {
 
     private Button backBtn = new Button("Back");
 
-    // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-    // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
-    private final static double inchToPixel = 4.16;
-    private final static double robotLength = 18 * inchToPixel;
-    private final static double robotRadius = robotLength / 2; //37.44
-
-    private double xCor, yCor, theta;
-
     private RobotDataUtil dataUtil = new RobotDataUtil(logName, logAcceleration);
     private boolean pause = false; private int counter = 0;
 
-    private double timeDiff;
     private boolean firstUpdate = true;
 
     // update robot thread
     private FollowPosData runnable = new FollowPosData();
     private Thread thread = new Thread(runnable);
     public class FollowPosData implements Runnable {
+        private double timeDiff;
         private boolean active = true;
 
         public void run() {
@@ -127,7 +121,6 @@ public class MatchReplayer {
             }
             Platform.runLater(() -> startStopBtn.setVisible(false));
         }
-
         public void endThread() {active = false;}
     }
 
@@ -190,16 +183,13 @@ public class MatchReplayer {
             switch (startStopBtn.getText()) {
                 case "Start":
                     thread.start(); thread.setName("UpdateRobotThread");
-                    startStopBtn.setText("Pause");
-                    restartBtn.setVisible(true);
+                    startStopBtn.setText("Pause"); restartBtn.setVisible(true);
                     break;
                 case "Pause":
-                    pause = true;
-                    startStopBtn.setText("Resume");
+                    pause = true; startStopBtn.setText("Resume");
                     break;
                 case "Resume":
-                    pause = false;
-                    startStopBtn.setText("Pause");
+                    pause = false; startStopBtn.setText("Pause");
                     //isFollow = true;
                     break;
             }
@@ -255,15 +245,14 @@ public class MatchReplayer {
         curTime.setText(String.format("%.2f", time / 1000));
 
         // update robot xy
-        xCor = (double) data[1] * inchToPixel;
-        yCor = (144 - (double) data[2]) * inchToPixel;
-        if (xCor - robotRadius < 0) xCor = robotRadius; //left
-        if (xCor + robotRadius > 600) xCor = 600 - robotRadius; //right
-        if (yCor - robotRadius < 0) yCor = robotRadius; //up
-        if (yCor + robotRadius > 600) yCor = 600 - robotRadius; //down
+        double xCor = getXPixel((double) data[1]);
+        double yCor = getYPixel((double) data[2]);
 
         // define updated rectangle
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+
+        // update robot theta
+        robotRect.setRotate(getTheta((double) data[3]));
 
         // color robot yellow if stone in robot
         Stop[] stops;
@@ -277,11 +266,6 @@ public class MatchReplayer {
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-
-        // update robot theta
-        theta = -(((double) data[3] * 180/Math.PI) + 0.5);
-        if (theta > 360) {theta %= 360;}
-        robotRect.setRotate(theta);
 
         // draw updated robot on screen
         simPane.getChildren().add(robotRect);

@@ -2,6 +2,7 @@ package App;
 
 import PathingFiles.Path;
 import PathingFiles.Pose;
+import Utilities.AutoPathsUtil;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import static Utilities.InchToPixelUtil.*;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -42,20 +44,13 @@ public class AutoPlayer {
     private Label timeLb = new Label("  Time:");
     private Label curTimeLb = new Label("n/a");
     private Button restartBtn = new Button("Restart");
-
     private Button backBtn = new Button("Back");
-
-    // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-    // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
-    private final static double inchToPixel = 4.16;
-    private final static double robotLength = 18 * inchToPixel;
-    private final static double robotRadius = robotLength / 2; //37.44
 
     private int colorValue = 255;
     private final static double colorInterval = 20;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
 
-    private double xCor, yCor, theta, timeForText;
+    private double timeForText;
 
     private boolean pause = false;
 
@@ -96,6 +91,7 @@ public class AutoPlayer {
                 currentTime = 0;
                 //System.out.println(System.currentTimeMillis()-startTime);
             }
+            Platform.runLater(() -> startStopBtn.setVisible(false));
         }
         public void endThread() {active = false;}
         public int getPathNum() {return pathNum;}
@@ -125,8 +121,8 @@ public class AutoPlayer {
         backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().addAll(backBtn);
 
-        updateRobot(9,111,0);
         pathsUtil.drawAutoPaths();
+        updateRobot(9,111,0);
 
         startStopBtn.setOnAction(e -> {
             switch (startStopBtn.getText()) {
@@ -147,6 +143,7 @@ public class AutoPlayer {
             if (runnable.getPathNum() == pathsUtil.getPathList().size()) {
                 thread = new Thread(runnable);
                 thread.start(); thread.setName("UpdateRobotThread");
+                startStopBtn.setVisible(true);
             }
             startStopBtn.setText("Pause");
             runnable.resetPathNum(); timeForText = 0;
@@ -184,11 +181,14 @@ public class AutoPlayer {
         curTimeLb.setText(String.format("%.2f", timeForText));
 
         // update robot xy
-        xCor = x * inchToPixel;
-        yCor = (144 - y) * inchToPixel;
+        double xCor = getXPixel(x);
+        double yCor = getYPixel(y);
 
         // define updated rectangle
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+
+        // update robot theta
+        robotRect.setRotate(getTheta(th));
 
         // color robot yellow if stone in robot
         Stop[] stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
@@ -196,11 +196,6 @@ public class AutoPlayer {
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-
-        // update robot theta
-        theta = -((th * 180/Math.PI) + 0.5);
-        if (th > 360) {th %= 360;}
-        robotRect.setRotate(theta);
 
         // draw updated robot on screen
         simPane.getChildren().add(robotRect);

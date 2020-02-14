@@ -1,4 +1,4 @@
-package App;
+package Utilities;
 
 import PathingFiles.*;
 import javafx.geometry.Point2D;
@@ -9,11 +9,10 @@ import javafx.scene.shape.Line;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AutoPathsUtil {
+import static Utilities.InchToPixelUtil.getXPixel;
+import static Utilities.InchToPixelUtil.getYPixel;
 
-    // 36 tiles, each tile 2ft x 2ft, field length/height = 6 tiles, side length = 12ft || 144in
-    // field- 600x600, every 50 pixels = 1 ft, every 4.16 pixels ~1 in
-    private final static double inchToPixel = 4.16;
+public class AutoPathsUtil {
 
     private Pane drawingPane;
     private SplineGenerator splineGenerator = new SplineGenerator();
@@ -173,14 +172,14 @@ public class AutoPathsUtil {
         for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
 
             Pose curPose = path.getRobotPose(currentTime);
-            double x = curPose.getX() * inchToPixel;
-            double y = (144-curPose.getY()) * inchToPixel;
+            double x = getXPixel(curPose.getX());
+            double y = getYPixel(curPose.getY());
 
-            Line splineSegmentLineRed = new Line(x, y, x, y);
-            splineSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
-            Line splineSegmentLineBlue = new Line((144*inchToPixel)-x, y, (144*inchToPixel)-x, y);
-            splineSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
-            drawingPane.getChildren().addAll(splineSegmentLineRed, splineSegmentLineBlue);
+            Line pathSegmentLineRed = new Line(x, y, x, y);
+            pathSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
+            Line pathSegmentLineBlue = new Line(getXPixel(144)-x, y, getXPixel(144)-x, y);
+            pathSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
+            drawingPane.getChildren().addAll(pathSegmentLineRed, pathSegmentLineBlue);
         }
         colorValue -= colorInterval;
     }
@@ -188,11 +187,11 @@ public class AutoPathsUtil {
     public void drawSpline(Spline[] splines, double time) {
         for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
 
-            double x = splines[0].position(currentTime) * inchToPixel;
-            double y = (144-splines[1].position(currentTime)) * inchToPixel;
+            double x = getXPixel(splines[0].position(currentTime));
+            double y = getYPixel(splines[1].position(currentTime));
             Line splineSegmentLineRed = new Line(x, y, x, y);
             splineSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
-            Line splineSegmentLineBlue = new Line((144*inchToPixel)-x, y, (144*inchToPixel)-x, y);
+            Line splineSegmentLineBlue = new Line(getXPixel(144)-x, y, getXPixel(144)-x, y);
             splineSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
             drawingPane.getChildren().addAll(splineSegmentLineRed, splineSegmentLineBlue);
         }
@@ -201,11 +200,11 @@ public class AutoPathsUtil {
 
     public void drawToPoint(double x1, double y1, double x2, double y2) {
 
-        x1 *= inchToPixel; x2 *= inchToPixel;
-        y1 = (144-y1) * inchToPixel;  y2 = (144-y2) * inchToPixel;
+        x1 = getXPixel(x1); x2 = getXPixel(x2);
+        y1 = getYPixel(y1);  y2 = getYPixel(y2);
         Line toPointLineRed = new Line(x1, y1, x2, y2);
         toPointLineRed.setStroke(Color.rgb(colorValue, 0, 0));
-        Line toPointLineBlue = new Line((144*inchToPixel)-x1, y1, (144*inchToPixel)-x2, y2);
+        Line toPointLineBlue = new Line(getXPixel(144)-x1, y1, getXPixel(144)-x2, y2);
         toPointLineBlue.setStroke(Color.rgb(0, 0, colorValue));
         drawingPane.getChildren().addAll(toPointLineRed, toPointLineBlue);
         colorValue -= colorInterval;

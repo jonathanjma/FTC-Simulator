@@ -18,6 +18,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import static Utilities.InchToPixelUtil.robotLength;
+
 @Deprecated
 public class RobotSimulator extends Application {
 
@@ -39,8 +41,6 @@ public class RobotSimulator extends Application {
     private TextField tfVelocity = new TextField();
     private TextField tfAngleVelocity = new TextField();
     private Label lbTime = new Label("0 s");
-
-    public final static double inchToPixel = 4.16;
 
     @Override
     public void start(Stage primaryStage) {
@@ -111,7 +111,7 @@ public class RobotSimulator extends Application {
             simPane.getChildren().clear();
 
             robot = new Robot(x, y, angle, velocity, angleVelocity);
-            robotRect = new Rectangle(x, y, 18 * inchToPixel, 18 * inchToPixel);
+            robotRect = new Rectangle(x, y, robotLength, robotLength);
             robotRect.setRotate(angle);
 
             simPane.getChildren().add(robotRect);

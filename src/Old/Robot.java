@@ -1,5 +1,7 @@
 package Old;
 
+import static Utilities.InchToPixelUtil.inchToPixel;
+
 @Deprecated
 public class Robot {
 
@@ -28,7 +30,7 @@ public class Robot {
         double time = (double) System.currentTimeMillis() / 1000.0;
         double timeDiff = time - lastTime; //without, movement too fast
 
-        distanceFactor = velocity * RobotSimulator.inchToPixel * timeDiff; //without, movement too slow
+        distanceFactor = velocity * inchToPixel * timeDiff; //without, movement too slow
         angle += angleVelocity * timeDiff;
 
         if (angle >= 360) angle -= 360;
