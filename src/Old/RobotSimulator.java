@@ -18,7 +18,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import static Utilities.InchToPixelUtil.robotLength;
+import static Utilities.ConversionUtil.robotLength;
 
 @Deprecated
 public class RobotSimulator extends Application {

@@ -28,7 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import static Utilities.InchToPixelUtil.*;
+import static Utilities.ConversionUtil.*;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -223,7 +223,7 @@ public class MatchReplayer {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfoHousing);
-        Scene scene = new Scene(mainPane, 600, 655);
+        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 55);
         primaryStage.setTitle("Match Replayer");
         primaryStage.setScene(scene);
     }
@@ -252,7 +252,7 @@ public class MatchReplayer {
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
 
         // update robot theta
-        robotRect.setRotate(getTheta((double) data[3]));
+        robotRect.setRotate(getFXTheta((double) data[3]));
 
         // color robot yellow if stone in robot
         Stop[] stops;

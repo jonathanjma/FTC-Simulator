@@ -21,7 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import static Utilities.InchToPixelUtil.*;
+import static Utilities.ConversionUtil.*;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -168,7 +168,7 @@ public class AutoPlayer {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfo);
-        Scene scene = new Scene(mainPane, 600, 635);
+        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 35);
         primaryStage.setTitle("Auto Player");
         primaryStage.setScene(scene);
     }
@@ -188,7 +188,7 @@ public class AutoPlayer {
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
 
         // update robot theta
-        robotRect.setRotate(getTheta(th));
+        robotRect.setRotate(getFXTheta(th));
 
         // color robot yellow if stone in robot
         Stop[] stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),

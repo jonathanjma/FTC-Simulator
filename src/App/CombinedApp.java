@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 
 public class CombinedApp extends Application {
 
+    public static final int sceneWidth = 600;
+
     private BorderPane mainPane = new BorderPane();
     private Pane startPane = new Pane();
 
@@ -82,7 +84,7 @@ public class CombinedApp extends Application {
                 new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(startPane);
-        Scene scene = new Scene(mainPane, 600, 600);
+        Scene scene = new Scene(mainPane, sceneWidth, sceneWidth);
         primaryStage.setTitle("FTC Tools");
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("field.jpg"));

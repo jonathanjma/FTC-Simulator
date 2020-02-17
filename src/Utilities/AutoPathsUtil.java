@@ -9,8 +9,8 @@ import javafx.scene.shape.Line;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static Utilities.InchToPixelUtil.getXPixel;
-import static Utilities.InchToPixelUtil.getYPixel;
+import static Utilities.ConversionUtil.getXPixel;
+import static Utilities.ConversionUtil.getYPixel;
 
 public class AutoPathsUtil {
 
@@ -31,17 +31,6 @@ public class AutoPathsUtil {
 
     public void drawAutoPaths() {
 
-        double skystone1Time = 1.5;
-        double toFoundation1Time = 3;
-        double skystone2Time = 2;
-        double toFoundation2Time = 2.5;
-        double stone3Time = 2.5;
-        double toFoundation3Time = 2.5;
-        double stone4Time = 2.5;
-        double toFoundation4Time = 2.5;
-        double stone5Time = 2.5;
-        double toFoundation5Time = 2.5;
-
         // Skystone Position Variables
         double skystoneY = -1;
         int skystonePos = 2; // <-----------------------------
@@ -49,11 +38,49 @@ public class AutoPathsUtil {
         else if (skystonePos == 2) {skystoneY = 121;}
         else if (skystonePos == 3) {skystoneY = 113;}
 
+        // Path Time Variables
+        // skystone 1 times
+        double skystone1Time = 1.25;
+        double toFoundation1Time = 3;
+        double skystone2Time = 2;
+        double toFoundation2Time = 2;
+        double stone3Time = 2;
+        double toFoundation3Time = 2;
+        double stone4Time = 2.5;
+        double toFoundation4Time = 2.5;
+        double stone5Time = 2.5;
+        double toFoundation5Time = 2.5;
+
+        if (skystonePos == 2) {
+            skystone1Time = 1.5;
+            toFoundation1Time = 2.75;
+            skystone2Time = 2;
+            toFoundation2Time = 2;
+            stone3Time = 2;
+            toFoundation3Time = 2;
+            stone4Time = 2.5;
+            toFoundation4Time = 2.5;
+            stone5Time = 2.5;
+            toFoundation5Time = 2.5;
+
+        } else if(skystonePos == 3) {
+            skystone1Time = 1.25;
+            toFoundation1Time = 2.5;
+            skystone2Time = 2;
+            toFoundation2Time = 2;
+            stone3Time = 2.25;
+            toFoundation3Time = 2;
+            stone4Time = 2.5;
+            toFoundation4Time = 2.5;
+            stone5Time = 2.5;
+            toFoundation5Time = 2.5;
+        }
+
         // stone 3-5 locations
         Point2D[][] stonelocations = {
-                {new Point2D(50, 100), new Point2D(68, 108), new Point2D(50, 120)},
-                {new Point2D(55,114), new Point2D(55,93), new Point2D(49,138)},
-                {new Point2D(55,108), new Point2D(49,132), new Point2D(49,137)}
+                {new Point2D(54, 100), new Point2D(74, 115), new Point2D(60, 125)},
+                {new Point2D(55,114), new Point2D(55,93), new Point2D(47,130)},
+                {new Point2D(55,108), new Point2D(47,126), new Point2D(47,130)}
         };
 
         Waypoint[] skystone1PathWaypoints = {
@@ -70,9 +97,9 @@ public class AutoPathsUtil {
                 new Waypoint(47, 24, Math.PI, -30, 100,0, toFoundation1Time)
         };
         Path toFoundation1Path = new Path(new ArrayList<>(Arrays.asList(toFoundation1PathWaypoints)));
-        drawPath(toFoundation1Path,toFoundation1Time);
+        //drawPath(toFoundation1Path,toFoundation1Time);
 
-        drawToPoint(47,24,30,45);
+        //drawToPoint(47,24,30,45);
 
         Waypoint[] skystone2PathWaypoints = new Waypoint[] {
                 new Waypoint(30, 45, Math.PI / 2,  10, 75,0, 0),
@@ -88,7 +115,7 @@ public class AutoPathsUtil {
                 new Waypoint(30, 28, Math.PI / 2, -30, 50,0, toFoundation2Time)
         };
         Path toFoundation2Path = new Path(new ArrayList<>(Arrays.asList(toFoundation2PathWaypoints)));
-        drawPath(toFoundation2Path,toFoundation2Time);
+        //drawPath(toFoundation2Path,toFoundation2Time);
 
         Waypoint[] stone3PathWaypoints = new Waypoint[] {
                 new Waypoint(30, 28, Math.PI / 2, 10, 100,0, 0),
@@ -104,7 +131,7 @@ public class AutoPathsUtil {
                 new Waypoint(30, 25, Math.PI / 2, -30, 50,0, toFoundation3Time)
         };
         Path toFoundation3Path = new Path(new ArrayList<>(Arrays.asList(toFoundation3PathWaypoints)));
-        drawPath(toFoundation3Path,toFoundation3Time);
+        //drawPath(toFoundation3Path,toFoundation3Time);
 
         Waypoint[] stone4PathWaypoints;
         if (skystonePos == 2) {
@@ -135,7 +162,7 @@ public class AutoPathsUtil {
                 new Waypoint(30, 25, Math.PI / 2, -30, 50,0, toFoundation4Time)
         };
         Path toFoundation4Path = new Path(new ArrayList<>(Arrays.asList(toFoundation4PathWaypoints)));
-        drawPath(toFoundation4Path,toFoundation4Time);
+        //drawPath(toFoundation4Path,toFoundation4Time);
 
         Waypoint[] stone5PathWaypoints;
         if (skystonePos == 2 || skystonePos == 3) {
@@ -160,9 +187,9 @@ public class AutoPathsUtil {
                 new Waypoint(30, 25, Math.PI / 2, -30, 50,0, toFoundation5Time)
         };
         Path toFoundation5Path = new Path(new ArrayList<>(Arrays.asList(toFoundation5PathWaypoints)));
-        drawPath(toFoundation5Path,toFoundation5Time);
+        //drawPath(toFoundation5Path,toFoundation5Time);
 
-        drawToPoint(30,45,33,72);
+        //drawToPoint(30,45,33,72);
 
         pathList = new ArrayList<>(Arrays.asList(skystone1Path,toFoundation1Path,skystone2Path,toFoundation2Path,stone3Path,toFoundation3Path,stone4Path,toFoundation4Path,stone5Path,toFoundation5Path));
         timeList = new ArrayList<>(Arrays.asList(skystone1Time,toFoundation1Time,skystone2Time,toFoundation2Time,stone3Time,toFoundation3Time,stone4Time,toFoundation4Time,stone5Time,toFoundation5Time));

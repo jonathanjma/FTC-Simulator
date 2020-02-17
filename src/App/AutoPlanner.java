@@ -24,7 +24,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import static Utilities.InchToPixelUtil.*;
+import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class AutoPlanner {
@@ -57,7 +57,7 @@ public class AutoPlanner {
     private Button backBtn = new Button("Back");
 
     private int colorValue = 255;
-    private final static double colorInterval = 20;
+    private final static double colorInterval = 40;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
 
     public void launch(Stage primaryStage) {
@@ -109,7 +109,7 @@ public class AutoPlanner {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
-        Scene scene = new Scene(mainPane, 600, 635);
+        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 35);
         primaryStage.setTitle("Auto Planner");
         primaryStage.setScene(scene);
     }
@@ -125,15 +125,14 @@ public class AutoPlanner {
                 yCor = getYPixel(Double.parseDouble(yInchTf.getText()));
             }
 
-            if (xCor - robotRadius < 0) xCor = robotRadius; //left
-            if (xCor + robotRadius > 600) xCor = 600 - robotRadius; //right
-            if (yCor - robotRadius < 0) yCor = robotRadius; //up
-            if (yCor + robotRadius > 600) yCor = 600 - robotRadius; //down
+            if (xCor - robotRadius < 0) {xCor = robotRadius;} //left
+            if (xCor + robotRadius > CombinedApp.sceneWidth) {xCor = CombinedApp.sceneWidth - robotRadius;} //right
+            if (yCor - robotRadius < 0) {yCor = robotRadius;} //up
+            if (yCor + robotRadius > CombinedApp.sceneWidth) {yCor = CombinedApp.sceneWidth - robotRadius;} //down
 
             if (code == 1) {
-                double xInch = Double.parseDouble(String.format("%.2f", xCor / inchToPixel));
-                double yCorAdjusted = 600 - yCor;
-                double yInch = Double.parseDouble(String.format("%.2f", yCorAdjusted / inchToPixel));
+                double xInch = Double.parseDouble(String.format("%.2f", getXInch(xCor)));
+                double yInch = Double.parseDouble(String.format("%.2f", getYInch(yCor)));
 
                 xInchTf.setText(xInch + "");
                 yInchTf.setText(yInch + "");
@@ -145,9 +144,7 @@ public class AutoPlanner {
 
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
 
-        double theta = -((Double.parseDouble(angleTf.getText()) * 180) + 0.5);
-        if (theta > 360) {theta %= 360;}
-        robotRect.setRotate(theta);
+        robotRect.setRotate(getFXTheta_NoPi(Double.parseDouble(angleTf.getText())));
 
         Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
                 new Stop(1, Color.rgb(192, 192, 192, 0.75))};
