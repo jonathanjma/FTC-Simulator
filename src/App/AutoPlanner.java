@@ -82,7 +82,7 @@ public class AutoPlanner {
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
         
         mainPane.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) updateRobotPos(2, null);
+            if (e.getCode() == KeyCode.ENTER) {updateRobotPos(2, null);}
             if (e.getCode() == KeyCode.ALT) {
                 angleTf.setText(String.format("%.2f", Double.parseDouble(angleTf.getText()) + 0.1));
                 updateRobotPos(3, null);

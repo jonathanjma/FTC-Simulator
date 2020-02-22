@@ -15,7 +15,7 @@ public class RobotDataUtil {
     private FileWriter fileWriter;
     private BufferedReader bufferedReader;
 
-    private ArrayList dataArray;
+    private ArrayList<Object[]> dataArray;
     private boolean logAccel;
 
     public RobotDataUtil(String logName, boolean logAccel) {
@@ -50,6 +50,7 @@ public class RobotDataUtil {
                     double accelTheta = (prevThetaV - velocityTheta) / ((prevTime - time) / 1000);
 
                     dataArray.add(new Object[]{time, Double.parseDouble(data[2]), Double.parseDouble(data[3]), Double.parseDouble(data[4]), velocityX, velocityY, velocityTheta, accelX, accelY, accelTheta, Boolean.parseBoolean(data[8]), Boolean.parseBoolean(data[9]), Boolean.parseBoolean(data[10]), Boolean.parseBoolean(data[11]), Boolean.parseBoolean(data[12]), Boolean.parseBoolean(data[13])});
+                    //dataArray.add(new Object[]{Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]), Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]), Double.parseDouble(data[10]), Boolean.parseBoolean(data[11]), Boolean.parseBoolean(data[12]), Boolean.parseBoolean(data[13]), Boolean.parseBoolean(data[14]), Boolean.parseBoolean(data[15]), Boolean.parseBoolean(data[16])});
 
                     if (logAccel) {
                         fileWriter.write(accelX + "," + accelY + "," + accelTheta + "\n");
@@ -64,13 +65,17 @@ public class RobotDataUtil {
     }
 
     public Object[] getData(int index) {
-        return (Object[]) dataArray.get(index);
+        return dataArray.get(index);
     }
 
     public double getTimeDiff(int index) {
-        Object[] prev = (Object[]) dataArray.get(index-1);
-        Object[] cur = (Object[]) dataArray.get(index);
-        return (double) cur[0] - (double) prev[0];
+        if (index != 0) {
+            Object[] prev = dataArray.get(index - 1);
+            Object[] cur = dataArray.get(index);
+            return (double) cur[0] - (double) prev[0];
+        } else {
+            return 0;
+        }
     }
 
     public int getNumOfPoints() {return dataArray.size();}

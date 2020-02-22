@@ -69,8 +69,6 @@ public class AutoPlayer {
             for (; pathNum < pathsUtil.getPathList().size(); pathNum++) {
                 curPath = pathsUtil.getPathList().get(pathNum);
                 time = pathsUtil.getTimeList().get(pathNum);
-                //System.out.println(paths + " "+ time);
-                //double startTime = System.currentTimeMillis();
 
                 for (; currentTime < time;) {
                     if (active) {
@@ -84,14 +82,15 @@ public class AutoPlayer {
                             try {sleep(10);}
                             catch (InterruptedException ex) {ex.printStackTrace();}
                         }
-                        System.out.print("");
                     }
-                    else {thread.interrupt();}
+                    else {break;}
+                    System.out.print("");
                 }
+                if (!active) {break;}
                 currentTime = 0;
-                //System.out.println(System.currentTimeMillis()-startTime);
             }
             Platform.runLater(() -> startStopBtn.setVisible(false));
+            thread.interrupt();
         }
         public void endThread() {active = false;}
         public int getPathNum() {return pathNum;}
@@ -162,6 +161,7 @@ public class AutoPlayer {
                 app.start(primaryStage);
             }
         });
+        primaryStage.setOnCloseRequest(e -> runnable.endThread());
 
         simPane.setBackground(new Background(
                 new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
