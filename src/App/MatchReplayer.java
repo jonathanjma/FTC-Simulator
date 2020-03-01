@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -37,8 +36,7 @@ import static java.lang.Thread.sleep;
 public class MatchReplayer {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData81";
-    private final static boolean logAcceleration = false;
+    private final static String logName = "RobotData5";
     // **************************************************************************************************
     
     private BorderPane mainPane = new BorderPane();
@@ -92,7 +90,7 @@ public class MatchReplayer {
 
     private Button backBtn = new Button("Back");
 
-    private RobotDataUtil dataUtil = new RobotDataUtil(logName, logAcceleration);
+    private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private boolean pause = false;
 
     // update robot thread

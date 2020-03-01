@@ -57,7 +57,7 @@ public class AutoPlanner {
     private Button backBtn = new Button("Back");
 
     private int colorValue = 255;
-    private final static double colorInterval = 40;
+    private final static double colorInterval = 20;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
 
     public void launch(Stage primaryStage) {
@@ -145,6 +145,7 @@ public class AutoPlanner {
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
 
         robotRect.setRotate(getFXTheta_NoPi(Double.parseDouble(angleTf.getText())));
+        //System.out.println(robotRect.getRotate());
 
         Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
                 new Stop(1, Color.rgb(192, 192, 192, 0.75))};
