@@ -1,9 +1,9 @@
 package App;
 
-import PathingFiles.Path;
-import PathingFiles.Pose;
+import Threads.FollowPathData;
 import Utilities.AutoPathsUtil;
-import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,7 +11,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -22,7 +27,6 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import static Utilities.ConversionUtil.*;
-import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class AutoPlayer {
@@ -30,8 +34,6 @@ public class AutoPlayer {
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
     private HBox simInfo = new HBox(5);
-
-    private Rectangle robotRect;
 
     // ui labels
     private Label corLb = new Label("Position: (");
@@ -50,56 +52,14 @@ public class AutoPlayer {
     private final static double colorInterval = 20;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
 
-    private double timeForText;
+    private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
+    private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
 
-    private boolean pause = false;
+    private Rectangle robotRect;
 
     // update robot thread
-    private FollowPosData runnable = new FollowPosData();
-    private Thread thread = new Thread(runnable);
-    public class FollowPosData implements Runnable {
-        private int pathNum = 0;
-        private double currentTime = 0;
-        private Path curPath;
-        private Pose curPose;
-        private double time;
-        private boolean active = true;
-
-        public void run() {
-            for (; pathNum < pathsUtil.getPathList().size(); pathNum++) {
-                curPath = pathsUtil.getPathList().get(pathNum);
-                time = pathsUtil.getTimeList().get(pathNum);
-
-                for (; currentTime < time;) {
-                    if (active) {
-                        if (!pause) {
-                            curPose = curPath.getRobotPose(currentTime);
-                            //System.out.println(curPose.getX() +" "+ curPose.getY() +" "+ curPose.getTheta());
-                            Platform.runLater(() -> updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta()));
-                            timeForText += 0.01;
-                            currentTime += 0.01;
-
-                            try {sleep(10);}
-                            catch (InterruptedException ex) {ex.printStackTrace();}
-                        }
-                    }
-                    else {break;}
-                    System.out.print("");
-                }
-                if (!active) {break;}
-                currentTime = 0;
-            }
-            Platform.runLater(() -> startStopBtn.setVisible(false));
-            thread.interrupt();
-        }
-        public void endThread() {active = false;}
-        public int getPathNum() {return pathNum;}
-        public void resetPathNum() {
-            pathNum = 0; currentTime = 0;
-            curPath = pathsUtil.getPathList().get(pathNum);
-            time = pathsUtil.getTimeList().get(pathNum);
-        }
-    }
+    private FollowPathData followPathData;
+    private Thread robotThread;
 
     public void launch(Stage primaryStage) {
 
@@ -114,6 +74,9 @@ public class AutoPlayer {
         timeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); curTimeLb.setFont(Font.font(14));
         restartBtn.setVisible(false);
 
+        curTimeLb.textProperty().bind(curTime);
+        startStopBtn.visibleProperty().bind(startStopVisible);
+
         simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb, timeLb, curTimeLb,
                 startStopBtn, restartBtn);
 
@@ -121,47 +84,55 @@ public class AutoPlayer {
         simPane.getChildren().addAll(backBtn);
 
         pathsUtil.drawAutoPaths();
+        robotRect = new Rectangle(robotLength, robotLength);
         updateRobot(9,111,0);
+        simPane.getChildren().add(robotRect);
+
+        followPathData = new FollowPathData(pathsUtil.getPathList(), pathsUtil.getTimeList(),
+                curTime, startStopVisible, this);
+        robotThread = new Thread(followPathData, "UpdateRobotThread");
 
         startStopBtn.setOnAction(e -> {
             switch (startStopBtn.getText()) {
                 case "Start":
-                    thread.start(); thread.setName("UpdateRobotThread");
+                    robotThread.start();
                     startStopBtn.setText("Pause"); restartBtn.setVisible(true);
                     break;
                 case "Pause":
-                    pause = true; startStopBtn.setText("Resume");
+                    followPathData.setPause(true);
+                    startStopBtn.setText("Resume");
                     break;
                 case "Resume":
-                    pause = false; startStopBtn.setText("Pause");
+                    followPathData.setPause(false);
+                    startStopBtn.setText("Pause");
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
-            if (runnable.getPathNum() == pathsUtil.getPathList().size()) {
-                thread = new Thread(runnable);
-                thread.start(); thread.setName("UpdateRobotThread");
-                startStopBtn.setVisible(true);
+            if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
+                robotThread = new Thread(followPathData, "UpdateRobotThread");
+                robotThread.start();
+                startStopVisible.set(true);
             }
             startStopBtn.setText("Pause");
-            runnable.resetPathNum(); timeForText = 0;
-            pause = false;
+            followPathData.resetPathNum(); curTime.set(0 + "");
+            followPathData.setPause(false);
         });
 
         backBtn.setOnMouseClicked(e-> {
-            runnable.endThread();
+            followPathData.endThread();
             CombinedApp app = new CombinedApp();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e-> {
             if (e.getCode() == KeyCode.ENTER) {
-                runnable.endThread();
+                followPathData.endThread();
                 CombinedApp app = new CombinedApp();
                 app.start(primaryStage);
             }
         });
-        primaryStage.setOnCloseRequest(e -> runnable.endThread());
+        primaryStage.setOnCloseRequest(e -> followPathData.endThread());
 
         simPane.setBackground(new Background(
                 new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
@@ -173,36 +144,27 @@ public class AutoPlayer {
         primaryStage.setScene(scene);
     }
 
-    private void updateRobot(double x, double y, double th) {
-
-        // remove old rectangle
-        simPane.getChildren().removeAll(robotRect);
-
-        curTimeLb.setText(String.format("%.2f", timeForText));
+    public void updateRobot(double x, double y, double theta) {
 
         // update robot xy
         double xCor = getXPixel(x);
         double yCor = getYPixel(y);
-
-        // define updated rectangle
-        robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+        robotRect.setX(xCor - robotRadius);
+        robotRect.setY(yCor - robotRadius);
 
         // update robot theta
-        robotRect.setRotate(getFXTheta(th));
+        robotRect.setRotate(getFXTheta(theta));
 
         // color robot yellow if stone in robot
         Stop[] stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))};
-        LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
+        LinearGradient background = new LinearGradient(xCor, yCor, xCor + robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-
-        // draw updated robot on screen
-        simPane.getChildren().add(robotRect);
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", x));
         yInchLb.setText(String.format("%.2f", y));
-        thetaLb.setText(String.format("%.2f", th));
+        thetaLb.setText(String.format("%.2f", theta));
     }
 }

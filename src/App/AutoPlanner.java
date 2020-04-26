@@ -29,17 +29,6 @@ import static Utilities.ConversionUtil.*;
 @SuppressWarnings("FieldCanBeLocal")
 public class AutoPlanner {
     
-    // Instructions to make jar file
-    /*
-    1. delete files in "out" folder
-    2. Run Game, close once loaded (done to refresh class files generated from build)
-    3. Copy files to jarfiles (C:\Users\jonat\AndroidStudioProjects\FTC_Simulator\jarfiles)
-    4. In cmd, run
-       jar cvfm Planner.jar manifest.txt AutoPlanner.class field.jpg
-    5. Run jar by clicking on it or running
-       java -jar Planner.jar
-     */
-    
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
     private HBox simSettings = new HBox(5);
@@ -145,7 +134,6 @@ public class AutoPlanner {
         robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
 
         robotRect.setRotate(getFXTheta_NoPi(Double.parseDouble(angleTf.getText())));
-        //System.out.println(robotRect.getRotate());
 
         Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
                 new Stop(1, Color.rgb(192, 192, 192, 0.75))};

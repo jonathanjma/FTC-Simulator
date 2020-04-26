@@ -1,4 +1,4 @@
-package Old;
+package OldStuff;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;

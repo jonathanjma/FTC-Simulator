@@ -32,7 +32,7 @@ public class ConversionUtil {
 
     // radians to degrees
     public static double getFXTheta(double thetaRad) {
-        double thetaDeg = -((thetaRad * 180/Math.PI) + 0.5);
+        double thetaDeg = -(thetaRad * 180/Math.PI);
         if (thetaDeg > 360) {thetaDeg %= 360;}
         return thetaDeg;
     }

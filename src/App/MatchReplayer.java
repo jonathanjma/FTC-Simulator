@@ -1,7 +1,8 @@
 package App;
 
+import Threads.FollowPositionData;
 import Utilities.RobotDataUtil;
-import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -30,7 +31,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import static Utilities.ConversionUtil.*;
-import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class MatchReplayer {
@@ -44,8 +44,6 @@ public class MatchReplayer {
     private VBox simInfoHousing = new VBox(2.5);
     private HBox simInfo1 = new HBox(5);
     private HBox simInfo2 = new HBox(5);
-
-    private Rectangle robotRect;
 
     private Group pathPointGroup = new Group();
     private Circle pathPoint;
@@ -91,38 +89,13 @@ public class MatchReplayer {
     private Button backBtn = new Button("Back");
 
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
-    private boolean pause = false;
+    private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
 
-    // update robot thread
-    private FollowPosData runnable = new FollowPosData();
-    private Thread thread = new Thread(runnable, "UpdateRobotThread");
-    public class FollowPosData implements Runnable {
-        private int counter = 0; // array values
-        private double timeDiff;
-        private boolean active = true;
+    private Rectangle robotRect;
 
-        public void run() {
-            for (; counter < dataUtil.getNumOfPoints();) {
-                if (active) {
-                    if (counter == 1) {Platform.runLater(() -> pathPointGroup.getChildren().clear());}
-                    if (!pause) {
-                        Platform.runLater(() -> updateRobot(dataUtil.getData(counter), false));
-                        timeDiff = dataUtil.getTimeDiff(counter);
-
-                        try {sleep((long) timeDiff);}
-                        catch (InterruptedException ex) {ex.printStackTrace();}
-                        counter++;
-                    }
-                } else {break;}
-                System.out.print("");
-            }
-            Platform.runLater(() -> startStopBtn.setVisible(false));
-            thread.interrupt();
-        }
-        public void endThread() {active = false;}
-        public int getCounter() {return counter;}
-        public void setCounter(int counter) {this.counter = counter;}
-    }
+    // update robot robotThread
+    private FollowPositionData followPositionData;
+    private Thread robotThread;
 
     public void launch(Stage primaryStage) {
 
@@ -138,6 +111,8 @@ public class MatchReplayer {
         thetaLb1.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); thetaLb.setFont(Font.font(14));
         velocityLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); velocityXLb.setFont(Font.font(14)); commaLb2.setFont(Font.font(14)); velocityYLb.setFont(Font.font(14)); commaLb3.setFont(Font.font(14)); velocityThetaLb.setFont(Font.font(14));
         restartBtn.setVisible(false);
+
+        startStopBtn.visibleProperty().bind(startStopVisible);
 
         accelLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14)); accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14)); accelThetaLb.setFont(Font.font(14));
         armLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14)); stoneClamped.setFont(Font.font(14)); commaLb7.setFont(Font.font(14)); tryingToDeposit.setFont(Font.font(14));
@@ -156,6 +131,8 @@ public class MatchReplayer {
         simPane.getChildren().addAll(backBtn);
 
         dataUtil.parseLogFile();
+        followPositionData = new FollowPositionData(dataUtil, startStopVisible, this);
+        robotThread = new Thread(followPositionData, "UpdateRobotThread");
 
         nodeSlider = new Slider(1, dataUtil.getNumOfPoints(), 0);
         nodeSlider.setLayoutX(435); nodeSlider.setLayoutY(575); nodeSlider.setPrefWidth(150);
@@ -163,12 +140,11 @@ public class MatchReplayer {
         nodeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (manual) {
                 nodeSlider.setValue(newVal.intValue());
-                runnable.setCounter((int) nodeSlider.getValue()-1);
+                followPositionData.setCounter((int) nodeSlider.getValue()-1);
                 pathPointGroup.getChildren().clear();
-                updateRobot(dataUtil.getData(runnable.getCounter()), true);
-                if (nodeSlider.getValue() == dataUtil.getNumOfPoints()) {startStopBtn.setVisible(false);}
-                else {startStopBtn.setVisible(true);}
-                //System.out.println(runnable.getCounter() + " " + nodeSlider.getValue());
+                updateRobot(dataUtil.getData(followPositionData.getCounter()), true);
+                startStopVisible.set(nodeSlider.getValue() != dataUtil.getNumOfPoints());
+                //System.out.println(followPositionData.getCounter() + " " + nodeSlider.getValue());
             }
         });
 
@@ -181,45 +157,46 @@ public class MatchReplayer {
         startStopBtn.setOnAction(e -> {
             switch (startStopBtn.getText()) {
                 case "Start":
-                    thread.start();
+                    robotThread.start();
                     startStopBtn.setText("Pause"); restartBtn.setVisible(true);
                     startBtnPressed = true;
                     break;
                 case "Pause":
-                    pause = true; startStopBtn.setText("Resume");
+                    followPositionData.setPause(true); startStopBtn.setText("Resume");
                     break;
                 case "Resume":
-                    pause = false; startStopBtn.setText("Pause");
+                    followPositionData.setPause(false); startStopBtn.setText("Pause");
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
-            if (runnable.getCounter() == dataUtil.getNumOfPoints()) {
-                thread = new Thread(runnable, "UpdateRobotThread");
-                thread.start();
+            if (followPositionData.getCounter() == dataUtil.getNumOfPoints()) {
+                robotThread = new Thread(followPositionData, "UpdateRobotThread");
+                robotThread.start();
             }
-            //System.out.println(runnable.getCounter() + " " + dataUtil.getNumOfPoints());
-            startStopBtn.setText("Pause"); startStopBtn.setVisible(true);
-            runnable.setCounter(0); pause = false;
+            //System.out.println(followPositionData.getCounter() + " " + dataUtil.getNumOfPoints());
+            startStopBtn.setText("Pause"); startStopVisible.set(true);
+            followPositionData.setCounter(0); followPositionData.setPause(false);
         });
 
         backBtn.setOnMouseClicked(e -> {
-            runnable.endThread();
+            followPositionData.endThread();
             CombinedApp app = new CombinedApp();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                runnable.endThread();
+                followPositionData.endThread();
                 CombinedApp app = new CombinedApp();
                 app.start(primaryStage);
             }
         });
-        primaryStage.setOnCloseRequest(e -> runnable.endThread());
+        primaryStage.setOnCloseRequest(e -> followPositionData.endThread());
 
         robotRect = new Rectangle(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
+        simPane.getChildren().add(robotRect);
 
         simPane.setBackground(new Background(
                 new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
@@ -231,17 +208,14 @@ public class MatchReplayer {
         primaryStage.setScene(scene);
     }
 
-    private void updateRobot(Object[] data, boolean sliderMoved) {
-
-        // remove old rectangle
-        simPane.getChildren().removeAll(robotRect);
+    public void updateRobot(Object[] data, boolean sliderMoved) {
 
         // update current node, time since start
-        nodeNum.setText((runnable.getCounter()+1) +"");
+        nodeNum.setText((followPositionData.getCounter()+1) +"");
 
         if (!sliderMoved) {
             manual = false;
-            nodeSlider.setValue(runnable.getCounter()+1);
+            nodeSlider.setValue(followPositionData.getCounter()+1);
         }
 
         double time = (double) data[0];
@@ -250,9 +224,8 @@ public class MatchReplayer {
         // update robot xy
         double xCor = getXPixel((double) data[1]);
         double yCor = getYPixel((double) data[2]);
-
-        // define updated rectangle
-        robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+        robotRect.setX(xCor - robotRadius);
+        robotRect.setY(yCor - robotRadius);
 
         // update robot theta
         robotRect.setRotate(getFXTheta((double) data[3]));
@@ -269,9 +242,6 @@ public class MatchReplayer {
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-
-        // draw updated robot on screen
-        simPane.getChildren().add(robotRect);
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", (double) data[1]));
@@ -311,10 +281,14 @@ public class MatchReplayer {
         else if ((boolean) data[15]) {armState.setText("Out");}
     }
 
+    public void clearPathPoints() {
+        pathPointGroup.getChildren().clear();
+    }
+
     public void nodeSliderAction() {
         if (startBtnPressed) {
             manual = true;
-            pause = true; startStopBtn.setText("Resume");
+            followPositionData.setPause(true); startStopBtn.setText("Resume");
         }
     }
 }
