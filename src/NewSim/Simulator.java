@@ -13,8 +13,6 @@ import static java.lang.Thread.sleep;
 
 public class Simulator {
 
-    public static boolean done = false;
-
     public static void main(String[] args) {
         new Thread(() -> Application.launch(SimulatorWindow.class)).start();
         while (!SimulatorWindow.started) {doNothing();}
@@ -72,9 +70,6 @@ public class Simulator {
                 sleep(15);
             } catch (InterruptedException ex) {ex.printStackTrace();}
         }
-
-        ///////////////////////////////////////////////////////// terminates sim
-        done = true;
     }
 
     public static void setFrame(Frame frame) {
