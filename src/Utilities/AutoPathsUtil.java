@@ -23,6 +23,12 @@ public class AutoPathsUtil {
     private int colorValue;
     private double colorInterval;
 
+    public AutoPathsUtil(Pane paneToDrawOn) {
+        drawingPane = paneToDrawOn;
+        colorValue = 255;
+        this.colorInterval = 0;
+    }
+
     public AutoPathsUtil(Pane paneToDrawOn, int startingColorValue, double colorInterval) {
         drawingPane = paneToDrawOn;
         colorValue = startingColorValue;

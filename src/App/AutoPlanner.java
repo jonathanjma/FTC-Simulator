@@ -65,7 +65,9 @@ public class AutoPlanner {
         simPane.getChildren().addAll(backBtn);
 
         pathsUtil.drawAutoPaths();
+        robotRect = new Rectangle(robotLength, robotLength);
         updateRobotPos(2, null);
+        simPane.getChildren().add(robotRect);
         
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
@@ -129,9 +131,8 @@ public class AutoPlanner {
             //System.out.println(xCor + " " + yCor);
         }
 
-        simPane.getChildren().remove(robotRect);
-
-        robotRect = new Rectangle(xCor - robotRadius, yCor - robotRadius, robotLength, robotLength);
+        robotRect.setX(xCor - robotRadius);
+        robotRect.setY(yCor - robotRadius);
 
         robotRect.setRotate(getFXTheta_NoPi(Double.parseDouble(angleTf.getText())));
 
@@ -140,7 +141,5 @@ public class AutoPlanner {
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
-
-        simPane.getChildren().add(robotRect);
     }
 }

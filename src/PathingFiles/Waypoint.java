@@ -11,6 +11,11 @@ public class Waypoint {
     public double ydotdot;
     public double time;
 
+    private double velocity, acceleration, angVelocity;
+    public double getVelocity() {return velocity;}
+    public double getAcceleration() {return acceleration;}
+    public double getAngVelocity() {return angVelocity;}
+
     /**
      * Generates waypoint for differential drive constraints: velocity and acceleration are in
      * the same direction as heading
@@ -27,6 +32,7 @@ public class Waypoint {
         ydotdot = acceleration*Math.sin(theta) + velocity*Math.cos(theta)*angularVelocity;
         this.time = time;
 
+        this.velocity = velocity; this.acceleration = acceleration; this.angVelocity = angularVelocity;
     }
     /**
      * Generates Waypoint for Mecanum drive constraints: velocity and acceleration vectors can
