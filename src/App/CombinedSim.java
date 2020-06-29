@@ -28,7 +28,7 @@ public class CombinedSim extends Application {
     private Pane startPane = new Pane();
     private VBox homeBox = new VBox(10);
 
-    private Rectangle optionsRect = new Rectangle(175, 225, 250, 225);
+    private Rectangle optionsRect = new Rectangle(175, 225, 250, 230);
 
     private Text title = new Text("Choose One");
     private Button autoPlannerBtn = new Button("Simple Auto Planner");

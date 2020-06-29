@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,6 +34,7 @@ public class AutoPlayer {
 
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
+    private Group pathsGroup = new Group();
     private HBox simInfo = new HBox(5);
 
     // ui labels
@@ -50,7 +52,7 @@ public class AutoPlayer {
 
     private int colorValue = 255;
     private final static double colorInterval = 20;
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, colorValue, colorInterval);
 
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
@@ -86,7 +88,8 @@ public class AutoPlayer {
         pathsUtil.drawAutoPaths();
         robotRect = new Rectangle(robotLength, robotLength);
         updateRobot(9,111,0);
-        simPane.getChildren().add(robotRect);
+        simPane.getChildren().addAll(robotRect, pathsGroup);
+        robotRect.toFront();
 
         followPathData = new FollowPathData(pathsUtil.getPathList(), pathsUtil.getTimeList(),
                 curTime, startStopVisible, this);

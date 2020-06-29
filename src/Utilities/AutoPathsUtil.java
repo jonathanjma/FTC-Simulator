@@ -2,7 +2,7 @@ package Utilities;
 
 import PathingFiles.*;
 import javafx.geometry.Point2D;
-import javafx.scene.layout.Pane;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -14,7 +14,7 @@ import static Utilities.ConversionUtil.getYPixel;
 
 public class AutoPathsUtil {
 
-    private Pane drawingPane;
+    private Group pathsGroup;
     private SplineGenerator splineGenerator = new SplineGenerator();
 
     private ArrayList<Path> pathList;
@@ -23,14 +23,14 @@ public class AutoPathsUtil {
     private int colorValue;
     private double colorInterval;
 
-    public AutoPathsUtil(Pane paneToDrawOn) {
-        drawingPane = paneToDrawOn;
+    public AutoPathsUtil(Group groupForPaths) {
+        pathsGroup = groupForPaths;
         colorValue = 255;
         this.colorInterval = 0;
     }
 
-    public AutoPathsUtil(Pane paneToDrawOn, int startingColorValue, double colorInterval) {
-        drawingPane = paneToDrawOn;
+    public AutoPathsUtil(Group groupForPaths, int startingColorValue, double colorInterval) {
+        pathsGroup = groupForPaths;
         colorValue = startingColorValue;
         this.colorInterval = colorInterval;
     }
@@ -228,7 +228,7 @@ public class AutoPathsUtil {
             pathSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
             Line pathSegmentLineBlue = new Line(getXPixel(144)-x, y, getXPixel(144)-x, y);
             pathSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
-            drawingPane.getChildren().addAll(pathSegmentLineRed, pathSegmentLineBlue);
+            pathsGroup.getChildren().addAll(pathSegmentLineRed, pathSegmentLineBlue);
         }
         colorValue -= colorInterval;
     }
@@ -242,7 +242,7 @@ public class AutoPathsUtil {
             splineSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
             Line splineSegmentLineBlue = new Line(getXPixel(144)-x, y, getXPixel(144)-x, y);
             splineSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
-            drawingPane.getChildren().addAll(splineSegmentLineRed, splineSegmentLineBlue);
+            pathsGroup.getChildren().addAll(splineSegmentLineRed, splineSegmentLineBlue);
         }
         colorValue -= colorInterval;
     }
@@ -255,7 +255,7 @@ public class AutoPathsUtil {
         toPointLineRed.setStroke(Color.rgb(colorValue, 0, 0));
         Line toPointLineBlue = new Line(getXPixel(144)-x1, y1, getXPixel(144)-x2, y2);
         toPointLineBlue.setStroke(Color.rgb(0, 0, colorValue));
-        drawingPane.getChildren().addAll(toPointLineRed, toPointLineBlue);
+        pathsGroup.getChildren().addAll(toPointLineRed, toPointLineBlue);
         colorValue -= colorInterval;
     }
 

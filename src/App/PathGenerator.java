@@ -5,6 +5,7 @@ import PathingFiles.Waypoint;
 import Utilities.AutoPathsUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -40,6 +41,7 @@ public class PathGenerator {
     
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
+    private Group pathsGroup = new Group();
     private VBox simSettingsMain = new VBox(2.5);
     private HBox simSettings1 = new HBox(5);
     private HBox simSettings2 = new HBox(5);
@@ -74,7 +76,7 @@ public class PathGenerator {
     private Button backBtn = new Button("Back");
 
     private ArrayList<Waypoint> currentWaypoints;
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane);
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup);
 
     public void launch(Stage primaryStage) {
 
@@ -143,6 +145,7 @@ public class PathGenerator {
             System.out.println(currentWaypoints);
             Path path = new Path(currentWaypoints);
             pathsUtil.drawPath(path, currentWaypoints.get(currentWaypoints.size()-1).time);
+            robotRect.toFront();
         });
 
         finish.setOnAction(e -> {
@@ -150,24 +153,28 @@ public class PathGenerator {
             Path path = new Path(currentWaypoints);
             pathsUtil.drawPath(path, currentWaypoints.get(currentWaypoints.size()-1).time);
             currentWaypoints = null;
+            robotRect.toFront();
             finish.setVisible(false);
             reset.setVisible(false);
+            timeTf.setText("0");
         });
 
         reset.setOnAction(e -> {
-            simPane.getChildren().clear();
+            pathsGroup.getChildren().clear();
             currentWaypoints = null;
             xInchTf.setText("9");
             yInchTf.setText("111");
             angleTf1.setText("0");
-            robotRect = new Rectangle(robotLength, robotLength);
+            timeTf.setText("0");
+            finish.setVisible(false);
+            reset.setVisible(false);
+            advanced.fire();
             updateRobotPos(2, null);
-            simPane.getChildren().add(robotRect);
         });
 
         robotRect = new Rectangle(robotLength, robotLength);
         updateRobotPos(2, null);
-        simPane.getChildren().add(robotRect);
+        simPane.getChildren().addAll(robotRect, pathsGroup);
 
         backBtn.setOnMouseClicked(e-> {
             CombinedSim app = new CombinedSim();
