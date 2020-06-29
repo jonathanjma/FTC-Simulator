@@ -1,6 +1,6 @@
 package Utilities;
 
-import App.CombinedApp;
+import App.CombinedSim;
 
 public class ConversionUtil {
 
@@ -27,7 +27,7 @@ public class ConversionUtil {
 
     // ycor pixel to inch
     public static double getYInch(double yPixel) {
-        return (CombinedApp.sceneWidth - yPixel) / inchToPixel;
+        return (CombinedSim.sceneWidth - yPixel) / inchToPixel;
     }
 
     // radians to degrees

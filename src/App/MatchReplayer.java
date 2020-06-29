@@ -182,13 +182,13 @@ public class MatchReplayer {
 
         backBtn.setOnMouseClicked(e -> {
             followPositionData.endThread();
-            CombinedApp app = new CombinedApp();
+            CombinedSim app = new CombinedSim();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 followPositionData.endThread();
-                CombinedApp app = new CombinedApp();
+                CombinedSim app = new CombinedSim();
                 app.start(primaryStage);
             }
         });
@@ -203,7 +203,7 @@ public class MatchReplayer {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfoHousing);
-        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 55);
+        Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
         primaryStage.setTitle("Match Replayer");
         primaryStage.setScene(scene);
     }

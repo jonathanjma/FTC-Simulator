@@ -111,7 +111,9 @@ public class PathGenerator {
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
         
         mainPane.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {updateRobotPos(2, null);}
+            if (e.getCode() == KeyCode.ENTER) {
+                updateRobotPos(2, null);
+            }
             if (e.getCode() == KeyCode.ALT) {
                 double next = Double.parseDouble(angleTf3.getText()) + 0.1;
                 angleTf3.setText(String.format("%.3f", next));
@@ -168,12 +170,12 @@ public class PathGenerator {
         simPane.getChildren().add(robotRect);
 
         backBtn.setOnMouseClicked(e-> {
-            CombinedApp app = new CombinedApp();
+            CombinedSim app = new CombinedSim();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e-> {
             if (e.getCode() == KeyCode.ENTER) {
-                CombinedApp app = new CombinedApp();
+                CombinedSim app = new CombinedSim();
                 app.start(primaryStage);
             }
         });
@@ -183,7 +185,7 @@ public class PathGenerator {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettingsMain);
-        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 55);
+        Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
         primaryStage.setTitle("Path Generator");
         primaryStage.setScene(scene);
     }
@@ -238,9 +240,9 @@ public class PathGenerator {
             }
 
             if (xCor - robotRadius < 0) {xCor = robotRadius;} //left
-            if (xCor + robotRadius > CombinedApp.sceneWidth) {xCor = CombinedApp.sceneWidth - robotRadius;} //right
+            if (xCor + robotRadius > CombinedSim.sceneWidth) {xCor = CombinedSim.sceneWidth - robotRadius;} //right
             if (yCor - robotRadius < 0) {yCor = robotRadius;} //up
-            if (yCor + robotRadius > CombinedApp.sceneWidth) {yCor = CombinedApp.sceneWidth - robotRadius;} //down
+            if (yCor + robotRadius > CombinedSim.sceneWidth) {yCor = CombinedSim.sceneWidth - robotRadius;} //down
 
             if (code == 1) {
                 double xInch = Double.parseDouble(String.format("%.2f", getXInch(xCor)));
@@ -281,7 +283,7 @@ public class PathGenerator {
                     Double.parseDouble(angleTf2.getText());
             angleTf3.setText(String.format("%.3f", thetaRad));
         }
-//        System.out.println(thetaRad);
+
         return thetaRad;
     }
 }

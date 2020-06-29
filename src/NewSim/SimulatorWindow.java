@@ -1,6 +1,6 @@
 package NewSim;
 
-import App.CombinedApp;
+import App.CombinedSim;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,7 +49,7 @@ public class SimulatorWindow extends Application {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfo);
-        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 35);
+        Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
         primaryStage.setTitle("New Sim Test");
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("field.jpg"));

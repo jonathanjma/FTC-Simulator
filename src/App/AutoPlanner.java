@@ -101,12 +101,12 @@ public class AutoPlanner {
         simPane.getChildren().add(robotRect);
 
         backBtn.setOnMouseClicked(e-> {
-            CombinedApp app = new CombinedApp();
+            CombinedSim app = new CombinedSim();
             app.start(primaryStage);
         });
         backBtn.setOnKeyPressed(e-> {
             if (e.getCode() == KeyCode.ENTER) {
-                CombinedApp app = new CombinedApp();
+                CombinedSim app = new CombinedSim();
                 app.start(primaryStage);
             }
         });
@@ -116,7 +116,7 @@ public class AutoPlanner {
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
-        Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 35);
+        Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
         primaryStage.setTitle("Auto Planner");
         primaryStage.setScene(scene);
     }
@@ -133,9 +133,9 @@ public class AutoPlanner {
             }
 
             if (xCor - robotRadius < 0) {xCor = robotRadius;} //left
-            if (xCor + robotRadius > CombinedApp.sceneWidth) {xCor = CombinedApp.sceneWidth - robotRadius;} //right
+            if (xCor + robotRadius > CombinedSim.sceneWidth) {xCor = CombinedSim.sceneWidth - robotRadius;} //right
             if (yCor - robotRadius < 0) {yCor = robotRadius;} //up
-            if (yCor + robotRadius > CombinedApp.sceneWidth) {yCor = CombinedApp.sceneWidth - robotRadius;} //down
+            if (yCor + robotRadius > CombinedSim.sceneWidth) {yCor = CombinedSim.sceneWidth - robotRadius;} //down
 
             if (code == 1) {
                 double xInch = Double.parseDouble(String.format("%.2f", getXInch(xCor)));

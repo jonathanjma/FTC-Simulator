@@ -20,7 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class CombinedApp extends Application {
+public class CombinedSim extends Application {
 
     public static final int sceneWidth = 600;
 
