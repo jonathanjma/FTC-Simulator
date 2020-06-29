@@ -3,12 +3,17 @@ package App;
 import PathingFiles.Path;
 import PathingFiles.Waypoint;
 import Utilities.AutoPathsUtil;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -31,7 +36,7 @@ import java.util.ArrayList;
 import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class PathGenerator extends Application {
+public class PathGenerator {
     
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
@@ -66,12 +71,12 @@ public class PathGenerator extends Application {
     private Button addPoint = new Button("Add Point");
     private Button finish = new Button("Finish");
     private Button reset = new Button("Reset");
+    private Button backBtn = new Button("Back");
 
     private ArrayList<Waypoint> currentWaypoints;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane);
 
-    @Override
-    public void start(Stage primaryStage) {
+    public void launch(Stage primaryStage) {
 
         //simPane.setOnMouseClicked(event -> System.out.println(event.getX()+","+event.getY()));
 
@@ -91,6 +96,9 @@ public class PathGenerator extends Application {
                 angleLb2, angleTf2, angleLb3, simple, angleTf3);
         simSettings2.getChildren().addAll(velocityLb,velocityTf,accelerationLb,accelerationTf,
                 angVelocityLb, angVelocityTf,timeLb,timeTf,addPoint, finish, reset);
+
+        backBtn.setLayoutX(10); backBtn.setLayoutY(10);
+        simPane.getChildren().addAll(backBtn);
 
         advanced.setToggleGroup(thetaChoices);
         simple.setToggleGroup(thetaChoices);
@@ -159,6 +167,17 @@ public class PathGenerator extends Application {
         updateRobotPos(2, null);
         simPane.getChildren().add(robotRect);
 
+        backBtn.setOnMouseClicked(e-> {
+            CombinedApp app = new CombinedApp();
+            app.start(primaryStage);
+        });
+        backBtn.setOnKeyPressed(e-> {
+            if (e.getCode() == KeyCode.ENTER) {
+                CombinedApp app = new CombinedApp();
+                app.start(primaryStage);
+            }
+        });
+
         simPane.setBackground(new Background(new BackgroundImage(
                 new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
@@ -167,16 +186,16 @@ public class PathGenerator extends Application {
         Scene scene = new Scene(mainPane, CombinedApp.sceneWidth, CombinedApp.sceneWidth + 55);
         primaryStage.setTitle("Path Generator");
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image("field.jpg"));
-        primaryStage.show();
     }
 
     public void copyPathWindow(ArrayList<Waypoint> waypoints) {
         Stage newStage = new Stage();
         VBox box = new VBox();
         box.setPadding(new Insets(5, 5, 5, 5));
-        Label codeIntro = new Label("Path Code:");
-        box.getChildren().addAll(codeIntro);
+
+        Label info = new Label("Code below has been copied to the clipboard:\n ");
+
+        box.getChildren().add(info);
 
         ArrayList<String> codeTxt = new ArrayList<>();
         codeTxt.add("Waypoints = new Waypoint[] {");
@@ -188,10 +207,17 @@ public class PathGenerator extends Application {
         codeTxt.add("};");
         codeTxt.add("Path Path = new Path(new ArrayList<>(Arrays.asList(Waypoints)));");
 
+        String codeToCopy = "";
         for (String line : codeTxt) {
             Label codeLine = new Label(line);
             box.getChildren().addAll(codeLine);
+            codeToCopy += line + "\n";
         }
+
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(codeToCopy);
+        clipboard.setContent(content);
 
         Scene stageScene = new Scene(box, 400, 200);
         newStage.setScene(stageScene);
