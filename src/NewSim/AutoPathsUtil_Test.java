@@ -2,19 +2,11 @@ package NewSim;
 
 import PathingFiles.*;
 import javafx.geometry.Point2D;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static Utilities.ConversionUtil.getXPixel;
-import static Utilities.ConversionUtil.getYPixel;
-
-public class AutoPathsUtil_Mod {
-
-    private SplineGenerator splineGenerator = new SplineGenerator();
+public class AutoPathsUtil_Test {
 
     private ArrayList<Path> pathList;
     private ArrayList<Double> timeList;
@@ -183,19 +175,6 @@ public class AutoPathsUtil_Mod {
                 new Waypoint(30, 25, Math.PI / 2, -30, 50,0, toFoundation5Time)
         };
         Path toFoundation5Path = new Path(new ArrayList<>(Arrays.asList(toFoundation5PathWaypoints)));
-
-//        drawPath(skystone1Path,skystone1Time);
-//        drawPath(toFoundation1Path,toFoundation1Time);
-//        drawPath(foundationPullPath,foundationPullTime);
-//        drawPath(skystone2Path,skystone2Time);
-//        drawPath(toFoundation2Path,toFoundation2Time);
-//        drawPath(stone3Path,stone3Time);
-//        drawPath(toFoundation3Path,toFoundation3Time);
-//        drawPath(stone4Path,stone4Time);
-//        drawPath(toFoundation4Path,toFoundation4Time);
-//        drawPath(stone5Path,stone5Time);
-//        drawPath(toFoundation5Path,toFoundation5Time);
-//        drawToPoint(30,25,33,72); // to tape
 
         pathList = new ArrayList<>(Arrays.asList(skystone1Path,toFoundation1Path,foundationPullPath,skystone2Path,toFoundation2Path,stone3Path,toFoundation3Path,stone4Path,toFoundation4Path,stone5Path,toFoundation5Path));
         timeList = new ArrayList<>(Arrays.asList(skystone1Time,toFoundation1Time,foundationPullTime,skystone2Time,toFoundation2Time,stone3Time,toFoundation3Time,stone4Time,toFoundation4Time,stone5Time,toFoundation5Time));

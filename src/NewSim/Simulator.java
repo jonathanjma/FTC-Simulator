@@ -19,7 +19,7 @@ public class Simulator {
         //////////////////////////////////////////////////////////////////////////// put sim stuff below
 
         /*AutoPlayer test*/
-        AutoPathsUtil_Mod pathsUtil = new AutoPathsUtil_Mod();
+        AutoPathsUtil_Test pathsUtil = new AutoPathsUtil_Test();
         pathsUtil.parsePaths();
         ArrayList<Path> pathList = pathsUtil.getPathList();
         ArrayList<Double> timeList = pathsUtil.getTimeList();

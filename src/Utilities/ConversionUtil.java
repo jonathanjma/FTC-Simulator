@@ -36,11 +36,4 @@ public class ConversionUtil {
         if (thetaDeg > 360) {thetaDeg %= 360;}
         return thetaDeg;
     }
-
-    // radians (pi implied) to degrees
-    public static double getFXTheta_NoPi(double thetaRad_NoPi) {
-        double thetaDeg = -((thetaRad_NoPi * 180) + 0.5);
-        if (thetaDeg > 360) {thetaDeg %= 360;}
-        return thetaDeg;
-    }
 }

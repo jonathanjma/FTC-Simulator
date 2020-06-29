@@ -1,12 +1,13 @@
 package App;
 
-import Utilities.AutoPathsUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -38,16 +39,18 @@ public class AutoPlanner {
     
     private Label corLb = new Label("Position: (");
     private Label commaLb = new Label(",");
-    private Label angleLb1 = new Label(")          Angle (rad):");
-    private Label angleLb2 = new Label("*π");
+    private Label angleLb1 = new Label(")  Angle (rad):");
+    private Label angleLb2 = new Label("π/");
+    private Label angleLb3 = new Label("or");
     private TextField xInchTf = new TextField("9");
     private TextField yInchTf = new TextField("111");
-    private TextField angleTf = new TextField("0");
+    private TextField angleTf1 = new TextField("0");
+    private TextField angleTf2 = new TextField("1");
+    private TextField angleTf3 = new TextField("0");
+    private RadioButton advanced = new RadioButton();
+    private RadioButton simple = new RadioButton();
+    private ToggleGroup thetaChoices = new ToggleGroup();
     private Button backBtn = new Button("Back");
-
-    private int colorValue = 255;
-    private final static double colorInterval = 20;
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(simPane, colorValue, colorInterval);
 
     public void launch(Stage primaryStage) {
 
@@ -57,32 +60,45 @@ public class AutoPlanner {
         simSettings.setAlignment(Pos.CENTER);
         
         corLb.setFont(Font.font(20)); commaLb.setFont(Font.font(20)); xInchTf.setPrefWidth(50); yInchTf.setPrefWidth(50);
-        angleLb1.setFont(Font.font(20)); angleLb2.setFont(Font.font(20)); angleTf.setPrefWidth(50);
+        angleLb1.setFont(Font.font(20)); angleLb2.setFont(Font.font(20)); angleLb3.setFont(Font.font(20)); angleTf1.setPrefWidth(35); angleTf2.setPrefWidth(35); angleTf3.setPrefWidth(50);
 
-        simSettings.getChildren().addAll(corLb, xInchTf, commaLb, yInchTf, angleLb1, angleTf, angleLb2);
+        simSettings.getChildren().addAll(corLb, xInchTf, commaLb, yInchTf, angleLb1, advanced, angleTf1,
+                angleLb2, angleTf2, angleLb3, simple, angleTf3);
 
         backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().addAll(backBtn);
 
-        pathsUtil.drawAutoPaths();
-        robotRect = new Rectangle(robotLength, robotLength);
-        updateRobotPos(2, null);
-        simPane.getChildren().add(robotRect);
-        
+        advanced.setToggleGroup(thetaChoices);
+        simple.setToggleGroup(thetaChoices);
+        advanced.fire();
+        angleTf1.setOnMouseClicked(e -> advanced.fire());
+        angleTf2.setOnMouseClicked(e -> advanced.fire());
+        angleTf3.setOnMouseClicked(e -> simple.fire());
+
         mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
         mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
         
         mainPane.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {updateRobotPos(2, null);}
+            if (e.getCode() == KeyCode.ENTER) {
+                updateRobotPos(2, null);
+            }
             if (e.getCode() == KeyCode.ALT) {
-                angleTf.setText(String.format("%.2f", Double.parseDouble(angleTf.getText()) + 0.1));
+                double next = Double.parseDouble(angleTf3.getText()) + 0.1;
+                angleTf3.setText(String.format("%.3f", next));
+                simple.fire();
                 updateRobotPos(3, null);
             }
             if (e.getCode() == KeyCode.ALT_GRAPH) {
-                angleTf.setText(String.format("%.2f", Double.parseDouble(angleTf.getText()) - 0.1));
+                double next = Double.parseDouble(angleTf3.getText()) - 0.1;
+                angleTf3.setText(String.format("%.3f", next));
+                simple.fire();
                 updateRobotPos(3, null);
             }
         });
+
+        robotRect = new Rectangle(robotLength, robotLength);
+        updateRobotPos(2, null);
+        simPane.getChildren().add(robotRect);
 
         backBtn.setOnMouseClicked(e-> {
             CombinedApp app = new CombinedApp();
@@ -94,9 +110,9 @@ public class AutoPlanner {
                 app.start(primaryStage);
             }
         });
-        
-        simPane.setBackground(new Background(
-                new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+
+        simPane.setBackground(new Background(new BackgroundImage(
+                new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simSettings);
@@ -104,7 +120,7 @@ public class AutoPlanner {
         primaryStage.setTitle("Auto Planner");
         primaryStage.setScene(scene);
     }
-    
+
     private void updateRobotPos(int code, MouseEvent e) { // 1 = mouse, 2 = pos input, 3 = angle input
 
         if (code == 1 || code == 2) {
@@ -128,18 +144,39 @@ public class AutoPlanner {
                 xInchTf.setText(xInch + "");
                 yInchTf.setText(yInch + "");
             }
-            //System.out.println(xCor + " " + yCor);
+            robotRect.setX(xCor - robotRadius);
+            robotRect.setY(yCor - robotRadius);
         }
 
-        robotRect.setX(xCor - robotRadius);
-        robotRect.setY(yCor - robotRadius);
-
-        robotRect.setRotate(getFXTheta_NoPi(Double.parseDouble(angleTf.getText())));
+        robotRect.setRotate(getFXTheta(getInputTheta()));
 
         Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
                 new Stop(1, Color.rgb(192, 192, 192, 0.75))};
         LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
                 false, CycleMethod.NO_CYCLE, stops);
         robotRect.setFill(background);
+    }
+
+    public double getInputTheta() {
+        double thetaRad;
+        if (simple.isSelected()) {
+            if (angleTf3.getText().equals("")) {
+                angleTf3.setText("0");
+            }
+            thetaRad = Double.parseDouble(angleTf3.getText());
+        } else {
+            if (angleTf1.getText().equals("")) {
+                angleTf1.setText("0");
+            }
+            if (angleTf2.getText().equals("0") || angleTf2.getText().equals("")) {
+                angleTf2.setText("1");
+            }
+
+            thetaRad = Double.parseDouble(angleTf1.getText()) * Math.PI /
+                    Double.parseDouble(angleTf2.getText());
+            angleTf3.setText(String.format("%.3f", thetaRad));
+        }
+
+        return thetaRad;
     }
 }
