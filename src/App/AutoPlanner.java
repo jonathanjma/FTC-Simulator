@@ -17,14 +17,10 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import static App.Robot.robotLength;
 import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -33,9 +29,9 @@ public class AutoPlanner {
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
     private HBox simSettings = new HBox(5);
-    private Rectangle robotRect;
-    
-    private double xCor, yCor;
+
+    private Robot robot;
+//    private Rectangle dumbRect;
     
     private Label corLb = new Label("Position: (");
     private Label commaLb = new Label(",");
@@ -51,6 +47,8 @@ public class AutoPlanner {
     private RadioButton simple = new RadioButton();
     private ToggleGroup thetaChoices = new ToggleGroup();
     private Button backBtn = new Button("Back");
+
+//    private Group bounds = new Group();
 
     public void launch(Stage primaryStage) {
 
@@ -96,9 +94,13 @@ public class AutoPlanner {
             }
         });
 
-        robotRect = new Rectangle(robotLength, robotLength);
+        robot = new Robot(robotLength, robotLength);
+
+//        dumbRect = new Rectangle(200,300,300,100);
+//        dumbRect.setRotate(45);
+
         updateRobotPos(2, null);
-        simPane.getChildren().add(robotRect);
+        simPane.getChildren().addAll(robot/*,dumbRect,bounds*/);
 
         backBtn.setOnMouseClicked(e-> {
             CombinedSim app = new CombinedSim();
@@ -121,40 +123,32 @@ public class AutoPlanner {
         primaryStage.setScene(scene);
     }
 
-    private void updateRobotPos(int code, MouseEvent e) { // 1 = mouse, 2 = pos input, 3 = angle input
+    private void updateRobotPos(int inputMethod, MouseEvent e) { // 1 = mouse, 2 = pos input, 3 = angle input
 
-        if (code == 1 || code == 2) {
-            if (code == 1) {
-                xCor = Double.parseDouble(String.format("%.2f", e.getSceneX()));
-                yCor = Double.parseDouble(String.format("%.2f", e.getSceneY()));
+        if (inputMethod == 1 || inputMethod == 2) {
+            double xCor, yCor;
+
+            if (inputMethod == 1) {
+                xCor = getXInch(Double.parseDouble(String.format("%.2f", e.getSceneX())));
+                yCor = getYInch(Double.parseDouble(String.format("%.2f", e.getSceneY())));
             } else {
-                xCor = getXPixel(Double.parseDouble(xInchTf.getText()));
-                yCor = getYPixel(Double.parseDouble(yInchTf.getText()));
+                xCor = Double.parseDouble(xInchTf.getText());
+                yCor = Double.parseDouble(yInchTf.getText());
             }
 
-            if (xCor - robotRadius < 0) {xCor = robotRadius;} //left
-            if (xCor + robotRadius > CombinedSim.sceneWidth) {xCor = CombinedSim.sceneWidth - robotRadius;} //right
-            if (yCor - robotRadius < 0) {yCor = robotRadius;} //up
-            if (yCor + robotRadius > CombinedSim.sceneWidth) {yCor = CombinedSim.sceneWidth - robotRadius;} //down
-
-            if (code == 1) {
-                double xInch = Double.parseDouble(String.format("%.2f", getXInch(xCor)));
-                double yInch = Double.parseDouble(String.format("%.2f", getYInch(yCor)));
-
-                xInchTf.setText(xInch + "");
-                yInchTf.setText(yInch + "");
-            }
-            robotRect.setX(xCor - robotRadius);
-            robotRect.setY(yCor - robotRadius);
+            robot.setPosition(xCor, yCor);
+            xInchTf.setText(Double.parseDouble(String.format("%.2f", robot.xInch)) + "");
+            yInchTf.setText(Double.parseDouble(String.format("%.2f", robot.yInch)) + "");
         }
 
-        robotRect.setRotate(getFXTheta(getInputTheta()));
+        robot.setTheta(getInputTheta());
 
-        Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
-                new Stop(1, Color.rgb(192, 192, 192, 0.75))};
-        LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
-                false, CycleMethod.NO_CYCLE, stops);
-        robotRect.setFill(background);
+//        bounds.getChildren().clear();
+//        Circle[] points = robot.getCorners();
+//        bounds.getChildren().addAll(points[0],points[1],points[2],points[3]);
+        //bounds.getChildren().add(robot.createBoundsRectangle());
+
+        robot.updateColor();
     }
 
     public double getInputTheta() {

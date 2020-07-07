@@ -30,6 +30,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import static App.Robot.robotLength;
+import static App.Robot.robotRadius;
 import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -91,7 +93,7 @@ public class MatchReplayer {
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
 
-    private Rectangle robotRect;
+    private Robot robot;
 
     // update robot robotThread
     private FollowPositionData followPositionData;
@@ -194,9 +196,9 @@ public class MatchReplayer {
         });
         primaryStage.setOnCloseRequest(e -> followPositionData.endThread());
 
-        robotRect = new Rectangle(robotLength, robotLength);
+        robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
-        simPane.getChildren().add(robotRect);
+        simPane.getChildren().add(robot);
 
         simPane.setBackground(new Background(
                 new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
@@ -222,26 +224,21 @@ public class MatchReplayer {
         curTime.setText(String.format("%.2f", time / 1000));
 
         // update robot xy
+        robot.setPosition((double) data[1], (double) data[2]);
         double xCor = getXPixel((double) data[1]);
         double yCor = getYPixel((double) data[2]);
-        robotRect.setX(xCor - robotRadius);
-        robotRect.setY(yCor - robotRadius);
 
         // update robot theta
-        robotRect.setRotate(getFXTheta((double) data[3]));
+        robot.setTheta((double) data[3]);
 
         // color robot yellow if stone in robot
-        Stop[] stops;
         if ((boolean) data[10]) {
-            stops = new Stop[] {new Stop(0, Color.rgb(255, 225, 53, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))};
+            robot.updateColor(new Stop[] {
+                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
+                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
         } else {
-            stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))};
+            robot.updateColor();
         }
-        LinearGradient background = new LinearGradient(xCor, yCor, xCor+robotLength, yCor,
-                false, CycleMethod.NO_CYCLE, stops);
-        robotRect.setFill(background);
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", (double) data[1]));

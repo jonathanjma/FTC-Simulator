@@ -1,4 +1,4 @@
-package OldStuff;
+package old;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -18,7 +18,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import static Utilities.ConversionUtil.robotLength;
+import static App.Robot.robotLength;
 
 @Deprecated
 public class RobotSimulator extends Application {

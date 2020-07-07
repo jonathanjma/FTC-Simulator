@@ -18,16 +18,11 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import static Utilities.ConversionUtil.*;
+import static App.Robot.robotLength;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class AutoPlayer {
@@ -57,7 +52,7 @@ public class AutoPlayer {
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
 
-    private Rectangle robotRect;
+    private Robot robot;
 
     // update robot thread
     private FollowPathData followPathData;
@@ -86,10 +81,10 @@ public class AutoPlayer {
         simPane.getChildren().addAll(backBtn);
 
         pathsUtil.drawAutoPaths();
-        robotRect = new Rectangle(robotLength, robotLength);
+        robot = new Robot(robotLength, robotLength);
         updateRobot(9,111,0);
-        simPane.getChildren().addAll(robotRect, pathsGroup);
-        robotRect.toFront();
+        simPane.getChildren().addAll(robot, pathsGroup);
+        robot.toFront();
 
         followPathData = new FollowPathData(pathsUtil.getPathList(), pathsUtil.getTimeList(),
                 curTime, startStopVisible, this);
@@ -149,23 +144,10 @@ public class AutoPlayer {
 
     public void updateRobot(double x, double y, double theta) {
 
-        // update robot xy
-        double xCor = getXPixel(x);
-        double yCor = getYPixel(y);
-        robotRect.setX(xCor - robotRadius);
-        robotRect.setY(yCor - robotRadius);
+        robot.setPosition(x, y);
+        robot.setTheta(theta);
+        robot.updateColor();
 
-        // update robot theta
-        robotRect.setRotate(getFXTheta(theta));
-
-        // color robot yellow if stone in robot
-        Stop[] stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))};
-        LinearGradient background = new LinearGradient(xCor, yCor, xCor + robotLength, yCor,
-                false, CycleMethod.NO_CYCLE, stops);
-        robotRect.setFill(background);
-
-        // update xy and theta text
         xInchLb.setText(String.format("%.2f", x));
         yInchLb.setText(String.format("%.2f", y));
         thetaLb.setText(String.format("%.2f", theta));

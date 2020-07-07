@@ -1,39 +1,24 @@
 package NewSim;
 
+import App.Robot;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import static App.Robot.robotLength;
 import static Utilities.ConversionUtil.*;
 
 public class Frame {
 
-    private Rectangle robotRect;
+    private Robot robotRect;
     private Polygon robotPoly;
 
     public Frame(double x, double y, double theta) {
 
-        robotRect = new Rectangle(robotLength, robotLength);
-
-        // update robot xy
-        double xCor = getXPixel(x);
-        double yCor = getYPixel(y);
-        robotRect.setX(xCor - robotRadius);
-        robotRect.setY(yCor - robotRadius);
-
-        // update robot theta
-        robotRect.setRotate(getFXTheta(theta));
-
-        // update fill
-        Stop[] stops = new Stop[] {new Stop(0, Color.rgb(0, 0, 0, 0.85)),
-                new Stop(1, Color.rgb(192, 192, 192, 0.85))};
-        LinearGradient background = new LinearGradient(xCor, yCor, xCor + robotLength, yCor,
-                false, CycleMethod.NO_CYCLE, stops);
-        robotRect.setFill(background);
+        robotRect = new Robot(robotLength, robotLength);
+        robotRect.setPosition(x, y);
+        robotRect.setTheta(theta);
+        robotRect.updateColor();
     }
 
     public Frame(Polygon polygon) {
