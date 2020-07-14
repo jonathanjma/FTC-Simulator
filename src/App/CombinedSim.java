@@ -32,7 +32,7 @@ public class CombinedSim extends Application {
 
     private Text title = new Text("Choose One");
     private Button autoPlannerBtn = new Button("Simple Auto Planner");
-    private Button pathGenBtn = new Button("Auto Path Generator");
+    private Button pathGenBtn = new Button("Path Generator");
     private Button autoPlayerBtn = new Button("Auto Player");
     private Button matchReplayerBtn = new Button("Match Replayer");
 
