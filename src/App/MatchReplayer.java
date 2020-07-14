@@ -1,6 +1,7 @@
 package App;
 
 import Threads.FollowPositionData;
+import Utilities.DataPoint;
 import Utilities.RobotDataUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -20,18 +21,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import static App.Robot.robotLength;
-import static App.Robot.robotRadius;
 import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -210,7 +207,7 @@ public class MatchReplayer {
         primaryStage.setScene(scene);
     }
 
-    public void updateRobot(Object[] data, boolean sliderMoved) {
+    public void updateRobot(DataPoint data, boolean sliderMoved) {
 
         // update current node, time since start
         nodeNum.setText((followPositionData.getCounter()+1) +"");
@@ -220,19 +217,18 @@ public class MatchReplayer {
             nodeSlider.setValue(followPositionData.getCounter()+1);
         }
 
-        double time = (double) data[0];
-        curTime.setText(String.format("%.2f", time / 1000));
+        curTime.setText(String.format("%.2f", data.sinceStart / 1000));
 
         // update robot xy
-        robot.setPosition((double) data[1], (double) data[2]);
-        double xCor = getXPixel((double) data[1]);
-        double yCor = getYPixel((double) data[2]);
+        robot.setPosition(data.x, data.y);
+        double xCor = getXPixel(data.x);
+        double yCor = getYPixel(data.y);
 
         // update robot theta
-        robot.setTheta((double) data[3]);
+        robot.setTheta(data.theta);
 
         // color robot yellow if stone in robot
-        if ((boolean) data[10]) {
+        if (data.stoneInRobot) {
             robot.updateColor(new Stop[] {
                     new Stop(0, Color.rgb(255, 225, 53, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))});
@@ -241,12 +237,12 @@ public class MatchReplayer {
         }
 
         // update xy and theta text
-        xInchLb.setText(String.format("%.2f", (double) data[1]));
-        yInchLb.setText(String.format("%.2f", (double) data[2]));
-        thetaLb.setText(String.format("%.2f", (double) data[3]));
+        xInchLb.setText(String.format("%.2f", data.x));
+        yInchLb.setText(String.format("%.2f", data.y));
+        thetaLb.setText(String.format("%.2f", data.theta));
 
         // update velocity text
-        double velocityX = (double) data[4], velocityY = (double) data[5], velocityTheta = (double) data[6];
+        double velocityX = data.velocityX, velocityY = data.velocityY, velocityTheta = data.velocityTheta;
         velocityXLb.setText(String.format("%.2f", velocityX));
         velocityYLb.setText(String.format("%.2f", velocityY));
         velocityThetaLb.setText(String.format("%.2f", velocityTheta));
@@ -257,25 +253,23 @@ public class MatchReplayer {
         pathPointGroup.getChildren().add(pathPoint);
 
         // update acceleration text
-        double accelX = (double) data[7];
-        double accelY = (double) data[8];
-        double accelTheta = (double) data[9];
+        double accelX = data.accelX; double accelY = data.accelY; double accelTheta = data.accelTheta;
         accelXLb.setText(String.format("%.2f", accelX));
         accelYLb.setText(String.format("%.2f", accelY));
         accelThetaLb.setText(String.format("%.2f", accelTheta));
 
         // update stone clamped text
-        if ((boolean) data[11]) {stoneClamped.setText("Clamped");}
+        if (data.stoneClamped) {stoneClamped.setText("Clamped");}
         else {stoneClamped.setText("Not Clamped");}
 
         // update trying to deposit text
-        if ((boolean) data[12]) {tryingToDeposit.setText("Depositing");}
+        if (data.tryingToDeposit) {tryingToDeposit.setText("Depositing");}
         else {tryingToDeposit.setText("Not Depositing");}
 
         // update arm state text
-        if ((boolean) data[13]) {armState.setText("Home");}
-        else if ((boolean) data[14]) {armState.setText("Down");}
-        else if ((boolean) data[15]) {armState.setText("Out");}
+        if (data.armIsHome) {armState.setText("Home");}
+        else if (data.armIsDown) {armState.setText("Down");}
+        else if (data.armIsOut) {armState.setText("Out");}
     }
 
     public void clearPathPoints() {

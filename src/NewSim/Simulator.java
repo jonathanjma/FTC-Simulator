@@ -2,6 +2,7 @@ package NewSim;
 
 import PathingFiles.Path;
 import PathingFiles.Pose;
+import Utilities.DataPoint;
 import Utilities.RobotDataUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -47,8 +48,8 @@ public class Simulator {
         int counter = 0;
         while (counter < dataUtil.getNumOfPoints()) {
 
-            Object[] data = dataUtil.getData(counter);
-            setFrame(new Frame((double)data[1], (double)data[2], (double)data[3]));
+            DataPoint data = dataUtil.getData(counter);
+            setFrame(new Frame(data.x, data.y, data.theta));
             double timeDiff = dataUtil.getTimeDiff(counter);
 
             try {
