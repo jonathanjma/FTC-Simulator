@@ -39,7 +39,7 @@ public class CombinedSim extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        startPane.setOnMouseClicked(e -> System.out.println(e.getX()+", "+e.getY()));
+        //startPane.setOnMouseClicked(e -> System.out.println(e.getX()+", "+e.getY()));
 
         optionsRect.setFill(Color.rgb(255,255,255,0.85));
 

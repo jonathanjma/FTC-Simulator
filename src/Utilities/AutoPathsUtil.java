@@ -23,14 +23,14 @@ public class AutoPathsUtil {
     private int colorValue;
     private double colorInterval;
 
-    public AutoPathsUtil(Group groupForPaths) {
-        pathsGroup = groupForPaths;
+    public AutoPathsUtil(Group pathsGroup) {
+        this.pathsGroup = pathsGroup;
         colorValue = 255;
         this.colorInterval = 0;
     }
 
-    public AutoPathsUtil(Group groupForPaths, int startingColorValue, double colorInterval) {
-        pathsGroup = groupForPaths;
+    public AutoPathsUtil(Group pathsGroup, int startingColorValue, double colorInterval) {
+        this.pathsGroup = pathsGroup;
         colorValue = startingColorValue;
         this.colorInterval = colorInterval;
     }

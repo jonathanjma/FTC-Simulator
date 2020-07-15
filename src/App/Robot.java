@@ -26,6 +26,7 @@ public class Robot extends Rectangle {
     public Robot(double width, double height) {
         setWidth(width);
         setHeight(height);
+        setStrokeWidth(1.5);
     }
 
     public Robot(double x, double y, double width, double height) {

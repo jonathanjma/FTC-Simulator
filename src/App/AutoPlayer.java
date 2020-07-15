@@ -2,7 +2,7 @@ package App;
 
 import Threads.FollowPathData;
 import Utilities.AutoPathsUtil;
-import Utilities.Intersect;
+import Utilities.ObstacleUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -19,17 +19,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static App.Robot.robotLength;
 
@@ -39,6 +31,8 @@ public class AutoPlayer {
     private BorderPane mainPane = new BorderPane();
     private Pane simPane = new Pane();
     private Group pathsGroup = new Group();
+    private Group obstacleGroup = new Group();
+    private Group warningGroup = new Group();
     private HBox simInfo = new HBox(5);
 
     // ui labels
@@ -58,6 +52,8 @@ public class AutoPlayer {
     private final static double colorInterval = 20;
     private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, colorValue, colorInterval);
 
+    private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
+
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
 
@@ -66,11 +62,6 @@ public class AutoPlayer {
     // update robot thread
     private FollowPathData followPathData;
     private Thread robotThread;
-
-    private Polygon island = new Polygon();
-    private Polygon alliance = new Polygon();
-    private ArrayList<Polygon> obList = new ArrayList<>(Arrays.asList(island,alliance));
-    private SimpleBooleanProperty collisionProp = new SimpleBooleanProperty(false);
 
     public void launch(Stage primaryStage) {
 
@@ -95,9 +86,12 @@ public class AutoPlayer {
         simPane.getChildren().addAll(backBtn);
 
         pathsUtil.drawAutoPaths();
+        obUtil.initializeObstacles();
+
         robot = new Robot(robotLength, robotLength);
         updateRobot(9,111,0);
-        simPane.getChildren().addAll(robot, pathsGroup);
+
+        simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup);
         robot.toFront();
 
         followPathData = new FollowPathData(pathsUtil.getPathList(), pathsUtil.getTimeList(),
@@ -130,9 +124,7 @@ public class AutoPlayer {
             startStopBtn.setText("Pause");
             followPathData.resetPathNum(); curTime.set(0 + "");
             followPathData.setPause(false);
-            if (collisionProp.get()) {
-                collisionProp.set(false);
-            }
+            obUtil.setFlagFalse();
         });
 
         backBtn.setOnMouseClicked(e-> {
@@ -157,27 +149,6 @@ public class AutoPlayer {
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
         primaryStage.setTitle("Auto Player");
         primaryStage.setScene(scene);
-
-
-        island.getPoints().addAll(
-                200.0,265.0,
-                200.0,340.0,
-                400.0,340.0,
-                400.0,265.0
-        );
-        alliance.getPoints().addAll(
-                0.0,230.0,
-                robotLength+6,230.0,
-                robotLength+6,400.0,
-                0.0,400.0
-        );
-        Rectangle warning = new Rectangle(440, 535, 160, 60);
-        warning.setFill(Color.RED);
-        Text warnText = new Text(450,570,"Potential Collision!");
-        warnText.setFont(Font.font(18));
-        warning.visibleProperty().bind(collisionProp);
-        warnText.visibleProperty().bind(collisionProp);
-        simPane.getChildren().addAll(island,alliance, warning, warnText);
     }
 
     public void updateRobot(double x, double y, double theta) {
@@ -186,19 +157,7 @@ public class AutoPlayer {
         robot.setTheta(theta);
         robot.updateColor();
 
-        for (Polygon poly : obList) {
-            boolean result = Intersect.isPolygonsIntersecting(robot.getPolygon(), poly);
-            System.out.println(result);
-            if (result) {
-                collisionProp.set(true);
-                robot.updateColor(new Stop[] {
-                        new Stop(0, Color.rgb(255, 0, 0, 0.85)),
-                        new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-                break;
-            } else {
-                collisionProp.set(false);
-            }
-        }
+        obUtil.checkCollisions(robot);
 
         xInchLb.setText(String.format("%.2f", x));
         yInchLb.setText(String.format("%.2f", y));
