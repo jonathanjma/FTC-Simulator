@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 import static java.lang.Thread.sleep;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class FollowPositionData implements Runnable {
 
     private MatchReplayer app;

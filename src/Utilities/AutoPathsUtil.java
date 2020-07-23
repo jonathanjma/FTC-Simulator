@@ -21,7 +21,7 @@ public class AutoPathsUtil {
     private ArrayList<Double> timeList;
 
     private int colorValue;
-    private double colorInterval;
+    private final double colorInterval;
 
     public AutoPathsUtil(Group pathsGroup) {
         this.pathsGroup = pathsGroup;

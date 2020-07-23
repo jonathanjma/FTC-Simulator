@@ -8,17 +8,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
@@ -31,42 +23,29 @@ import javafx.stage.Stage;
 import static App.Robot.robotLength;
 import static Utilities.ConversionUtil.*;
 
-@SuppressWarnings("FieldCanBeLocal")
-public class MatchReplayer {
+@SuppressWarnings("FieldMayBeFinal")
+public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
     private final static String logName = "RobotData5";
     // **************************************************************************************************
-    
-    private BorderPane mainPane = new BorderPane();
-    private Pane simPane = new Pane();
+
     private VBox simInfoHousing = new VBox(2.5);
-    private HBox simInfo1 = new HBox(5);
     private HBox simInfo2 = new HBox(5);
 
     private Group pathPointGroup = new Group();
-    private Circle pathPoint;
 
     private Slider nodeSlider;
     private boolean manual = false;
     private boolean startBtnPressed = false;
 
     // ui labels
-    private Label corLb = new Label("Position: (");
-    private Label xInchLb = new Label("n/a");
-    private Label commaLb1 = new Label(",");
-    private Label yInchLb = new Label("n/a");
-    private Label thetaLb1 = new Label(")  Theta:");
-    private Label thetaLb = new Label("n/a");
     private Label velocityLb = new Label("  Velocity:");
     private Label velocityXLb = new Label("n/a");
     private Label commaLb2 = new Label(",");
     private Label velocityYLb = new Label("n/a");
     private Label commaLb3 = new Label(",");
     private Label velocityThetaLb = new Label("n/a");
-    private Button startStopBtn = new Button("Start");
-    private Button restartBtn = new Button("Restart");
-
     private Label accelLb = new Label("Accel:");
     private Label accelXLb = new Label("n/a");
     private Label commaLb4 = new Label(",");
@@ -85,49 +64,47 @@ public class MatchReplayer {
     private Text timeLb = new Text(507, 45, "Time:");
     private Text curTime = new Text(545, 45, "n/a");
 
-    private Button backBtn = new Button("Back");
-
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
 
-    private Robot robot;
-
-    // update robot robotThread
+    // update robot thread
     private FollowPositionData followPositionData;
     private Thread robotThread;
 
     public void launch(Stage primaryStage) {
+        super.launch(primaryStage);
 
-        //simPane.setOnMouseClicked(event -> System.out.println(event.getX()+","+event.getY()));
-
-        simInfo1.setPadding(new Insets(0, 5, 0, 5));
-        simInfo1.setAlignment(Pos.CENTER);
+        simInfo.setPadding(new Insets(0, 5, 0, 5));
         simInfo2.setPadding(new Insets(0, 5, 2.5, 5));
         simInfo2.setAlignment(Pos.CENTER);
-        simInfoHousing.getChildren().addAll(simInfo1, simInfo2);
+        simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
-        corLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); commaLb1.setFont(Font.font(14)); xInchLb.setFont(Font.font(14)); yInchLb.setFont(Font.font(14));
-        thetaLb1.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); thetaLb.setFont(Font.font(14));
-        velocityLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); velocityXLb.setFont(Font.font(14)); commaLb2.setFont(Font.font(14)); velocityYLb.setFont(Font.font(14)); commaLb3.setFont(Font.font(14)); velocityThetaLb.setFont(Font.font(14));
-        restartBtn.setVisible(false);
+        velocityLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        velocityXLb.setFont(Font.font(14)); commaLb2.setFont(Font.font(14));
+        velocityYLb.setFont(Font.font(14)); commaLb3.setFont(Font.font(14));
+        velocityThetaLb.setFont(Font.font(14));
 
         startStopBtn.visibleProperty().bind(startStopVisible);
 
-        accelLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14)); accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14)); accelThetaLb.setFont(Font.font(14));
-        armLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14)); stoneClamped.setFont(Font.font(14)); commaLb7.setFont(Font.font(14)); tryingToDeposit.setFont(Font.font(14));
+        accelLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14));
+        accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14));
+        accelThetaLb.setFont(Font.font(14));
+        armLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14));
+        stoneClamped.setFont(Font.font(14)); commaLb7.setFont(Font.font(14));
+        tryingToDeposit.setFont(Font.font(14));
 
-        nodeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); nodeNum.setFont(Font.font(14));
-        timeLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14)); curTime.setFont(Font.font(14));
+        nodeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        nodeNum.setFont(Font.font(14));
+        timeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        curTime.setFont(Font.font(14));
 
-        simInfo1.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb,
-                velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3, velocityThetaLb,
-                startStopBtn, restartBtn);
+        simInfo.getChildren().addAll(velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3,
+                velocityThetaLb, startStopBtn, restartBtn);
         simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThetaLb,
                 armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit);
         simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
-
-        backBtn.setLayoutX(10); backBtn.setLayoutY(10);
-        simPane.getChildren().addAll(backBtn);
 
         dataUtil.parseLogFile();
         followPositionData = new FollowPositionData(dataUtil, startStopVisible, this);
@@ -139,7 +116,7 @@ public class MatchReplayer {
         nodeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (manual) {
                 nodeSlider.setValue(newVal.intValue());
-                followPositionData.setCounter((int) nodeSlider.getValue()-1);
+                followPositionData.setCounter((int) nodeSlider.getValue() - 1);
                 pathPointGroup.getChildren().clear();
                 updateRobot(dataUtil.getData(followPositionData.getCounter()), true);
                 startStopVisible.set(nodeSlider.getValue() != dataUtil.getNumOfPoints());
@@ -157,14 +134,17 @@ public class MatchReplayer {
             switch (startStopBtn.getText()) {
                 case "Start":
                     robotThread.start();
-                    startStopBtn.setText("Pause"); restartBtn.setVisible(true);
+                    startStopBtn.setText("Pause");
+                    restartBtn.setVisible(true);
                     startBtnPressed = true;
                     break;
                 case "Pause":
-                    followPositionData.setPause(true); startStopBtn.setText("Resume");
+                    followPositionData.setPause(true);
+                    startStopBtn.setText("Resume");
                     break;
                 case "Resume":
-                    followPositionData.setPause(false); startStopBtn.setText("Pause");
+                    followPositionData.setPause(false);
+                    startStopBtn.setText("Pause");
                     break;
             }
         });
@@ -175,32 +155,18 @@ public class MatchReplayer {
                 robotThread.start();
             }
             //System.out.println(followPositionData.getCounter() + " " + dataUtil.getNumOfPoints());
-            startStopBtn.setText("Pause"); startStopVisible.set(true);
-            followPositionData.setCounter(0); followPositionData.setPause(false);
+            startStopBtn.setText("Pause");
+            startStopVisible.set(true);
+            followPositionData.setCounter(0);
+            followPositionData.setPause(false);
         });
 
-        backBtn.setOnMouseClicked(e -> {
-            followPositionData.endThread();
-            CombinedSim app = new CombinedSim();
-            app.start(primaryStage);
-        });
-        backBtn.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                followPositionData.endThread();
-                CombinedSim app = new CombinedSim();
-                app.start(primaryStage);
-            }
-        });
         primaryStage.setOnCloseRequest(e -> followPositionData.endThread());
 
         robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
         simPane.getChildren().add(robot);
 
-        simPane.setBackground(new Background(
-                new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                        null, null)));
-        mainPane.setCenter(simPane);
         mainPane.setBottom(simInfoHousing);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
         primaryStage.setTitle("Match Replayer");
@@ -210,11 +176,11 @@ public class MatchReplayer {
     public void updateRobot(DataPoint data, boolean sliderMoved) {
 
         // update current node, time since start
-        nodeNum.setText((followPositionData.getCounter()+1) +"");
+        nodeNum.setText((followPositionData.getCounter() + 1) + "");
 
         if (!sliderMoved) {
             manual = false;
-            nodeSlider.setValue(followPositionData.getCounter()+1);
+            nodeSlider.setValue(followPositionData.getCounter() + 1);
         }
 
         curTime.setText(String.format("%.2f", data.sinceStart / 1000));
@@ -229,7 +195,7 @@ public class MatchReplayer {
 
         // color robot yellow if stone in robot
         if (data.stoneInRobot) {
-            robot.updateColor(new Stop[] {
+            robot.updateColor(new Stop[]{
                     new Stop(0, Color.rgb(255, 225, 53, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))});
         } else {
@@ -249,7 +215,7 @@ public class MatchReplayer {
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
         int velocityFactor = (int) Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
-        pathPoint = new Circle(xCor, yCor, 2, Color.hsb(velocityFactor * 1.5, 1, 1));
+        Circle pathPoint = new Circle(xCor, yCor, 2, Color.hsb(velocityFactor * 1.5, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // update acceleration text
@@ -259,17 +225,27 @@ public class MatchReplayer {
         accelThetaLb.setText(String.format("%.2f", accelTheta));
 
         // update stone clamped text
-        if (data.stoneClamped) {stoneClamped.setText("Clamped");}
-        else {stoneClamped.setText("Not Clamped");}
+        if (data.stoneClamped) {
+            stoneClamped.setText("Clamped");
+        } else {
+            stoneClamped.setText("Not Clamped");
+        }
 
         // update trying to deposit text
-        if (data.tryingToDeposit) {tryingToDeposit.setText("Depositing");}
-        else {tryingToDeposit.setText("Not Depositing");}
+        if (data.tryingToDeposit) {
+            tryingToDeposit.setText("Depositing");
+        } else {
+            tryingToDeposit.setText("Not Depositing");
+        }
 
         // update arm state text
-        if (data.armIsHome) {armState.setText("Home");}
-        else if (data.armIsDown) {armState.setText("Down");}
-        else if (data.armIsOut) {armState.setText("Out");}
+        if (data.armIsHome) {
+            armState.setText("Home");
+        } else if (data.armIsDown) {
+            armState.setText("Down");
+        } else if (data.armIsOut) {
+            armState.setText("Out");
+        }
     }
 
     public void clearPathPoints() {
@@ -279,7 +255,8 @@ public class MatchReplayer {
     public void nodeSliderAction() {
         if (startBtnPressed) {
             manual = true;
-            followPositionData.setPause(true); startStopBtn.setText("Resume");
+            followPositionData.setPause(true);
+            startStopBtn.setText("Resume");
         }
     }
 }

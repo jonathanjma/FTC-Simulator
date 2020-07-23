@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 import static App.Robot.robotLength;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class ObstacleUtil {
 
     private Group obstacleGroup;

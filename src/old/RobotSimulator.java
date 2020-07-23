@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import static App.Robot.robotLength;
 
 @Deprecated
+@SuppressWarnings("FieldMayBeFinal")
 public class RobotSimulator extends Application {
 
     private BorderPane mainPane = new BorderPane();

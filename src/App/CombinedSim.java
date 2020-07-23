@@ -20,6 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class CombinedSim extends Application {
 
     public static final int sceneWidth = 600;
@@ -53,7 +54,8 @@ public class CombinedSim extends Application {
         autoPlayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
         matchReplayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
 
-        homeBox.getChildren().addAll(title, autoPlannerBtn, pathGenBtn, autoPlayerBtn, matchReplayerBtn);
+        homeBox.getChildren().addAll(title, autoPlannerBtn, pathGenBtn,
+                autoPlayerBtn, matchReplayerBtn);
         startPane.getChildren().addAll(optionsRect, homeBox);
 
         autoPlannerBtn.setOnMouseClicked(e -> {

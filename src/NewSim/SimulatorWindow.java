@@ -16,7 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings("FieldMayBeFinal")
 public class SimulatorWindow extends Application {
 
     /**

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class FollowPathData implements Runnable {
 
     private AutoPlayer app;
