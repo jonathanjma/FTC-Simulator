@@ -1,8 +1,15 @@
 # FTC Simulator
-Contains 2 tools to assist in FTC programming
+Contains 4 tools to assist in FTC programming:
  - Autonomous Planner Tool
-	 - Uses global coordinate system for coordinates (in inches), angles (in radians) 
-	 - Click or drag the robot or enter position + angle  
- - Match Replayer Tool  
-	 - Reads values from a robot data CSV file to replay robot runs on your screen
+	 - Look up the coordinates of locations on the field
+	 - Click/drag the robot around or enter a pose
+ - Path Planning Tool
+	 - Experiment and plot out your autonomous path
+ - Autonomous Player Tool
+	 - Simulate your autonomous run
+	 - Potential collision detection
+ - Match Replayer Tool    
+	 - Reads values from a robot data CSV file to replay robot runs/matches on your screen  
 	 - Shows position, colored coded path, velocity, acceleration, robot states, and more
+
+This tool uses a global coordinate system where distances are in inches and angles are in radians

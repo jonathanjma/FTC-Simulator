@@ -59,46 +59,38 @@ public class CombinedSim extends Application {
         startPane.getChildren().addAll(optionsRect, homeBox);
 
         autoPlannerBtn.setOnMouseClicked(e -> {
-            AutoPlanner planner = new AutoPlanner();
-            planner.launch(primaryStage);
+            new AutoPlanner().launch(primaryStage);
         });
         autoPlannerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                AutoPlanner planner = new AutoPlanner();
-                planner.launch(primaryStage);
+                new AutoPlanner().launch(primaryStage);
             }
         });
 
         pathGenBtn.setOnMouseClicked(e -> {
-            PathGenerator generator = new PathGenerator();
-            generator.launch(primaryStage);
+            new PathGenerator().launch(primaryStage);
         });
         pathGenBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                PathGenerator generator = new PathGenerator();
-                generator.launch(primaryStage);
+                new PathGenerator().launch(primaryStage);
             }
         });
 
         autoPlayerBtn.setOnMouseClicked(e -> {
-            AutoPlayer player = new AutoPlayer();
-            player.launch(primaryStage);
+            new AutoPlayer().launch(primaryStage);
         });
         autoPlayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                AutoPlayer player = new AutoPlayer();
-                player.launch(primaryStage);
+                new AutoPlayer().launch(primaryStage);
             }
         });
 
         matchReplayerBtn.setOnMouseClicked(e -> {
-            MatchReplayer replayer = new MatchReplayer();
-            replayer.launch(primaryStage);
+            new MatchReplayer().launch(primaryStage);
         });
         matchReplayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                MatchReplayer replayer = new MatchReplayer();
-                replayer.launch(primaryStage);
+                new MatchReplayer().launch(primaryStage);
             }
         });
 

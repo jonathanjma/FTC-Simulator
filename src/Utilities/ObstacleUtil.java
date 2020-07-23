@@ -87,10 +87,4 @@ public class ObstacleUtil {
             }
         }
     }
-
-    public void setFlagFalse() {
-        if (collisionProp.get()) {
-            collisionProp.set(false);
-        }
-    }
 }

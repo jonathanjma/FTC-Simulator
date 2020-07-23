@@ -28,13 +28,11 @@ public class Base {
         simPane.getChildren().add(backBtn);
 
         backBtn.setOnMouseClicked(e -> {
-            CombinedSim app = new CombinedSim();
-            app.start(primaryStage);
+            new CombinedSim().start(primaryStage);
         });
         backBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                CombinedSim app = new CombinedSim();
-                app.start(primaryStage);
+                new CombinedSim().start(primaryStage);
             }
         });
 

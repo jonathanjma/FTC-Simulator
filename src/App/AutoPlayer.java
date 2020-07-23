@@ -93,7 +93,6 @@ public class AutoPlayer extends PlayerBase {
             followPathData.resetPathNum();
             curTime.set(0 + "");
             followPathData.setPause(false);
-            obUtil.setFlagFalse();
         });
 
         primaryStage.setOnCloseRequest(e -> followPathData.endThread());
