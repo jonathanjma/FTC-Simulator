@@ -59,10 +59,10 @@ public class MatchReplayer extends PlayerBase {
     private Label commaLb7 = new Label(",");
     private Label tryingToDeposit = new Label("n/a");
 
-    private Text nodeLb = new Text(507, 25, "Node:");
-    private Text nodeNum = new Text(550, 25, "n/a");
-    private Text timeLb = new Text(507, 45, "Time:");
-    private Text curTime = new Text(545, 45, "n/a");
+    private Text nodeLb = new Text(515, 25, "Node:");
+    private Text nodeNum = new Text(558, 25, "n/a");
+    private Text timeLb = new Text(515, 45, "Time:");
+    private Text curTime = new Text(553, 45, "n/a");
 
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);

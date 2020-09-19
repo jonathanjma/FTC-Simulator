@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 public class CombinedSim extends Application {
 
     public static final int sceneWidth = 600;
+    public static final String imgPath = "field.jpg";
 
     private BorderPane mainPane = new BorderPane();
     private Pane startPane = new Pane();
@@ -95,13 +96,13 @@ public class CombinedSim extends Application {
         });
 
         startPane.setBackground(new Background(new BackgroundImage(
-                new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(startPane);
         Scene scene = new Scene(mainPane, sceneWidth, sceneWidth);
         primaryStage.setTitle("FTC Tools");
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image("field.jpg"));
+        primaryStage.getIcons().add(new Image(CombinedSim.imgPath));
         primaryStage.show();
     }
 }

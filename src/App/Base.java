@@ -37,7 +37,7 @@ public class Base {
         });
 
         simPane.setBackground(new Background(new BackgroundImage(
-                new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 null, null)));
         mainPane.setCenter(simPane);
     }

@@ -45,14 +45,14 @@ public class SimulatorWindow extends Application {
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         simPane.setBackground(new Background(
-                new BackgroundImage(new Image("field.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                new BackgroundImage(new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         null, null)));
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfo);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
         primaryStage.setTitle("New Sim Test");
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image("field.jpg"));
+        primaryStage.getIcons().add(new Image(CombinedSim.imgPath));
         primaryStage.show();
     }
 

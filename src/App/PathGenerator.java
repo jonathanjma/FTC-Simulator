@@ -152,7 +152,7 @@ public class PathGenerator extends PlannerBase {
         Scene stageScene = new Scene(box, 400, 200);
         newStage.setScene(stageScene);
         newStage.setTitle("Path Code");
-        newStage.getIcons().add(new Image("field.jpg"));
+        newStage.getIcons().add(new Image(CombinedSim.imgPath));
         newStage.show();
     }
 }
