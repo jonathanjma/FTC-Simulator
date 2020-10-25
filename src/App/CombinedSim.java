@@ -59,36 +59,28 @@ public class CombinedSim extends Application {
                 autoPlayerBtn, matchReplayerBtn);
         startPane.getChildren().addAll(optionsRect, homeBox);
 
-        autoPlannerBtn.setOnMouseClicked(e -> {
-            new AutoPlanner().launch(primaryStage);
-        });
+        autoPlannerBtn.setOnMouseClicked(e -> new AutoPlanner().launch(primaryStage));
         autoPlannerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new AutoPlanner().launch(primaryStage);
             }
         });
 
-        pathGenBtn.setOnMouseClicked(e -> {
-            new PathGenerator().launch(primaryStage);
-        });
+        pathGenBtn.setOnMouseClicked(e -> new PathGenerator().launch(primaryStage));
         pathGenBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new PathGenerator().launch(primaryStage);
             }
         });
 
-        autoPlayerBtn.setOnMouseClicked(e -> {
-            new AutoPlayer().launch(primaryStage);
-        });
+        autoPlayerBtn.setOnMouseClicked(e -> new AutoPlayer().launch(primaryStage));
         autoPlayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new AutoPlayer().launch(primaryStage);
             }
         });
 
-        matchReplayerBtn.setOnMouseClicked(e -> {
-            new MatchReplayer().launch(primaryStage);
-        });
+        matchReplayerBtn.setOnMouseClicked(e -> new MatchReplayer().launch(primaryStage));
         matchReplayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new MatchReplayer().launch(primaryStage);

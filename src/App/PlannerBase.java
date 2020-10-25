@@ -44,8 +44,8 @@ public class PlannerBase extends Base {
         angleTf2.setOnMouseClicked(e -> advanced.fire());
         angleTf3.setOnMouseClicked(e -> simple.fire());
 
-        mainPane.setOnMouseClicked(e -> updateRobotPos(1, e));
-        mainPane.setOnMouseDragged(e -> updateRobotPos(1, e));
+        mainPane.setOnMouseClicked(e -> {if(e.getY()<=600) updateRobotPos(1, e);});
+        mainPane.setOnMouseDragged(e -> {if(e.getY()<=600) updateRobotPos(1, e);});
 
         mainPane.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {

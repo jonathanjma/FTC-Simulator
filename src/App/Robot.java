@@ -16,7 +16,7 @@ public class Robot extends Rectangle {
 
     public double xInch;
     public double yInch;
-    private double thetaRad;
+    public double thetaRad;
 
     public final static double robotLength = 18 * inchToPixel;
     public final static double robotRadius = robotLength / 2;
