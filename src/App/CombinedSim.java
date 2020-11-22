@@ -34,7 +34,7 @@ public class CombinedSim extends Application {
 
     private Text title = new Text("Choose One");
     private Button autoPlannerBtn = new Button("Simple Auto Planner");
-    private Button pathGenBtn = new Button("Path Generator");
+    private Button pathPlannerBtn = new Button("Path Planner");
     private Button autoPlayerBtn = new Button("Auto Player");
     private Button matchReplayerBtn = new Button("Match Replayer");
 
@@ -51,11 +51,11 @@ public class CombinedSim extends Application {
 
         title.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 25));
         autoPlannerBtn.setFont(Font.font(Font.getDefault()+"", 15));
-        pathGenBtn.setFont(Font.font(Font.getDefault()+"", 15));
+        pathPlannerBtn.setFont(Font.font(Font.getDefault()+"", 15));
         autoPlayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
         matchReplayerBtn.setFont(Font.font(Font.getDefault()+"", 15));
 
-        homeBox.getChildren().addAll(title, autoPlannerBtn, pathGenBtn,
+        homeBox.getChildren().addAll(title, autoPlannerBtn, pathPlannerBtn,
                 autoPlayerBtn, matchReplayerBtn);
         startPane.getChildren().addAll(optionsRect, homeBox);
 
@@ -66,10 +66,10 @@ public class CombinedSim extends Application {
             }
         });
 
-        pathGenBtn.setOnMouseClicked(e -> new PathGenerator().launch(primaryStage));
-        pathGenBtn.setOnKeyPressed(e -> {
+        pathPlannerBtn.setOnMouseClicked(e -> new PathPlanner().launch(primaryStage));
+        pathPlannerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                new PathGenerator().launch(primaryStage);
+                new PathPlanner().launch(primaryStage);
             }
         });
 

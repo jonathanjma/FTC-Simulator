@@ -10,8 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import static Utilities.ConversionUtil.getXInch;
-import static Utilities.ConversionUtil.getYInch;
+import static Utilities.ConversionUtil.*;
 
 public class PlannerBase extends Base {
 
@@ -22,10 +21,10 @@ public class PlannerBase extends Base {
     public Label angleLb1 = new Label(")  Angle (rad):");
     public Label angleLb2 = new Label("π/");
     public Label angleLb3 = new Label("or");
-    public TextField xInchTf = new TextField("9");
-    public TextField yInchTf = new TextField("111");
-    public TextField angleTf1 = new TextField("0");
-    public TextField angleTf2 = new TextField("1");
+    public TextField xInchTf = new TextField("120");
+    public TextField yInchTf = new TextField("25");
+    public TextField angleTf1 = new TextField("1");
+    public TextField angleTf2 = new TextField("2");
     public TextField angleTf3 = new TextField("0");
     public RadioButton advanced = new RadioButton();
     public RadioButton simple = new RadioButton();

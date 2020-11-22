@@ -53,6 +53,7 @@ public class Path {
             waypointTimes.add(waypoint2.time);
         }
     }
+
     public Pose getRobotPose(double time){
 
         int splineindex = 0;
@@ -74,5 +75,9 @@ public class Path {
         double theta = Math.atan2(currentspline[1].velocity(splinetime),
                 currentspline[0].velocity(splinetime));
         return new Pose(x, y, theta);
+    }
+
+    public ArrayList<Waypoint> getWaypoints() {
+        return waypoints;
     }
 }

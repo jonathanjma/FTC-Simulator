@@ -30,27 +30,21 @@ public class ObstacleUtil {
 
     public void initializeObstacles() {
 
-        Obstacle island = new Obstacle(
-                new Point(200,265),
-                new Point(200,340),
-                new Point(400,340),
-                new Point(400,265)
-        );
-        Obstacle alliance = new Obstacle(
-                new Point(5,230),
-                new Point(robotLength+6,230),
-                new Point(robotLength+6,400),
-                new Point(5,400)
-        );
-//        Obstacle test = new Obstacle(
-//                new Point(70,10),
-//                new Point(70,200),
-//                new Point(200,200),
-//                new Point(200,10)
+//        Obstacle island = new Obstacle(
+//                new Point(200,265),
+//                new Point(200,340),
+//                new Point(400,340),
+//                new Point(400,265)
+//        );
+//        Obstacle alliance = new Obstacle(
+//                new Point(5,230),
+//                new Point(robotLength+6,230),
+//                new Point(robotLength+6,400),
+//                new Point(5,400)
 //        );
 
-        obList = new ArrayList<>(Arrays.asList(island, alliance));
-        obstacleGroup.getChildren().addAll(island, alliance);
+        obList = new ArrayList<>(Arrays.asList(/*island, alliance*/));
+        obstacleGroup.getChildren().addAll(/*island, alliance*/);
 
         int wx = 430, wy = 530;
         Rectangle warning = new Rectangle(wx, wy, 160, 60);

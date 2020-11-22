@@ -56,7 +56,7 @@ public class AutoPlayer extends PlayerBase {
         obUtil.initializeObstacles();
 
         robot = new Robot(robotLength, robotLength);
-        updateRobot(9, 111, 0);
+        updateRobot(115, 10, Math.PI/2);
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup);
         robot.toFront();

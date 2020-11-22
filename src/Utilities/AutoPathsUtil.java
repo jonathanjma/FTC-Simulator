@@ -4,6 +4,7 @@ import PathingFiles.*;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 
 import static Utilities.ConversionUtil.getXPixel;
 import static Utilities.ConversionUtil.getYPixel;
+import static java.lang.Math.PI;
 
 public class AutoPathsUtil {
 
@@ -34,6 +36,9 @@ public class AutoPathsUtil {
         colorValue = startingColorValue;
         this.colorInterval = colorInterval;
     }
+
+    enum RingCase {One, Four, None}
+    double lX, lY, lTh;
 
     public void drawAutoPaths() {
 
@@ -224,13 +229,19 @@ public class AutoPathsUtil {
             double x = getXPixel(curPose.getX());
             double y = getYPixel(curPose.getY());
 
-            Line pathSegmentLineRed = new Line(x, y, x, y);
-            pathSegmentLineRed.setStroke(Color.rgb(colorValue, 0, 0));
-            Line pathSegmentLineBlue = new Line(getXPixel(144)-x, y, getXPixel(144)-x, y);
-            pathSegmentLineBlue.setStroke(Color.rgb(0, 0, colorValue));
-            pathsGroup.getChildren().addAll(pathSegmentLineRed, pathSegmentLineBlue);
+            Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
+            Circle pathSegmentBlue = new Circle(getXPixel(144)-x, y, 1.5, Color.rgb(0, 0, colorValue));
+            pathsGroup.getChildren().addAll(pathSegmentRed, pathSegmentBlue);
         }
         colorValue -= colorInterval;
+
+        if (pathList != null) {
+            pathList.add(path); timeList.add(time);
+            ArrayList<Waypoint> points = path.getWaypoints();
+            lX = points.get(points.size() - 1).x;
+            lY = points.get(points.size() - 1).y;
+            lTh = points.get(points.size() - 1).theta;
+        }
     }
 
     public void drawSpline(Spline[] splines, double time) {
@@ -253,8 +264,10 @@ public class AutoPathsUtil {
         y1 = getYPixel(y1);  y2 = getYPixel(y2);
         Line toPointLineRed = new Line(x1, y1, x2, y2);
         toPointLineRed.setStroke(Color.rgb(colorValue, 0, 0));
+        toPointLineRed.setStrokeWidth(1.5);
         Line toPointLineBlue = new Line(getXPixel(144)-x1, y1, getXPixel(144)-x2, y2);
         toPointLineBlue.setStroke(Color.rgb(0, 0, colorValue));
+        toPointLineBlue.setStrokeWidth(1.5);
         pathsGroup.getChildren().addAll(toPointLineRed, toPointLineBlue);
         colorValue -= colorInterval;
     }

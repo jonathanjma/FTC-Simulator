@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import static App.Robot.robotLength;
 
 @SuppressWarnings("FieldMayBeFinal")
-public class PathGenerator extends PlannerBase {
+public class PathPlanner extends PlannerBase {
 
     private HBox simSettings2 = new HBox(5);
     private VBox simSettingsMain = new VBox(2.5);
@@ -97,9 +97,10 @@ public class PathGenerator extends PlannerBase {
         reset.setOnAction(e -> {
             pathsGroup.getChildren().clear();
             currentWaypoints = null;
-            xInchTf.setText("9");
-            yInchTf.setText("111");
-            angleTf1.setText("0");
+            xInchTf.setText("120");
+            yInchTf.setText("25");
+            angleTf1.setText("1");
+            angleTf2.setText("2");
             timeTf.setText("0");
             finish.setVisible(false);
             reset.setVisible(false);
@@ -113,7 +114,7 @@ public class PathGenerator extends PlannerBase {
 
         mainPane.setBottom(simSettingsMain);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
-        primaryStage.setTitle("Path Generator");
+        primaryStage.setTitle("Path Planner");
         primaryStage.setScene(scene);
     }
 
@@ -127,7 +128,7 @@ public class PathGenerator extends PlannerBase {
         box.getChildren().add(info);
 
         ArrayList<String> codeTxt = new ArrayList<>();
-        codeTxt.add("Waypoints = new Waypoint[] {");
+        codeTxt.add("Waypoint[] Waypoints = new Waypoint[] {");
         for (Waypoint point : waypoints) {
             codeTxt.add("\tnew Waypoint(" + point.x + ", " + point.y + ", " +
                     String.format("%.4f", point.theta) + ", " + point.getVelocity() + ", " +
