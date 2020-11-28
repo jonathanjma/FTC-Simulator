@@ -8,6 +8,8 @@ public class Path {
     private ArrayList<Waypoint> waypoints;
     private double totaltime;
 
+    private Spline thetaSpline = null;
+
     public Path(ArrayList<Waypoint> waypoints){
         //defining waypoint arraylist
         this.waypoints = waypoints;
@@ -54,6 +56,11 @@ public class Path {
         }
     }
 
+    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline){
+        this(waypoints);
+        this.thetaSpline = thetaSpline;
+    }
+
     public Pose getRobotPose(double time){
 
         int splineindex = 0;
@@ -74,10 +81,15 @@ public class Path {
         double y = currentspline[1].position(splinetime);
         double theta = Math.atan2(currentspline[1].velocity(splinetime),
                 currentspline[0].velocity(splinetime));
+
+        if (thetaSpline != null) {
+            theta = thetaSpline.position(splinetime);
+        }
+
         return new Pose(x, y, theta);
     }
 
-    public ArrayList<Waypoint> getWaypoints() {
-        return waypoints;
-    }
+//    public ArrayList<Waypoint> getWaypoints() {
+//        return waypoints;
+//    }
 }

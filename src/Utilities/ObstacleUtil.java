@@ -12,8 +12,6 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static App.Robot.robotLength;
-
 @SuppressWarnings("FieldMayBeFinal")
 public class ObstacleUtil {
 
