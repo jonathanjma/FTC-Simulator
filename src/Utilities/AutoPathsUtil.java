@@ -1,7 +1,6 @@
 package Utilities;
 
 import PathingFiles.*;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -54,7 +53,23 @@ public class AutoPathsUtil {
         double deliverWobble2Time = 3.5;
         double parkTime = 2;
 
-        double PI = Math.PI;
+        RingCase ringCase = RingCase.One;
+        double[][] wobbleDelivery = {{123, 73}, {97, 96}, {123, 121}};
+        double[][] wobble2Delivery = {{123, 69}, {97, 93}, {113, 126}};
+
+        double[] wobbleCor;
+        double[] wobble2Cor;
+        if (ringCase == RingCase.Four) {
+            wobbleCor = wobbleDelivery[2];
+            wobble2Cor = wobble2Delivery[2];
+        } else if (ringCase == RingCase.One) {
+            wobbleCor = wobbleDelivery[1];
+            wobble2Cor = wobble2Delivery[1];
+        } else {
+            wobbleCor = wobbleDelivery[0];
+            wobble2Cor = wobble2Delivery[0];
+            intakeWobble2Time -= 0.5;
+        }
 
         // Path Variables
         Waypoint[] startLineWaypoints = new Waypoint[] {

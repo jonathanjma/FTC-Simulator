@@ -9,6 +9,7 @@ public class Path {
     private double totaltime;
 
     private Spline thetaSpline = null;
+    private boolean addPi = false;
 
     public Path(ArrayList<Waypoint> waypoints){
         //defining waypoint arraylist
@@ -56,9 +57,19 @@ public class Path {
         }
     }
 
+    public Path(ArrayList<Waypoint> waypoints, boolean addPi){
+        this(waypoints);
+        this.addPi = addPi;
+    }
+
     public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline){
         this(waypoints);
         this.thetaSpline = thetaSpline;
+    }
+
+    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline, boolean addPi){
+        this(waypoints, thetaSpline);
+        this.addPi = addPi;
     }
 
     public Pose getRobotPose(double time){
@@ -86,10 +97,10 @@ public class Path {
             theta = thetaSpline.position(splinetime);
         }
 
+        if (addPi) {
+            theta += Math.PI;
+        }
+
         return new Pose(x, y, theta);
     }
-
-//    public ArrayList<Waypoint> getWaypoints() {
-//        return waypoints;
-//    }
 }
