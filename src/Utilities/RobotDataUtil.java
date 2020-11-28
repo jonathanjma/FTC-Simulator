@@ -34,9 +34,7 @@ public class RobotDataUtil {
                     dataArray.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
                             Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),
                             Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
-                            Double.parseDouble(data[10]), Boolean.parseBoolean(data[11]), Boolean.parseBoolean(data[12]),
-                            Boolean.parseBoolean(data[13]), Boolean.parseBoolean(data[14]), Boolean.parseBoolean(data[15]),
-                            Boolean.parseBoolean(data[16])));
+                            Double.parseDouble(data[10]), Double.parseDouble(data[11])));
                 }
                 lineNum++;
             }

@@ -27,7 +27,7 @@ import static Utilities.ConversionUtil.*;
 public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData5";
+    private final static String logName = "RobotData55";
     // **************************************************************************************************
 
     private VBox simInfoHousing = new VBox(2.5);
@@ -52,12 +52,8 @@ public class MatchReplayer extends PlayerBase {
     private Label accelYLb = new Label("n/a");
     private Label commaLb5 = new Label(",");
     private Label accelThetaLb = new Label("n/a");
-    private Label armLb = new Label("  Arm: ");
-    private Label armState = new Label("n/a");
-    private Label commaLb6 = new Label(",");
-    private Label stoneClamped = new Label("n/a");
-    private Label commaLb7 = new Label(",");
-    private Label tryingToDeposit = new Label("n/a");
+    private Label ringsLb = new Label("  # Rings: ");
+    private Label numLb = new Label("n/a");
 
     private Text nodeLb = new Text(515, 25, "Node:");
     private Text nodeNum = new Text(558, 25, "n/a");
@@ -90,10 +86,8 @@ public class MatchReplayer extends PlayerBase {
         accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14));
         accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14));
         accelThetaLb.setFont(Font.font(14));
-        armLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        armState.setFont(Font.font(14)); commaLb6.setFont(Font.font(14));
-        stoneClamped.setFont(Font.font(14)); commaLb7.setFont(Font.font(14));
-        tryingToDeposit.setFont(Font.font(14));
+        ringsLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
+        numLb.setFont(Font.font(14));
 
         nodeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
         nodeNum.setFont(Font.font(14));
@@ -103,7 +97,8 @@ public class MatchReplayer extends PlayerBase {
         simInfo.getChildren().addAll(velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3,
                 velocityThetaLb, startStopBtn, restartBtn);
         simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThetaLb,
-                armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit);
+                ringsLb, numLb
+                /*, armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit*/);
         simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
 
         dataUtil.parseLogFile();
@@ -194,13 +189,13 @@ public class MatchReplayer extends PlayerBase {
         robot.setTheta(data.theta);
 
         // color robot yellow if stone in robot
-        if (data.stoneInRobot) {
-            robot.updateColor(new Stop[]{
-                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-        } else {
+//        if (data.stoneInRobot) {
+//            robot.updateColor(new Stop[]{
+//                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
+//                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+//        } else {
             robot.updateColor();
-        }
+//        }
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", data.x));
@@ -215,7 +210,7 @@ public class MatchReplayer extends PlayerBase {
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
         int velocityFactor = (int) Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
-        Circle pathPoint = new Circle(xCor, yCor, 2, Color.hsb(velocityFactor * 1.5, 1, 1));
+        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityFactor * 2.25, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // update acceleration text
@@ -224,28 +219,7 @@ public class MatchReplayer extends PlayerBase {
         accelYLb.setText(String.format("%.2f", accelY));
         accelThetaLb.setText(String.format("%.2f", accelTheta));
 
-        // update stone clamped text
-        if (data.stoneClamped) {
-            stoneClamped.setText("Clamped");
-        } else {
-            stoneClamped.setText("Not Clamped");
-        }
-
-        // update trying to deposit text
-        if (data.tryingToDeposit) {
-            tryingToDeposit.setText("Depositing");
-        } else {
-            tryingToDeposit.setText("Not Depositing");
-        }
-
-        // update arm state text
-        if (data.armIsHome) {
-            armState.setText("Home");
-        } else if (data.armIsDown) {
-            armState.setText("Down");
-        } else if (data.armIsOut) {
-            armState.setText("Out");
-        }
+        numLb.setText((int)data.numRings + "");
     }
 
     public void clearPathPoints() {
