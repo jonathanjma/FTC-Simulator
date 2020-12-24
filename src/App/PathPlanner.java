@@ -79,14 +79,14 @@ public class PathPlanner extends PlannerBase {
             currentWaypoints.add(waypoint);
             System.out.println(currentWaypoints);
             Path path = new Path(currentWaypoints);
-            pathsUtil.drawPath(path, currentWaypoints.get(currentWaypoints.size() - 1).time);
+            pathsUtil.drawPath(path);
             robot.toFront();
         });
 
         finish.setOnAction(e -> {
             copyPathWindow(currentWaypoints);
             Path path = new Path(currentWaypoints);
-            pathsUtil.drawPath(path, currentWaypoints.get(currentWaypoints.size() - 1).time);
+            pathsUtil.drawPath(path);
             currentWaypoints = null;
             robot.toFront();
             finish.setVisible(false);

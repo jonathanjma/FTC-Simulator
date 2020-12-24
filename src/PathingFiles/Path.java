@@ -10,6 +10,7 @@ public class Path {
 
     private Spline thetaSpline = null;
     private boolean addPi = false;
+    public double totalTime() { return totaltime; }
 
     public Path(ArrayList<Waypoint> waypoints){
         //defining waypoint arraylist

@@ -2,12 +2,14 @@ package Utilities;
 
 public class DataPoint {
     public final double sinceStart, x, y, theta, velocityX, velocityY, velocityTheta,
-        accelX, accelY, accelTheta, numRings;
+        accelX, accelY, accelTheta;
+    public final int numRings;
+    public final boolean magHome, feedHome;
 
     public DataPoint(double sinceStart, double x, double y, double theta,
                      double velocityX, double velocityY, double velocityTheta,
                      double accelX, double accelY, double accelTheta,
-                     double numRings) {
+                     int numRings, boolean magHome, boolean feedHome) {
         this.sinceStart = sinceStart;
         this.x = x;
         this.y = y;
@@ -19,5 +21,7 @@ public class DataPoint {
         this.accelY = accelY;
         this.accelTheta = accelTheta;
         this.numRings = numRings;
+        this.magHome = magHome;
+        this.feedHome = feedHome;
     }
 }
