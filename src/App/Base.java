@@ -29,10 +29,12 @@ public class Base {
 
         backBtn.setOnMouseClicked(e -> {
             new CombinedSim().start(primaryStage);
+            endTasks();
         });
         backBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new CombinedSim().start(primaryStage);
+                endTasks();
             }
         });
 
@@ -41,4 +43,6 @@ public class Base {
                 null, null)));
         mainPane.setCenter(simPane);
     }
+
+    public void endTasks() {}
 }

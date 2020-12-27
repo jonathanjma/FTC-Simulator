@@ -95,7 +95,7 @@ public class Path {
                 currentspline[0].velocity(splinetime));
 
         if (thetaSpline != null) {
-            theta = thetaSpline.position(splinetime);
+            theta = thetaSpline.position(time);
         }
 
         if (addPi) {

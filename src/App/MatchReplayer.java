@@ -27,7 +27,7 @@ import static Utilities.ConversionUtil.*;
 public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData55";
+    private final static String logName = "RobotData219";
     // **************************************************************************************************
 
     private VBox simInfoHousing = new VBox(2.5);
@@ -156,7 +156,7 @@ public class MatchReplayer extends PlayerBase {
             followPositionData.setPause(false);
         });
 
-        primaryStage.setOnCloseRequest(e -> followPositionData.endThread());
+        primaryStage.setOnCloseRequest(e -> endTasks());
 
         robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
@@ -232,5 +232,9 @@ public class MatchReplayer extends PlayerBase {
             followPositionData.setPause(true);
             startStopBtn.setText("Resume");
         }
+    }
+
+    @Override public void endTasks() {
+        followPositionData.endThread();
     }
 }

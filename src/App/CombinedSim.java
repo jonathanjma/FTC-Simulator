@@ -1,6 +1,7 @@
 package App;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -59,33 +60,49 @@ public class CombinedSim extends Application {
                 autoPlayerBtn, matchReplayerBtn);
         startPane.getChildren().addAll(optionsRect, homeBox);
 
-        autoPlannerBtn.setOnMouseClicked(e -> new AutoPlanner().launch(primaryStage));
+        autoPlannerBtn.setOnAction(e -> new AutoPlanner().launch(primaryStage));
         autoPlannerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new AutoPlanner().launch(primaryStage);
             }
         });
 
-        pathPlannerBtn.setOnMouseClicked(e -> new PathPlanner().launch(primaryStage));
+        pathPlannerBtn.setOnAction(e -> new PathPlanner().launch(primaryStage));
         pathPlannerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new PathPlanner().launch(primaryStage);
             }
         });
 
-        autoPlayerBtn.setOnMouseClicked(e -> new AutoPlayer().launch(primaryStage));
+        autoPlayerBtn.setOnAction(e -> new AutoPlayer().launch(primaryStage));
         autoPlayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new AutoPlayer().launch(primaryStage);
             }
         });
 
-        matchReplayerBtn.setOnMouseClicked(e -> new MatchReplayer().launch(primaryStage));
+        matchReplayerBtn.setOnAction(e -> new MatchReplayer().launch(primaryStage));
         matchReplayerBtn.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 new MatchReplayer().launch(primaryStage);
             }
         });
+
+        if (getParameters() != null && !getParameters().getRaw().isEmpty()) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) { e.printStackTrace(); }
+                Platform.runLater(() -> {
+                    switch (getParameters().getRaw().get(0)) {
+                        case "autoplan": autoPlannerBtn.fire(); break;
+                        case "pathplan": pathPlannerBtn.fire(); break;
+                        case "autoplay": autoPlayerBtn.fire(); break;
+                        case "matchplay": matchReplayerBtn.fire(); break;
+                    }
+                });
+            }).start();
+        }
 
         startPane.setBackground(new Background(new BackgroundImage(
                 new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,

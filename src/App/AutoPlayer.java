@@ -1,5 +1,6 @@
 package App;
 
+import PathingFiles.Pose;
 import Threads.FollowPathData;
 import Utilities.AutoPathsUtil;
 import Utilities.ObstacleUtil;
@@ -26,10 +27,7 @@ public class AutoPlayer extends PlayerBase {
     private Label timeLb = new Label("  Time:");
     private Label curTimeLb = new Label("n/a");
 
-    private int colorValue = 255;
-    private final static double colorInterval = 20;
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, colorValue, colorInterval);
-
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
 
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
@@ -56,7 +54,8 @@ public class AutoPlayer extends PlayerBase {
         obUtil.initializeObstacles();
 
         robot = new Robot(robotLength, robotLength);
-        updateRobot(115, 10, Math.PI/2);
+        Pose start = pathsUtil.getPathList().get(0).getRobotPose(0);
+        updateRobot(start.getX(), start.getY(), start.getTheta());
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup);
         robot.toFront();
@@ -95,7 +94,7 @@ public class AutoPlayer extends PlayerBase {
             followPathData.setPause(false);
         });
 
-        primaryStage.setOnCloseRequest(e -> followPathData.endThread());
+        primaryStage.setOnCloseRequest(e -> endTasks());
 
         mainPane.setBottom(simInfo);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
@@ -114,5 +113,9 @@ public class AutoPlayer extends PlayerBase {
         xInchLb.setText(String.format("%.2f", x));
         yInchLb.setText(String.format("%.2f", y));
         thetaLb.setText(String.format("%.2f", theta));
+    }
+
+    @Override public void endTasks() {
+        followPathData.endThread();
     }
 }

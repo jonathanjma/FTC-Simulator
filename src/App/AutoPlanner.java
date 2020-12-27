@@ -12,9 +12,7 @@ import static App.Robot.robotLength;
 public class AutoPlanner extends PlannerBase {
 
     private Group pathsGroup = new Group();
-    private int colorValue = 255;
-    private final static double colorInterval = 20;
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, colorValue, colorInterval);
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
 
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
