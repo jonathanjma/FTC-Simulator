@@ -21,8 +21,8 @@ public class PlannerBase extends Base {
     public Label angleLb1 = new Label(")  Angle (rad):");
     public Label angleLb2 = new Label("π/");
     public Label angleLb3 = new Label("or");
-    public TextField xInchTf = new TextField("120");
-    public TextField yInchTf = new TextField("25");
+    public TextField xInchTf = new TextField("90");
+    public TextField yInchTf = new TextField("9");
     public TextField angleTf1 = new TextField("1");
     public TextField angleTf2 = new TextField("2");
     public TextField angleTf3 = new TextField("0");

@@ -60,8 +60,7 @@ public class AutoPlayer extends PlayerBase {
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup);
         robot.toFront();
 
-        followPathData = new FollowPathData(pathsUtil.getPathList(), pathsUtil.getTimeList(),
-                curTime, startStopVisible, this);
+        followPathData = new FollowPathData(pathsUtil.getPathList(), curTime, startStopVisible, this);
         robotThread = new Thread(followPathData, "UpdateRobotThread");
 
         startStopBtn.setOnAction(e -> {
