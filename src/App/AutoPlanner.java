@@ -9,8 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.lang.reflect.InvocationTargetException;
-
 import static App.Robot.robotLength;
 
 public class AutoPlanner extends PlannerBase {
@@ -27,15 +25,16 @@ public class AutoPlanner extends PlannerBase {
         angleLb1.setFont(Font.font(20)); angleLb2.setFont(Font.font(20));
         angleLb3.setFont(Font.font(20));
 
-        Button hi = new Button("pressss");
-        hi.setOnAction(e -> reloadPaths());
+        Button reloadBtn = new Button("Reload Paths");
+        reloadBtn.setLayoutX(490); reloadBtn.setLayoutY(555);
+        reloadBtn.setOnAction(e -> reloadPaths());
 
         robot = new Robot(robotLength, robotLength);
 
         pathsUtil.drawAutoPaths();
 
         updateRobotPos(2, null);
-        simPane.getChildren().addAll(robot, pathsGroup, hi);
+        simPane.getChildren().addAll(robot, pathsGroup, reloadBtn);
         robot.toFront();
 
         mainPane.setBottom(simSettings);
@@ -47,9 +46,8 @@ public class AutoPlanner extends PlannerBase {
     public void reloadPaths() {
         try {
             pathsGroup.getChildren().clear();
-            CompileUtil.reloadPathsUtil(pathsGroup).drawAutoPaths();
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-                | InstantiationException | InvocationTargetException ex) {
+            CompileUtil.reloadPathsUtil(pathsGroup, 255, 20).drawAutoPaths();
+        } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
     }

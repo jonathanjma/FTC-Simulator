@@ -26,8 +26,8 @@ public class FollowPathData implements Runnable {
     private double time;
     private boolean active = true;
 
-    public FollowPathData(ArrayList<Path> pathList,
-                          SimpleStringProperty curTime, SimpleBooleanProperty btnVisible, AutoPlayer app) {
+    public FollowPathData(ArrayList<Path> pathList, SimpleStringProperty curTime,
+                          SimpleBooleanProperty btnVisible, AutoPlayer app) {
         this.pathList = pathList;
         this.curTime = curTime;
         this.btnVisible = btnVisible;
@@ -80,6 +80,11 @@ public class FollowPathData implements Runnable {
         pathNum = 0; currentTime = 0;
         curPath = pathList.get(pathNum);
         time = curPath.totalTime();
+    }
+
+    public void setPathList(ArrayList<Path> newPathList) {
+        pathList = newPathList;
+        resetPathNum();
     }
 
     public void endThread() {

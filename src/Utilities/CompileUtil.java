@@ -9,22 +9,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public class CompileUtil {
 
     public static String className = "AutoPathsUtil";
 
-    public static BasePathsUtil reloadPathsUtil(Group pathsGroup) throws ClassNotFoundException, NoSuchMethodException,
-            IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BasePathsUtil reloadPathsUtil(Group pathsGroup, int startingColorValue, double colorInterval)
+            throws ReflectiveOperationException {
 
         File sourceFile = new File("src/Utilities/"+className+".java");
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         javaCompiler.run(null, null, null, sourceFile.getAbsolutePath());
 
         Class<?> dynamicClass = new PathUtilClassLoader().loadClass("Utilities."+className);
-        Constructor<?> constructor = dynamicClass.getConstructor(Group.class);
-        return (BasePathsUtil) constructor.newInstance(pathsGroup);
+        Constructor<?> constructor = dynamicClass.getConstructor(Group.class, int.class, double.class);
+        return (BasePathsUtil) constructor.newInstance(pathsGroup, startingColorValue, colorInterval);
     }
 
     static class PathUtilClassLoader extends ClassLoader {

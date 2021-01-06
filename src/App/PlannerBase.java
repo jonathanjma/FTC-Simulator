@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 import static Utilities.ConversionUtil.*;
 
-public class PlannerBase extends Base {
+public class PlannerBase extends BaseSim {
 
     public HBox simSettings = new HBox(5);
 

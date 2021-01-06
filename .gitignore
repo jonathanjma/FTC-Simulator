@@ -4,3 +4,4 @@ out/
 plannercompile/
 META-INF/
 RemoteAccess/
+*.class

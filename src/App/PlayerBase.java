@@ -8,7 +8,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public class PlayerBase extends Base {
+public class PlayerBase extends BaseSim {
 
     public HBox simInfo = new HBox(5);
 

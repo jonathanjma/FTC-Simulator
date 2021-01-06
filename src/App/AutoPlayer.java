@@ -3,18 +3,24 @@ package App;
 import PathingFiles.Pose;
 import Threads.FollowPathData;
 import Utilities.AutoPathsUtil;
+import Utilities.BasePathsUtil;
+import Utilities.CompileUtil;
 import Utilities.ObstacleUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import static App.Robot.robotLength;
+import static Utilities.ConversionUtil.getXInch;
+import static Utilities.ConversionUtil.getYInch;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class AutoPlayer extends PlayerBase {
@@ -27,7 +33,7 @@ public class AutoPlayer extends PlayerBase {
     private Label timeLb = new Label("  Time:");
     private Label curTimeLb = new Label("n/a");
 
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
+    private BasePathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
 
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
@@ -48,6 +54,10 @@ public class AutoPlayer extends PlayerBase {
         curTimeLb.textProperty().bind(curTime);
         startStopBtn.visibleProperty().bind(startStopVisible);
 
+        Button reloadBtn = new Button("Reload Paths");
+        reloadBtn.setLayoutX(490); reloadBtn.setLayoutY(560);
+        reloadBtn.setOnAction(e -> reloadPaths());
+
         simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn);
 
         pathsUtil.drawAutoPaths();
@@ -57,7 +67,12 @@ public class AutoPlayer extends PlayerBase {
         Pose start = pathsUtil.getPathList().get(0).getRobotPose(0);
         updateRobot(start.getX(), start.getY(), start.getTheta());
 
-        simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup);
+        simPane.setOnMouseClicked(e -> {
+            Tooltip tooltip = new Tooltip(String.format("%.2f, %.2f", getXInch(e.getX()), getYInch(e.getY())));
+            Tooltip.install(simPane, tooltip);
+        });
+
+        simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
         robot.toFront();
 
         followPathData = new FollowPathData(pathsUtil.getPathList(), curTime, startStopVisible, this);
@@ -93,8 +108,6 @@ public class AutoPlayer extends PlayerBase {
             followPathData.setPause(false);
         });
 
-        primaryStage.setOnCloseRequest(e -> endTasks());
-
         mainPane.setBottom(simInfo);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
         primaryStage.setTitle("Auto Player");
@@ -112,6 +125,29 @@ public class AutoPlayer extends PlayerBase {
         xInchLb.setText(String.format("%.2f", x));
         yInchLb.setText(String.format("%.2f", y));
         thetaLb.setText(String.format("%.2f", theta));
+    }
+
+    public void reloadPaths() {
+        try {
+            pathsGroup.getChildren().clear();
+            pathsUtil = CompileUtil.reloadPathsUtil(pathsGroup, 255, 20);
+            pathsUtil.drawAutoPaths();
+            Pose start = this.pathsUtil.getPathList().get(0).getRobotPose(0);
+            updateRobot(start.getX(), start.getY(), start.getTheta());
+            followPathData.setPathList(pathsUtil.getPathList());
+
+            if (!startStopVisible.get()) {
+                robotThread = new Thread(followPathData, "UpdateRobotThread");
+                robotThread.start();
+                startStopVisible.set(true);
+                startStopBtn.setText("Pause");
+                curTime.set(0 + "");
+            }
+            System.out.println("Paths reloaded");
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+            System.out.println("Failed to reload paths");
+        }
     }
 
     @Override public void endTasks() {

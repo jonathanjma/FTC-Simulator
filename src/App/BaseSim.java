@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class Base {
+public class BaseSim {
 
     public BorderPane mainPane = new BorderPane();
     public Pane simPane = new Pane();
@@ -37,6 +37,8 @@ public class Base {
                 endTasks();
             }
         });
+
+        primaryStage.setOnCloseRequest(e -> endTasks());
 
         simPane.setBackground(new Background(new BackgroundImage(
                 new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,

@@ -140,14 +140,14 @@ public class AutoPathsUtil extends BasePathsUtil {
         Path intakeStackPath = new Path(new ArrayList<>(Arrays.asList(intakeStackWaypoints)), intakeStackThetaSpline);
         drawPath(intakeStackPath);
 
-//        Waypoint[] deliverWobble2Waypoints = new Waypoint[] {
-//                    new Waypoint(lX, lY, lTh, 10, 30, 0, 0),
-//                    new Waypoint(wobble2Cor[0], wobble2Cor[1], 5*PI/4, 15, -20, 0, deliverWobble2Time),
-//            };
-//        Spline deliverWobble2ThetaSpline = new Spline(PI/2, 0.3, 0, 5*PI/4, 0, 0, deliverWobble2Time);
-//        Path deliverWobble2Path = new Path(new ArrayList<>(Arrays.asList(deliverWobble2Waypoints)), deliverWobble2ThetaSpline);
-//        drawPath(deliverWobble2Path);
-//
+        Waypoint[] deliverWobble2Waypoints = new Waypoint[] {
+                    new Waypoint(lX, lY, lTh, 10, 30, 0, 0),
+                    new Waypoint(wobble2Cor[0], wobble2Cor[1], 5*PI/4, 15, -20, 0, deliverWobble2Time),
+            };
+        Spline deliverWobble2ThetaSpline = new Spline(lTh, 0.3, 0, 5*PI/4, 0, 0, deliverWobble2Time);
+        Path deliverWobble2Path = new Path(new ArrayList<>(Arrays.asList(deliverWobble2Waypoints)), deliverWobble2ThetaSpline);
+        drawPath(deliverWobble2Path);
+
 //        Waypoint[] parkWaypoints;
 //        if (ringCase == RingCase.Zero) {
 //            parkWaypoints = new Waypoint[] {

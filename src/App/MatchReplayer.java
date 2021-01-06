@@ -156,8 +156,6 @@ public class MatchReplayer extends PlayerBase {
             followPositionData.setPause(false);
         });
 
-        primaryStage.setOnCloseRequest(e -> endTasks());
-
         robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
         simPane.getChildren().add(robot);
