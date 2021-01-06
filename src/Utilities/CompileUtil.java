@@ -2,43 +2,45 @@ package Utilities;
 
 import javafx.scene.Group;
 
-import javax.tools.*;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CompileUtil {
 
-    public static void main(String[] args) throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, InterruptedException {
-//        Thread.sleep(5000);
-        reloadPathsUtil(new Group());
-    }
+    public static String className = "AutoPathsUtil";
 
-    static String className = "AutoPathsUtil";
-    public static AutoPathsUtil reloadPathsUtil(Group pathsGroup) throws IOException, ClassNotFoundException, NoSuchMethodException,
+    public static BasePathsUtil reloadPathsUtil(Group pathsGroup) throws ClassNotFoundException, NoSuchMethodException,
             IllegalAccessException, InstantiationException, InvocationTargetException {
 
-        File parent = new File(System.getProperty("user.dir")+"/src/Utilities/");
-        File sourceFile = new File(parent, className + ".java");
-        File parentDir = sourceFile.getParentFile();
-
+        File sourceFile = new File("src/Utilities/"+className+".java");
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         javaCompiler.run(null, null, null, sourceFile.getAbsolutePath());
 
-        URLClassLoader urlClassLoader = URLClassLoader.newInstance(new URL[] {parentDir.toURI().toURL()});
-        Class<?> dynamicClass = urlClassLoader.loadClass("Utilities."+className);
+        Class<?> dynamicClass = new PathUtilClassLoader().loadClass("Utilities."+className);
         Constructor<?> constructor = dynamicClass.getConstructor(Group.class);
+        return (BasePathsUtil) constructor.newInstance(pathsGroup);
+    }
 
-        return (AutoPathsUtil) constructor.newInstance(pathsGroup);
+    static class PathUtilClassLoader extends ClassLoader {
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (name.equals("Utilities."+className)) {
+                try {
+                    InputStream is = new FileInputStream("src/Utilities/"+className+".class");
+                    byte[] buf = new byte[10000];
+                    int len = is.read(buf);
+                    return defineClass(name, buf, 0, len);
+                } catch (IOException e) {
+                    throw new ClassNotFoundException("", e);
+                }
+            }
+            return getParent().loadClass(name);
+        }
     }
 }

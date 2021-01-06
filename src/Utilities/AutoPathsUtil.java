@@ -13,7 +13,7 @@ import static Utilities.ConversionUtil.getXPixel;
 import static Utilities.ConversionUtil.getYPixel;
 import static java.lang.Math.PI;
 
-public class AutoPathsUtil {
+public class AutoPathsUtil extends BasePathsUtil {
 
     private Group pathsGroup;
     private SplineGenerator splineGenerator = new SplineGenerator();

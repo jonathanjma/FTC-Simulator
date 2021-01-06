@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import static App.Robot.robotLength;
@@ -46,13 +45,12 @@ public class AutoPlanner extends PlannerBase {
     }
 
     public void reloadPaths() {
-//        try {
-//            pathsGroup.getChildren().clear();
-//            pathsUtil = CompileUtil.reloadPathsUtil(pathsGroup);
-//            pathsUtil.drawAutoPaths();
-//        } catch (IOException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-//                | InstantiationException | InvocationTargetException ex) {
-//            ex.printStackTrace();
-//        }
+        try {
+            pathsGroup.getChildren().clear();
+            CompileUtil.reloadPathsUtil(pathsGroup).drawAutoPaths();
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+                | InstantiationException | InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
     }
 }
