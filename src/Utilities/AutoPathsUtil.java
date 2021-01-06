@@ -23,7 +23,6 @@ public class AutoPathsUtil {
     private int colorValue;
     private final double colorInterval;
 
-    private enum RingCase {One, Four, Zero}
     private double lX, lY, lTh;
 
     public AutoPathsUtil(Group pathsGroup) {
