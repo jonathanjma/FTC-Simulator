@@ -15,7 +15,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -52,11 +51,12 @@ public class PathPlanner extends PlannerBase {
         simSettings2.setAlignment(Pos.CENTER);
         simSettingsMain.getChildren().addAll(simSettings, simSettings2);
 
-        corLb.setFont(Font.font(15)); commaLb.setFont(Font.font(15));
-        angleLb1.setFont(Font.font(15)); angleLb2.setFont(Font.font(15));
-        angleLb3.setFont(Font.font(15));
-        velocityLb.setFont(Font.font(15)); accelerationLb.setFont(Font.font(15));
-        angVelocityLb.setFont(Font.font(15)); timeLb.setFont(Font.font(15));
+        setFont(corLb, 15); setFont(commaLb, 15);
+        setFont(angleLb1, 15); setFont(angleLb2, 15);
+        setFont(angleLb3, 15);
+        setFont(velocityLb, 15); setFont(accelerationLb, 15);
+        setFont(angVelocityLb, 15); setFont(timeLb, 15);
+
         velocityTf.setPrefWidth(50); accelerationTf.setPrefWidth(50);
         angVelocityTf.setPrefWidth(50); timeTf.setPrefWidth(50);
 

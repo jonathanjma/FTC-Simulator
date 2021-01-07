@@ -4,8 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class PlayerBase extends BaseSim {
@@ -24,11 +22,9 @@ public class PlayerBase extends BaseSim {
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
 
-        corLb.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14));
-        commaLb1.setFont(Font.font(14)); xInchLb.setFont(Font.font(14));
-        yInchLb.setFont(Font.font(14));
-        thetaLb1.setFont(Font.font(Font.getDefault()+"", FontWeight.BOLD, 14));
-        thetaLb.setFont(Font.font(14));
+        setFontBold(corLb, 14);
+        setFont(xInchLb, 14); setFont(commaLb1, 14); setFont(yInchLb, 14);
+        setFontBold(thetaLb1, 14); setFont(thetaLb, 14);
 
         restartBtn.setVisible(false);
 

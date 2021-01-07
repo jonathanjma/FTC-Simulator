@@ -18,8 +18,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -49,20 +47,20 @@ public class MatchReplayer extends PlayerBase {
     private Label commaLb2 = new Label(",");
     private Label velocityYLb = new Label("n/a");
     private Label commaLb3 = new Label(",");
-    private Label velocityThetaLb = new Label("n/a");
+    private Label velocityThLb = new Label("n/a");
     private Label accelLb = new Label("Accel:");
     private Label accelXLb = new Label("n/a");
     private Label commaLb4 = new Label(",");
     private Label accelYLb = new Label("n/a");
     private Label commaLb5 = new Label(",");
-    private Label accelThetaLb = new Label("n/a");
+    private Label accelThLb = new Label("n/a");
     private Label ringsLb = new Label("  # Rings: ");
-    private Label numLb = new Label("n/a");
+    private Label numRingsLb = new Label("n/a");
 
     private Text nodeLb = new Text(515, 25, "Node:");
-    private Text nodeNum = new Text(558, 25, "n/a");
+    private Text nodeNumLb = new Text(558, 25, "n/a");
     private Text timeLb = new Text(515, 45, "Time:");
-    private Text curTime = new Text(553, 45, "n/a");
+    private Text curTimeLb = new Text(553, 45, "n/a");
 
     private boolean prevFeedHome = true;
 
@@ -81,31 +79,28 @@ public class MatchReplayer extends PlayerBase {
         simInfo2.setAlignment(Pos.CENTER);
         simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
-        velocityLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        velocityXLb.setFont(Font.font(14)); commaLb2.setFont(Font.font(14));
-        velocityYLb.setFont(Font.font(14)); commaLb3.setFont(Font.font(14));
-        velocityThetaLb.setFont(Font.font(14));
+        setFontBold(velocityLb, 14);
+        setFont(velocityXLb, 14); setFont(commaLb2, 14);
+        setFont(velocityYLb, 14); setFont(commaLb3, 14);
+        setFont(velocityThLb, 14);
 
         startStopBtn.visibleProperty().bind(startStopVisible);
 
-        accelLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        accelXLb.setFont(Font.font(14)); commaLb4.setFont(Font.font(14));
-        accelYLb.setFont(Font.font(14)); commaLb5.setFont(Font.font(14));
-        accelThetaLb.setFont(Font.font(14));
-        ringsLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        numLb.setFont(Font.font(14));
+        setFontBold(accelLb, 14);
+        setFont(accelXLb, 14); setFont(commaLb4, 14);
+        setFont(accelYLb, 14); setFont(commaLb5, 14);
+        setFont(accelThLb, 14);
 
-        nodeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        nodeNum.setFont(Font.font(14));
-        timeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        curTime.setFont(Font.font(14));
+        setFontBold(ringsLb, 14); setFont(numRingsLb, 14);
+
+        setFontBold(nodeLb, 14); setFont(nodeNumLb, 14);
+        setFontBold(timeLb, 14); setFont(curTimeLb, 14);
 
         simInfo.getChildren().addAll(velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3,
-                velocityThetaLb, startStopBtn, restartBtn);
-        simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThetaLb,
-                ringsLb, numLb
-                /*, armLb, armState, commaLb6, stoneClamped, commaLb7, tryingToDeposit*/);
-        simPane.getChildren().addAll(nodeLb, nodeNum, timeLb, curTime, pathPointGroup);
+                velocityThLb, startStopBtn, restartBtn);
+        simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThLb,
+                ringsLb, numRingsLb);
+        simPane.getChildren().addAll(nodeLb, nodeNumLb, timeLb, curTimeLb, pathPointGroup);
 
         dataUtil.parseLogFile();
         followPositionData = new FollowPositionData(dataUtil, startStopVisible, this);
@@ -175,14 +170,14 @@ public class MatchReplayer extends PlayerBase {
     public void updateRobot(DataPoint data, boolean sliderMoved) {
 
         // update current node, time since start
-        nodeNum.setText((followPositionData.getCounter() + 1) + "");
+        nodeNumLb.setText((followPositionData.getCounter() + 1) + "");
 
         if (!sliderMoved) {
             manual = false;
             nodeSlider.setValue(followPositionData.getCounter() + 1);
         }
 
-        curTime.setText(String.format("%.2f", data.sinceStart / 1000));
+        curTimeLb.setText(String.format("%.2f", data.sinceStart / 1000));
 
         // update robot xy
         robot.setPosition(data.x, data.y);
@@ -217,7 +212,7 @@ public class MatchReplayer extends PlayerBase {
         // update velocity text
         velocityXLb.setText(String.format("%.2f", data.velocityX));
         velocityYLb.setText(String.format("%.2f", data.velocityY));
-        velocityThetaLb.setText(String.format("%.2f", data.velocityTheta));
+        velocityThLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
         int velocityFactor = (int) Math.sqrt(Math.pow(data.velocityX, 2) + Math.pow(data.velocityY, 2));
@@ -227,15 +222,13 @@ public class MatchReplayer extends PlayerBase {
         // update acceleration text
         accelXLb.setText(String.format("%.2f", data.accelX));
         accelYLb.setText(String.format("%.2f", data.accelY));
-        accelThetaLb.setText(String.format("%.2f", data.accelTheta));
+        accelThLb.setText(String.format("%.2f", data.accelTheta));
 
-        numLb.setText(data.numRings + "");
+        numRingsLb.setText(data.numRings + "");
 
         if (prevFeedHome && !data.feedHome) {
 
-            Circle whole = new Circle(15);
-            Circle inside = new Circle(8.5);
-            Shape ring = Shape.subtract(whole, inside);
+            Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
             ring.setFill(Color.YELLOW);
             simPane.getChildren().add(ring);
 

@@ -14,8 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import static App.Robot.robotLength;
@@ -48,8 +46,7 @@ public class AutoPlayer extends PlayerBase {
 
         simInfo.setPadding(new Insets(0, 5, 5, 5));
 
-        timeLb.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, 14));
-        curTimeLb.setFont(Font.font(14));
+        setFontBold(timeLb, 14); setFont(curTimeLb, 14);
 
         curTimeLb.textProperty().bind(curTime);
         startStopBtn.visibleProperty().bind(startStopVisible);

@@ -1,6 +1,7 @@
 package App;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
@@ -8,6 +9,9 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class BaseSim {
@@ -46,4 +50,17 @@ public class BaseSim {
     }
 
     public void endTasks() {}
+
+    public void setFont(Label label, int fontSize) {
+        label.setFont(Font.font(fontSize));
+    }
+    public void setFontBold(Label label, int fontSize) {
+        label.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, fontSize));
+    }
+    public void setFont(Text text, int fontSize) {
+        text.setFont(Font.font(fontSize));
+    }
+    public void setFontBold(Text text, int fontSize) {
+        text.setFont(Font.font(Font.getDefault() + "", FontWeight.BOLD, fontSize));
+    }
 }

@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import static App.Robot.robotLength;
@@ -21,9 +20,9 @@ public class AutoPlanner extends PlannerBase {
 
         simSettings.setPadding(new Insets(5, 5, 5, 5));
 
-        corLb.setFont(Font.font(20)); commaLb.setFont(Font.font(20));
-        angleLb1.setFont(Font.font(20)); angleLb2.setFont(Font.font(20));
-        angleLb3.setFont(Font.font(20));
+        setFont(corLb, 20); setFont(commaLb, 20);
+        setFont(angleLb1, 20); setFont(angleLb2, 20);
+        setFont(angleLb3, 20);
 
         Button reloadBtn = new Button("Reload Paths");
         reloadBtn.setLayoutX(490); reloadBtn.setLayoutY(555);
