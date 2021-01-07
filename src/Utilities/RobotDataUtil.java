@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class RobotDataUtil {
 
     //private String basePath = "src/Logs/";
-    private String basePath = "C:/Users/jonat/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/";
+    //private String basePath = "C:/Users/jonat/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/";
+    private String basePath = "META-INF/logs/";
     private BufferedReader bufferedReader;
 
     private ArrayList<DataPoint> dataArray;

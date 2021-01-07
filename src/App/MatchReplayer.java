@@ -3,6 +3,7 @@ package App;
 import Threads.FollowPositionData;
 import Utilities.DataPoint;
 import Utilities.RobotDataUtil;
+import javafx.animation.PathTransition;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,10 +16,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import static App.Robot.robotLength;
 import static Utilities.ConversionUtil.*;
@@ -27,7 +31,7 @@ import static Utilities.ConversionUtil.*;
 public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData219";
+    private final static String logName = "RobotData168";
     // **************************************************************************************************
 
     private VBox simInfoHousing = new VBox(2.5);
@@ -59,6 +63,8 @@ public class MatchReplayer extends PlayerBase {
     private Text nodeNum = new Text(558, 25, "n/a");
     private Text timeLb = new Text(515, 45, "Time:");
     private Text curTime = new Text(553, 45, "n/a");
+
+    private boolean prevFeedHome = true;
 
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
@@ -186,14 +192,22 @@ public class MatchReplayer extends PlayerBase {
         // update robot theta
         robot.setTheta(data.theta);
 
-        // color robot yellow if stone in robot
-//        if (data.stoneInRobot) {
-//            robot.updateColor(new Stop[]{
-//                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
-//                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-//        } else {
+        // color depending on rings in robot
+        if (data.numRings == 3) {
+            robot.updateColor(new Stop[]{
+                    new Stop(0, Color.rgb(50, 205, 50, 0.85)),
+                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+        } else if (data.numRings == 2) {
+            robot.updateColor(new Stop[]{
+                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
+                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+        } else if (data.numRings == 1) {
+            robot.updateColor(new Stop[]{
+                    new Stop(0, Color.rgb(255, 0, 56, 0.85)),
+                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+        } else {
             robot.updateColor();
-//        }
+        }
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", data.x));
@@ -201,23 +215,39 @@ public class MatchReplayer extends PlayerBase {
         thetaLb.setText(String.format("%.2f", data.theta));
 
         // update velocity text
-        double velocityX = data.velocityX, velocityY = data.velocityY, velocityTheta = data.velocityTheta;
-        velocityXLb.setText(String.format("%.2f", velocityX));
-        velocityYLb.setText(String.format("%.2f", velocityY));
-        velocityThetaLb.setText(String.format("%.2f", velocityTheta));
+        velocityXLb.setText(String.format("%.2f", data.velocityX));
+        velocityYLb.setText(String.format("%.2f", data.velocityY));
+        velocityThetaLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
-        int velocityFactor = (int) Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
+        int velocityFactor = (int) Math.sqrt(Math.pow(data.velocityX, 2) + Math.pow(data.velocityY, 2));
         Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityFactor * 2.25, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // update acceleration text
-        double accelX = data.accelX; double accelY = data.accelY; double accelTheta = data.accelTheta;
-        accelXLb.setText(String.format("%.2f", accelX));
-        accelYLb.setText(String.format("%.2f", accelY));
-        accelThetaLb.setText(String.format("%.2f", accelTheta));
+        accelXLb.setText(String.format("%.2f", data.accelX));
+        accelYLb.setText(String.format("%.2f", data.accelY));
+        accelThetaLb.setText(String.format("%.2f", data.accelTheta));
 
-        numLb.setText((int)data.numRings + "");
+        numLb.setText(data.numRings + "");
+
+        if (prevFeedHome && !data.feedHome) {
+
+            Circle whole = new Circle(15);
+            Circle inside = new Circle(8.5);
+            Shape ring = Shape.subtract(whole, inside);
+            ring.setFill(Color.YELLOW);
+            simPane.getChildren().add(ring);
+
+            double shooterX = data.x + 6.5 * Math.sin(data.theta);
+            double shooterY = data.y - 6.5 * Math.cos(data.theta);
+            Line path = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(108), getYPixel(150));
+
+            PathTransition ringLaunch = new PathTransition(Duration.millis(1000), path, ring);
+            ringLaunch.setOnFinished(e -> simPane.getChildren().remove(ring));
+            ringLaunch.play();
+        }
+        prevFeedHome = data.feedHome;
     }
 
     public void clearPathPoints() {

@@ -23,8 +23,7 @@ public class BaseSim {
 
         //simPane.setOnMouseClicked(event -> System.out.println(event.getX()+","+event.getY()));
 
-        backBtn.setLayoutX(10);
-        backBtn.setLayoutY(10);
+        backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().add(backBtn);
 
         backBtn.setOnMouseClicked(e -> {
