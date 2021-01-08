@@ -80,16 +80,16 @@ public class MatchReplayer extends PlayerBase {
         simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
         setFontBold(velocityLb, 14);
-        setFont(velocityXLb, 14); setFont(commaLb2, 14);
-        setFont(velocityYLb, 14); setFont(commaLb3, 14);
-        setFont(velocityThLb, 14);
+        setFont(velocityXLb, 14); velocityXLb.setPrefWidth(35); setFont(commaLb2, 14);
+        setFont(velocityYLb, 14); velocityYLb.setPrefWidth(35); setFont(commaLb3, 14);
+        setFont(velocityThLb, 14); velocityThLb.setPrefWidth(35);
 
         startStopBtn.visibleProperty().bind(startStopVisible);
 
         setFontBold(accelLb, 14);
-        setFont(accelXLb, 14); setFont(commaLb4, 14);
-        setFont(accelYLb, 14); setFont(commaLb5, 14);
-        setFont(accelThLb, 14);
+        setFont(accelXLb, 14); accelXLb.setPrefWidth(45); setFont(commaLb4, 14);
+        setFont(accelYLb, 14); accelYLb.setPrefWidth(45); setFont(commaLb5, 14);
+        setFont(accelThLb, 14); accelThLb.setPrefWidth(45);
 
         setFontBold(ringsLb, 14); setFont(numRingsLb, 14);
 
@@ -172,11 +172,13 @@ public class MatchReplayer extends PlayerBase {
         // update current node, time since start
         nodeNumLb.setText((followPositionData.getCounter() + 1) + "");
 
+        // update slider position as match progresses
         if (!sliderMoved) {
             manual = false;
             nodeSlider.setValue(followPositionData.getCounter() + 1);
         }
 
+        // update time since start
         curTimeLb.setText(String.format("%.2f", data.sinceStart / 1000));
 
         // update robot xy
@@ -219,13 +221,20 @@ public class MatchReplayer extends PlayerBase {
         Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityFactor * 2.25, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
+        // remove excess points
+        if (pathPointGroup.getChildren().size() > 500) {
+            pathPointGroup.getChildren().remove(0);
+        }
+
         // update acceleration text
         accelXLb.setText(String.format("%.2f", data.accelX));
         accelYLb.setText(String.format("%.2f", data.accelY));
         accelThLb.setText(String.format("%.2f", data.accelTheta));
 
+        // update rings in robot
         numRingsLb.setText(data.numRings + "");
 
+        // show shoot animation when rings feeded
         if (prevFeedHome && !data.feedHome) {
 
             Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
@@ -234,7 +243,12 @@ public class MatchReplayer extends PlayerBase {
 
             double shooterX = data.x + 6.5 * Math.sin(data.theta);
             double shooterY = data.y - 6.5 * Math.cos(data.theta);
-            Line path = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(108), getYPixel(150));
+            double targetX;
+            if (data.lastTarget == 0) { targetX = 76.5; }
+            else if (data.lastTarget == 1) { targetX = 84; }
+            else if (data.lastTarget == 2) { targetX = 91.5; }
+            else { targetX = 108; }
+            Line path = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(targetX), getYPixel(150));
 
             PathTransition ringLaunch = new PathTransition(Duration.millis(1000), path, ring);
             ringLaunch.setOnFinished(e -> simPane.getChildren().remove(ring));

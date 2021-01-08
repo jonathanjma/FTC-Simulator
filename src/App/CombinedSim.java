@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 public class CombinedSim extends Application {
 
     public static final int sceneWidth = 600;
-    public static final String imgPath = "field.jpg";
+    public static final String imgPath = "imgs/field.jpg";
 
     private BorderPane mainPane = new BorderPane();
     private Pane startPane = new Pane();

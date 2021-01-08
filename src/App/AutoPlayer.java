@@ -52,7 +52,7 @@ public class AutoPlayer extends PlayerBase {
         startStopBtn.visibleProperty().bind(startStopVisible);
 
         Button reloadBtn = new Button("Reload Paths");
-        reloadBtn.setLayoutX(490); reloadBtn.setLayoutY(560);
+        reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(567);
         reloadBtn.setOnAction(e -> reloadPaths());
 
         simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn);

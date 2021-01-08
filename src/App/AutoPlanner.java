@@ -25,7 +25,7 @@ public class AutoPlanner extends PlannerBase {
         setFont(angleLb3, 20);
 
         Button reloadBtn = new Button("Reload Paths");
-        reloadBtn.setLayoutX(490); reloadBtn.setLayoutY(555);
+        reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(563);
         reloadBtn.setOnAction(e -> reloadPaths());
 
         robot = new Robot(robotLength, robotLength);
