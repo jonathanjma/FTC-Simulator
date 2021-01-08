@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
@@ -30,12 +31,15 @@ public class AutoPlayer extends PlayerBase {
     // ui labels
     private Label timeLb = new Label("  Time:");
     private Label curTimeLb = new Label("n/a");
+    private Label slowLb = new Label("Slow: ");
+    private CheckBox slowBox = new CheckBox();
 
     private BasePathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
 
     private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
+    private boolean slowMode = false;
 
     // update robot thread
     private FollowPathData followPathData;
@@ -47,6 +51,7 @@ public class AutoPlayer extends PlayerBase {
         simInfo.setPadding(new Insets(0, 5, 5, 5));
 
         setFontBold(timeLb, 14); setFont(curTimeLb, 14);
+        setFont(slowLb, 14);
 
         curTimeLb.textProperty().bind(curTime);
         startStopBtn.visibleProperty().bind(startStopVisible);
@@ -55,7 +60,7 @@ public class AutoPlayer extends PlayerBase {
         reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(567);
         reloadBtn.setOnAction(e -> reloadPaths());
 
-        simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn);
+        simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn, slowLb, slowBox);
 
         pathsUtil.drawAutoPaths();
         obUtil.initializeObstacles();
@@ -67,6 +72,11 @@ public class AutoPlayer extends PlayerBase {
         simPane.setOnMouseClicked(e -> {
             Tooltip tooltip = new Tooltip(String.format("%.2f, %.2f", getXInch(e.getX()), getYInch(e.getY())));
             Tooltip.install(simPane, tooltip);
+        });
+
+        slowBox.setOnAction(e -> {
+            slowMode = !slowMode;
+            followPathData.setSlow(slowMode);
         });
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
@@ -132,13 +142,13 @@ public class AutoPlayer extends PlayerBase {
             Pose start = this.pathsUtil.getPathList().get(0).getRobotPose(0);
             updateRobot(start.getX(), start.getY(), start.getTheta());
             followPathData.setPathList(pathsUtil.getPathList());
+            curTime.set(0 + "");
 
             if (!startStopVisible.get()) {
                 robotThread = new Thread(followPathData, "UpdateRobotThread");
                 robotThread.start();
                 startStopVisible.set(true);
                 startStopBtn.setText("Pause");
-                curTime.set(0 + "");
             }
             System.out.println("Paths reloaded");
         } catch (ReflectiveOperationException ex) {

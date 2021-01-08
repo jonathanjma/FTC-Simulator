@@ -25,6 +25,7 @@ public class FollowPathData implements Runnable {
     private Pose curPose;
     private double time;
     private boolean active = true;
+    private int sleepMilli = 10;
 
     public FollowPathData(ArrayList<Path> pathList, SimpleStringProperty curTime,
                           SimpleBooleanProperty btnVisible, AutoPlayer app) {
@@ -51,7 +52,7 @@ public class FollowPathData implements Runnable {
                         currentTime += 0.01;
 
                         try {
-                            sleep(10);
+                            sleep(sleepMilli);
                         } catch (InterruptedException ex) {ex.printStackTrace();}
                     }
                 } else {
@@ -70,6 +71,10 @@ public class FollowPathData implements Runnable {
 
     public void setPause(boolean pause) {
         this.pause = pause;
+    }
+
+    public void setSlow(boolean slow) {
+        sleepMilli = slow ? 30 : 10;
     }
 
     public int getPathNum() {
