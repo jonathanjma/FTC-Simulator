@@ -19,7 +19,18 @@ public class Simulator {
         while (!SimulatorWindow.started) {doNothing();}
         //////////////////////////////////////////////////////////////////////////// put sim stuff below
 
-        /*AutoPlayer test*/
+        // for y 40 - 60 in
+        for (double input = 40*Math.PI/3; input < 58*Math.PI/3; input += Math.PI/12) {
+
+            double y = 2*Math.sin(input) + input;
+            setFrame(new Frame(109, y, Math.PI/2));
+
+            try {
+                sleep(15);
+            } catch (InterruptedException ex) {ex.printStackTrace();}
+        }
+
+        /*// AutoPlayer test
         AutoPathsUtil_Test pathsUtil = new AutoPathsUtil_Test();
         pathsUtil.parsePaths();
         ArrayList<Path> pathList = pathsUtil.getPathList();
@@ -42,7 +53,7 @@ public class Simulator {
             currentTime = 0;
         }
 
-        /*MatchReplayer test*/
+        // MatchReplayer test
         RobotDataUtil dataUtil = new RobotDataUtil("RobotData5");
         dataUtil.parseLogFile();
         int counter = 0;
@@ -58,7 +69,7 @@ public class Simulator {
             counter++;
         }
 
-        /*Polygon test*/
+        // Polygon test
         for (int i = 0; i < 45; i++) {
             Polygon poly = new Polygon();
             poly.getPoints().addAll(
@@ -70,7 +81,7 @@ public class Simulator {
             try {
                 sleep(15);
             } catch (InterruptedException ex) {ex.printStackTrace();}
-        }
+        }*/
     }
 
     public static void setFrame(Frame frame) {

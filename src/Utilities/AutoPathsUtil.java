@@ -44,19 +44,20 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         // Path Time Variables
         double startLineTime = 1.75;
-        double shootPowerShotsTime = 4.0;
+        double shootPowerShotsTime = 3.0; //4.0;
         double deliverWobbleTime = 1.5;
         double intakeWobble2Time = 4.0;
-        double intakeStackTime = 4.0;
+        double intakeStackTime = 3.0;
         double shootHighGoalTime = 3.0;
-        double deliverWobble2Time = 2;
-        double parkTime = 2.0;
+        double deliverWobble2Time = 2.0;
+        double shootHighGoal2Time = 2.0;
+        double parkTime = 1.5;
         // 4 extra seconds for wobble related tasks
 
         RingCase ringCase = RingCase.Four; // <------------------------------
 
-        double[][] wobbleDelivery = {{121, 82}, {96, 103}, {124, 124}};
-        double[][] wobble2Delivery = {{117, 74}, {96, 92}, {120, 118}};
+        double[][] wobbleDelivery = {{121, 82}, {96, 103}, {124, 125}};
+        double[][] wobble2Delivery = {{119, 74}, {96, 92}, {118, 131}};
         double[] wobbleCor;
         double[] wobble2Cor;
         if (ringCase == RingCase.Zero) {
@@ -66,12 +67,12 @@ public class AutoPathsUtil extends BasePathsUtil {
         } else if (ringCase == RingCase.One) {
             wobbleCor = wobbleDelivery[1];
             wobble2Cor = wobble2Delivery[1];
-            intakeStackTime = 2;
+            shootHighGoalTime = 2.0;
         } else {
             wobbleCor = wobbleDelivery[2];
             wobble2Cor = wobble2Delivery[2];
-            deliverWobbleTime = 2.5;
-            deliverWobble2Time = 3.0;
+            intakeStackTime = 1.25;
+            deliverWobbleTime = 2.0;
         }
 
         // Path Variables
@@ -93,10 +94,10 @@ public class AutoPathsUtil extends BasePathsUtil {
         } else {
             deliverWobbleWaypoints = new Waypoint[] {
                     new Waypoint(lX, lY, lTh, 30, 30, 0, 0),
-                    new Waypoint(wobbleCor[0], wobbleCor[1], 13*PI/12, 20, -20, 0, deliverWobbleTime),
+                    new Waypoint(wobbleCor[0], wobbleCor[1], 13*PI/12, 30, -20, 0, deliverWobbleTime),
             };
         }
-        Spline deliverWobbleThetaSpline = new Spline(lTh, 0.4, 0, 13*PI/12, 0, 0, deliverWobbleTime);
+        Spline deliverWobbleThetaSpline = new Spline(lTh, 0.3, 0, 13*PI/12, 0, 0, deliverWobbleTime);
         Path deliverWobblePath = new Path(new ArrayList<>(Arrays.asList(deliverWobbleWaypoints)), deliverWobbleThetaSpline);
         drawPath(deliverWobblePath);
 
@@ -138,35 +139,56 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         if (ringCase != RingCase.Zero) {
             Waypoint[] intakeStackWaypoints;
+            Spline intakeStackThetaSpline;
             if (ringCase == RingCase.One) {
-                intakeStackWaypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, lTh, -10, -30, 0, 0),
-                        new Waypoint(107, 52, 2*PI/3, 30, 20, 0, intakeStackTime),
+                intakeStackWaypoints = new Waypoint[] {
+                        new Waypoint(lX, lY, lTh, -10, -20, 0, 0),
+                        new Waypoint(107, 53, 7*PI/12, 30, 20, 0, intakeStackTime),
                 };
+                intakeStackThetaSpline = new Spline(lTh, 3, 0, 7*PI/12, 0, 0, intakeStackTime);
             } else {
-                intakeStackWaypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, lTh, -10, -30, 0, 0),
-                        new Waypoint(lX - 4, lY - 4, 2*PI/3, 20, 20, 0, 0.25),
-                        new Waypoint(118, 38, 2*PI/3, 10, 10, 0, 1.5),
-                        new Waypoint(106, 52, 2*PI/3, 10, 10, 0, intakeStackTime),
+                intakeStackWaypoints = new Waypoint[] {
+                        new Waypoint(lX, lY, lTh, -10, -20, 0, 0),
+                        new Waypoint(lX - 13, lY - 6, 7*PI/12, 10, 10, 0, 0.5),
+                        new Waypoint(108, 39, PI/2, 20, 10, 0, intakeStackTime),
                 };
+                intakeStackThetaSpline = new Spline(lTh, 1, 0, PI/2, 0, 0, intakeStackTime);
             }
-            Spline intakeStackThetaSpline = new Spline(lTh, 4, 0, 2*PI/3, 0, 0, intakeStackTime);
             Path intakeStackPath = new Path(new ArrayList<>(Arrays.asList(intakeStackWaypoints)), intakeStackThetaSpline);
             drawPath(intakeStackPath);
+
+            if (ringCase == RingCase.Four) {
+                Waypoint[] sinx_xWaypoints = new Waypoint[] {
+                        new Waypoint(lX, lY, lTh, 30, 20, 0, 0),
+                        new Waypoint(110, 64, PI/2, 30, 10, 0, 2),
+                };
+                Path sinx_xPath = new Path(new ArrayList<>(Arrays.asList(sinx_xWaypoints)));
+                drawPath(sinx_xPath);
+            }
 
             waitAtCurPose(shootHighGoalTime);
         }
 
         Waypoint[] deliverWobble2Waypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh, 10, 30, 0, 0),
-                    new Waypoint(wobble2Cor[0], wobble2Cor[1], 5*PI/4, 15, -20, 0, deliverWobble2Time),
+                    new Waypoint(lX, lY, lTh, 15, 30, 0, 0),
+                    new Waypoint(wobble2Cor[0], wobble2Cor[1], 5*PI/4, 20, -20, 0, deliverWobble2Time),
         };
         Spline deliverWobble2ThetaSpline = new Spline(lTh, 0.3, 0, 5*PI/4, 0, 0, deliverWobble2Time);
         Path deliverWobble2Path = new Path(new ArrayList<>(Arrays.asList(deliverWobble2Waypoints)), deliverWobble2ThetaSpline);
         drawPath(deliverWobble2Path);
 
         waitAtCurPose(1);
+
+        if (ringCase == RingCase.Four) {
+            Waypoint[] shootHighGoal2Waypoints = new Waypoint[] {
+                    new Waypoint(lX, lY, lTh, -10, -20, 0, 0),
+                    new Waypoint(lX - 10, lY - 10, lTh, 20, -20, 0, 0.4),
+                    new Waypoint(98, 60, PI/2, 20, 50, 0, shootHighGoal2Time),
+            };
+            Spline shootHighGoal2ThetaSpline = new Spline(lTh, 0, 0, PI/2, 0, 0, shootHighGoal2Time);
+            Path shootHighGoal2Path = new Path(new ArrayList<>(Arrays.asList(shootHighGoal2Waypoints)), shootHighGoal2ThetaSpline);
+            drawPath(shootHighGoal2Path);
+        }
 
         Waypoint[] parkWaypoints;
         if (ringCase == RingCase.Zero) {
@@ -182,12 +204,19 @@ public class AutoPathsUtil extends BasePathsUtil {
             };
         } else {
             parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh + PI, -10, -20, 0, 0),
-                    new Waypoint(98, 80, -PI/2, 20, 50, 0, parkTime),
+                    new Waypoint(lX, lY, lTh, -10, -20, 0, 0),
+                    new Waypoint(98, 85, PI/2, 20, 50, 0, parkTime),
             };
         }
-        Spline parkThetaSpline = new Spline(PI/4, 0, 0, -PI/2, 0, 0, parkTime);
-        Path parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)), parkThetaSpline, true);
+        Spline parkThetaSpline;
+        Path parkPath;
+        if (ringCase != RingCase.Four) {
+            parkThetaSpline = new Spline(PI/4, 0, 0, -PI/2, 0, 0, parkTime);
+            parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)), parkThetaSpline, true);
+        } else {
+            parkThetaSpline = new Spline(lTh, 0, 0, PI/2, 0, 0, parkTime);
+            parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)), parkThetaSpline);
+        }
         drawPath(parkPath);
     }
 

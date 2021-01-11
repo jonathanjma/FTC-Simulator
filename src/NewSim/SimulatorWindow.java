@@ -50,7 +50,7 @@ public class SimulatorWindow extends Application {
         mainPane.setCenter(simPane);
         mainPane.setBottom(simInfo);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
-        primaryStage.setTitle("New Sim Test");
+        primaryStage.setTitle("Frame Sim");
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image(CombinedSim.imgPath));
         primaryStage.show();
