@@ -1,6 +1,7 @@
 package Threads;
 
 import App.MatchReplayer;
+import App.PlayerBase;
 import Utilities.RobotDataUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -8,19 +9,18 @@ import javafx.beans.property.SimpleBooleanProperty;
 import static java.lang.Thread.sleep;
 
 @SuppressWarnings("FieldMayBeFinal")
-public class FollowPositionData implements Runnable {
+public class FollowLogData implements Runnable {
 
     private MatchReplayer app;
     private RobotDataUtil dataUtil;
-    private SimpleBooleanProperty startStopVisible;
+    private SimpleBooleanProperty startStopDisabled;
     private int counter = 0;
     private boolean active = true;
     private boolean pause = false;
 
-    public FollowPositionData(RobotDataUtil dataUtil, SimpleBooleanProperty startStopVisible,
-                              MatchReplayer app) {
+    public FollowLogData(RobotDataUtil dataUtil, SimpleBooleanProperty startStopDisabled, MatchReplayer app) {
         this.dataUtil = dataUtil;
-        this.startStopVisible = startStopVisible;
+        this.startStopDisabled = startStopDisabled;
         this.app = app;
     }
 
@@ -44,7 +44,11 @@ public class FollowPositionData implements Runnable {
             }
             System.out.print("");
         }
-        startStopVisible.set(false);
+
+        Platform.runLater(() -> {
+            startStopDisabled.set(true);
+            app.setState(PlayerBase.State.Paused);
+        });
     }
 
     public void setPause(boolean pause) {

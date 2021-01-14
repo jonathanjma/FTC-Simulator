@@ -30,7 +30,7 @@ public class BaseSim {
         backBtn.setLayoutX(10); backBtn.setLayoutY(10);
         simPane.getChildren().add(backBtn);
 
-        backBtn.setOnMouseClicked(e -> {
+        backBtn.setOnAction(e -> {
             new CombinedSim().start(primaryStage);
             endTasks();
         });

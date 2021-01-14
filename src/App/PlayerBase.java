@@ -3,10 +3,15 @@ package App;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class PlayerBase extends BaseSim {
+
+    public enum State {NotStarted, Playing, Paused}
+    public State state = State.NotStarted;
 
     public HBox simInfo = new HBox(5);
 
@@ -16,8 +21,8 @@ public class PlayerBase extends BaseSim {
     public Label yInchLb = new Label("n/a");
     public Label thetaLb1 = new Label(")  Theta:");
     public Label thetaLb = new Label("n/a");
-    public Button startStopBtn = new Button("Start");
-    public Button restartBtn = new Button("Restart");
+    public Button startStopBtn;
+    public Button restartBtn;
 
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
@@ -26,9 +31,28 @@ public class PlayerBase extends BaseSim {
         setFont(xInchLb, 14); setFont(commaLb1, 14); setFont(yInchLb, 14);
         setFontBold(thetaLb1, 14); setFont(thetaLb, 14);
 
-        restartBtn.setVisible(false);
+        ImageView startStopImg = new ImageView(new Image("imgs/play.png"));
+        startStopImg.setFitWidth(20); startStopImg.setFitHeight(20);
+        startStopBtn = new Button("", startStopImg);
+
+        ImageView restartImg = new ImageView(new Image("imgs/restart.png"));
+        restartImg.setFitWidth(20); restartImg.setFitHeight(20);
+        restartBtn = new Button("", restartImg);
+        restartBtn.setDisable(true);
 
         simInfo.setAlignment(Pos.CENTER);
         simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb);
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        ImageView startStopImg;
+        if (state == State.Playing) {
+            startStopImg = new ImageView(new Image("imgs/pause.png"));
+        } else {
+            startStopImg = new ImageView(new Image("imgs/play.png"));
+        }
+        startStopImg.setFitWidth(20); startStopImg.setFitHeight(20);
+        startStopBtn.setGraphic(startStopImg);
     }
 }

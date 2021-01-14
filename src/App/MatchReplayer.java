@@ -1,6 +1,6 @@
 package App;
 
-import Threads.FollowPositionData;
+import Threads.FollowLogData;
 import Utilities.DataPoint;
 import Utilities.RobotDataUtil;
 import javafx.animation.PathTransition;
@@ -65,10 +65,10 @@ public class MatchReplayer extends PlayerBase {
     private boolean prevFeedHome = true;
 
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
-    private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty startStopDisabled = new SimpleBooleanProperty(false);
 
     // update robot thread
-    private FollowPositionData followPositionData;
+    private FollowLogData followLogData;
     private Thread robotThread;
 
     public void launch(Stage primaryStage) {
@@ -80,11 +80,11 @@ public class MatchReplayer extends PlayerBase {
         simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
         setFontBold(velocityLb, 14);
-        setFont(velocityXLb, 14); velocityXLb.setPrefWidth(35); setFont(commaLb2, 14);
-        setFont(velocityYLb, 14); velocityYLb.setPrefWidth(35); setFont(commaLb3, 14);
-        setFont(velocityThLb, 14); velocityThLb.setPrefWidth(35);
+        setFont(velocityXLb, 14); velocityXLb.setPrefWidth(40); setFont(commaLb2, 14);
+        setFont(velocityYLb, 14); velocityYLb.setPrefWidth(40); setFont(commaLb3, 14);
+        setFont(velocityThLb, 14); velocityThLb.setPrefWidth(40);
 
-        startStopBtn.visibleProperty().bind(startStopVisible);
+        startStopBtn.disableProperty().bind(startStopDisabled);
 
         setFontBold(accelLb, 14);
         setFont(accelXLb, 14); accelXLb.setPrefWidth(45); setFont(commaLb4, 14);
@@ -103,8 +103,8 @@ public class MatchReplayer extends PlayerBase {
         simPane.getChildren().addAll(nodeLb, nodeNumLb, timeLb, curTimeLb, pathPointGroup);
 
         dataUtil.parseLogFile();
-        followPositionData = new FollowPositionData(dataUtil, startStopVisible, this);
-        robotThread = new Thread(followPositionData, "UpdateRobotThread");
+        followLogData = new FollowLogData(dataUtil, startStopDisabled, this);
+        robotThread = new Thread(followLogData, "UpdateRobotThread");
 
         nodeSlider = new Slider(1, dataUtil.getNumOfPoints(), 0);
         nodeSlider.setLayoutX(435); nodeSlider.setLayoutY(575); nodeSlider.setPrefWidth(150);
@@ -112,10 +112,10 @@ public class MatchReplayer extends PlayerBase {
         nodeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (manual) {
                 nodeSlider.setValue(newVal.intValue());
-                followPositionData.setCounter((int) nodeSlider.getValue() - 1);
+                followLogData.setCounter((int) nodeSlider.getValue() - 1);
                 pathPointGroup.getChildren().clear();
-                updateRobot(dataUtil.getData(followPositionData.getCounter()), true);
-                startStopVisible.set(nodeSlider.getValue() != dataUtil.getNumOfPoints());
+                updateRobot(dataUtil.getData(followLogData.getCounter()), true);
+                startStopDisabled.set(nodeSlider.getValue() == dataUtil.getNumOfPoints());
                 //System.out.println(followPositionData.getCounter() + " " + nodeSlider.getValue());
             }
         });
@@ -127,34 +127,34 @@ public class MatchReplayer extends PlayerBase {
         simPane.getChildren().add(nodeSlider);
 
         startStopBtn.setOnAction(e -> {
-            switch (startStopBtn.getText()) {
-                case "Start":
+            switch (state) {
+                case NotStarted:
                     robotThread.start();
-                    startStopBtn.setText("Pause");
-                    restartBtn.setVisible(true);
+                    setState(State.Playing);
+                    restartBtn.setDisable(false);
                     startBtnPressed = true;
                     break;
-                case "Pause":
-                    followPositionData.setPause(true);
-                    startStopBtn.setText("Resume");
+                case Playing:
+                    followLogData.setPause(true);
+                    setState(State.Paused);
                     break;
-                case "Resume":
-                    followPositionData.setPause(false);
-                    startStopBtn.setText("Pause");
+                case Paused:
+                    followLogData.setPause(false);
+                    setState(State.Playing);
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
-            if (followPositionData.getCounter() == dataUtil.getNumOfPoints()) {
-                robotThread = new Thread(followPositionData, "UpdateRobotThread");
+            if (followLogData.getCounter() == dataUtil.getNumOfPoints()) {
+                robotThread = new Thread(followLogData, "UpdateRobotThread");
                 robotThread.start();
             }
-            //System.out.println(followPositionData.getCounter() + " " + dataUtil.getNumOfPoints());
-            startStopBtn.setText("Pause");
-            startStopVisible.set(true);
-            followPositionData.setCounter(0);
-            followPositionData.setPause(false);
+            //System.out.println(followLogData.getCounter() + " " + dataUtil.getNumOfPoints());
+            startStopDisabled.set(false);
+            followLogData.setCounter(0);
+            followLogData.setPause(false);
+            setState(State.Playing);
         });
 
         robot = new Robot(robotLength, robotLength);
@@ -170,12 +170,12 @@ public class MatchReplayer extends PlayerBase {
     public void updateRobot(DataPoint data, boolean sliderMoved) {
 
         // update current node, time since start
-        nodeNumLb.setText((followPositionData.getCounter() + 1) + "");
+        nodeNumLb.setText((followLogData.getCounter() + 1) + "");
 
         // update slider position as match progresses
         if (!sliderMoved) {
             manual = false;
-            nodeSlider.setValue(followPositionData.getCounter() + 1);
+            nodeSlider.setValue(followLogData.getCounter() + 1);
         }
 
         // update time since start
@@ -191,15 +191,15 @@ public class MatchReplayer extends PlayerBase {
 
         // color depending on rings in robot
         if (data.numRings == 3) {
-            robot.updateColor(new Stop[]{
+            robot.updateColor(new Stop[] {
                     new Stop(0, Color.rgb(50, 205, 50, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))});
         } else if (data.numRings == 2) {
-            robot.updateColor(new Stop[]{
+            robot.updateColor(new Stop[] {
                     new Stop(0, Color.rgb(255, 225, 53, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))});
         } else if (data.numRings == 1) {
-            robot.updateColor(new Stop[]{
+            robot.updateColor(new Stop[] {
                     new Stop(0, Color.rgb(255, 0, 56, 0.85)),
                     new Stop(1, Color.rgb(192, 192, 192, 0.85))});
         } else {
@@ -264,12 +264,12 @@ public class MatchReplayer extends PlayerBase {
     public void nodeSliderAction() {
         if (startBtnPressed) {
             manual = true;
-            followPositionData.setPause(true);
-            startStopBtn.setText("Resume");
+            followLogData.setPause(true);
+            setState(State.Paused);
         }
     }
 
     @Override public void endTasks() {
-        followPositionData.endThread();
+        followLogData.endThread();
     }
 }

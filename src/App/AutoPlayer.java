@@ -15,7 +15,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static App.Robot.robotLength;
 import static Utilities.ConversionUtil.getXInch;
@@ -33,11 +38,15 @@ public class AutoPlayer extends PlayerBase {
     private Label curTimeLb = new Label("n/a");
     private Label slowLb = new Label("Slow: ");
     private CheckBox slowBox = new CheckBox();
+    private Button nextBtn;
+    private Button prevBtn;
 
     private BasePathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
 
-    private SimpleBooleanProperty startStopVisible = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty startStopDisabled = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty nextDisabled = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty prevDisabled = new SimpleBooleanProperty(true);
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
     private boolean slowMode = false;
 
@@ -53,14 +62,25 @@ public class AutoPlayer extends PlayerBase {
         setFontBold(timeLb, 14); setFont(curTimeLb, 14);
         setFont(slowLb, 14);
 
+        ImageView nextImg = new ImageView(new Image("imgs/skip.png"));
+        nextImg.setFitWidth(20); nextImg.setFitHeight(20);
+        nextBtn = new Button("", nextImg);
+
+        ImageView prevImg = new ImageView(new Image("imgs/skipback.png"));
+        prevImg.setFitWidth(20); prevImg.setFitHeight(20);
+        prevBtn = new Button("", prevImg);
+        prevBtn.setDisable(true);
+
         curTimeLb.textProperty().bind(curTime);
-        startStopBtn.visibleProperty().bind(startStopVisible);
+        startStopBtn.disableProperty().bind(startStopDisabled);
+        nextBtn.disableProperty().bind(nextDisabled);
+        prevBtn.disableProperty().bind(prevDisabled);
 
         Button reloadBtn = new Button("Reload Paths");
         reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(567);
         reloadBtn.setOnAction(e -> reloadPaths());
 
-        simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn, slowLb, slowBox);
+        simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn, prevBtn, nextBtn, slowLb, slowBox);
 
         pathsUtil.drawAutoPaths();
         obUtil.initializeObstacles();
@@ -82,23 +102,24 @@ public class AutoPlayer extends PlayerBase {
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
         robot.toFront();
 
-        followPathData = new FollowPathData(pathsUtil.getPathList(), curTime, startStopVisible, this);
+        followPathData = new FollowPathData(pathsUtil.getPathList(), curTime,
+                new ArrayList<>(Arrays.asList(startStopDisabled, nextDisabled, prevDisabled)), this);
         robotThread = new Thread(followPathData, "UpdateRobotThread");
 
         startStopBtn.setOnAction(e -> {
-            switch (startStopBtn.getText()) {
-                case "Start":
+            switch (state) {
+                case NotStarted:
                     robotThread.start();
-                    startStopBtn.setText("Pause");
-                    restartBtn.setVisible(true);
+                    setState(State.Playing);
+                    restartBtn.setDisable(false);
                     break;
-                case "Pause":
+                case Playing:
                     followPathData.setPause(true);
-                    startStopBtn.setText("Resume");
+                    setState(State.Paused);
                     break;
-                case "Resume":
+                case Paused:
                     followPathData.setPause(false);
-                    startStopBtn.setText("Pause");
+                    setState(State.Playing);
                     break;
             }
         });
@@ -107,12 +128,30 @@ public class AutoPlayer extends PlayerBase {
             if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
                 robotThread = new Thread(followPathData, "UpdateRobotThread");
                 robotThread.start();
-                startStopVisible.set(true);
+                startStopDisabled.set(false);
             }
-            startStopBtn.setText("Pause");
             followPathData.resetPathNum();
-            curTime.set(0 + "");
+            curTime.set("0.0");
             followPathData.setPause(false);
+            setState(State.Playing);
+        });
+
+        nextBtn.setOnAction(e -> {
+            followPathData.setPathNum(followPathData.getPathNum()+1);
+        });
+
+        prevBtn.setOnAction(e -> {
+            if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
+                robotThread = new Thread(followPathData, "UpdateRobotThread");
+                robotThread.start();
+                startStopDisabled.set(false);
+                followPathData.setPathNum(followPathData.getPathNum()-1);
+                curTime.set("0.0");
+                followPathData.setPause(false);
+                setState(State.Playing);
+            } else {
+                followPathData.setPathNum(followPathData.getPathNum()-1);
+            }
         });
 
         mainPane.setBottom(simInfo);
@@ -142,13 +181,13 @@ public class AutoPlayer extends PlayerBase {
             Pose start = this.pathsUtil.getPathList().get(0).getRobotPose(0);
             updateRobot(start.getX(), start.getY(), start.getTheta());
             followPathData.setPathList(pathsUtil.getPathList());
-            curTime.set(0 + "");
+            curTime.set("0.0");
 
-            if (!startStopVisible.get()) {
+            if (startStopDisabled.get()) {
                 robotThread = new Thread(followPathData, "UpdateRobotThread");
                 robotThread.start();
-                startStopVisible.set(true);
-                startStopBtn.setText("Pause");
+                startStopDisabled.set(false);
+                setState(State.Playing);
             }
             System.out.println("Paths reloaded");
         } catch (ReflectiveOperationException ex) {

@@ -6,7 +6,7 @@ import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AutoPathsUtil_Test {
+public class TestAutoPathsUtil {
 
     private ArrayList<Path> pathList;
     private ArrayList<Double> timeList;

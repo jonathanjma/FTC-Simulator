@@ -61,12 +61,9 @@ public class Robot extends Rectangle {
     }
 
     public void updateColor() {
-        Stop[] stops = {new Stop(0, Color.rgb(0, 0, 0, 0.75)),
-                new Stop(1, Color.rgb(192, 192, 192, 0.75))};
-        LinearGradient background = new LinearGradient(getXPixel(xInch), getYPixel(yInch),
-                getXPixel(xInch) + robotLength, getYPixel(yInch),
-                false, CycleMethod.NO_CYCLE, stops);
-        setFill(background);
+        updateColor(new Stop[] {
+                new Stop(0, Color.rgb(0, 0, 0, 0.75)),
+                new Stop(1, Color.rgb(192, 192, 192, 0.75))});
     }
 
     public void updateColor(Stop[] stops) {

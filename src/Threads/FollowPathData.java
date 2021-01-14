@@ -1,6 +1,7 @@
 package Threads;
 
 import App.AutoPlayer;
+import App.PlayerBase;
 import PathingFiles.Path;
 import PathingFiles.Pose;
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ public class FollowPathData implements Runnable {
 
     private AutoPlayer app;
     private SimpleStringProperty curTime;
-    private SimpleBooleanProperty btnVisible;
+    private ArrayList<SimpleBooleanProperty> buttonDisableProperties;
     private ArrayList<Path> pathList;
     private boolean pause = false;
     private int pathNum = 0;
@@ -28,10 +29,10 @@ public class FollowPathData implements Runnable {
     private int sleepMilli = 10;
 
     public FollowPathData(ArrayList<Path> pathList, SimpleStringProperty curTime,
-                          SimpleBooleanProperty btnVisible, AutoPlayer app) {
+                          ArrayList<SimpleBooleanProperty> buttonDisableProperties, AutoPlayer app) {
         this.pathList = pathList;
         this.curTime = curTime;
-        this.btnVisible = btnVisible;
+        this.buttonDisableProperties = buttonDisableProperties;
         this.app = app;
     }
 
@@ -45,10 +46,13 @@ public class FollowPathData implements Runnable {
                     if (!pause) {
                         curPose = curPath.getRobotPose(currentTime);
                         //System.out.println(curPose.getX() +" "+ curPose.getY() +" "+ curPose.getTheta());
-                        Platform.runLater(() ->
-                                app.updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta()));
-                        Platform.runLater(() ->
-                                curTime.set(String.format("%.2f", Double.parseDouble(curTime.getValue()) + 0.01)));
+                        Platform.runLater(() -> {
+                            app.updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta());
+                            curTime.set(String.format("%.2f", Double.parseDouble(curTime.getValue()) + 0.01));
+
+                            buttonDisableProperties.get(1).set(pathNum == pathList.size() - 1); // next
+                            buttonDisableProperties.get(2).set(pathNum == 0); // prev
+                        });
                         currentTime += 0.01;
 
                         try {
@@ -66,7 +70,11 @@ public class FollowPathData implements Runnable {
             }
             currentTime = 0;
         }
-        btnVisible.set(false);
+
+        Platform.runLater(() -> {
+            buttonDisableProperties.get(0).set(true);
+            app.setState(PlayerBase.State.Paused);
+        });
     }
 
     public void setPause(boolean pause) {
@@ -77,14 +85,22 @@ public class FollowPathData implements Runnable {
         sleepMilli = slow ? 30 : 10;
     }
 
-    public int getPathNum() {
-        return pathNum;
+    public void setPathNum(int pathNum) {
+        if (pathNum >= 0 && pathNum <= pathList.size()-1) {
+//            System.out.println("set to " + pathNum);
+            this.pathNum = pathNum;
+            currentTime = 0;
+            curPath = pathList.get(pathNum);
+            time = curPath.totalTime();
+        }
     }
 
     public void resetPathNum() {
-        pathNum = 0; currentTime = 0;
-        curPath = pathList.get(pathNum);
-        time = curPath.totalTime();
+        setPathNum(0);
+    }
+
+    public int getPathNum() {
+        return pathNum;
     }
 
     public void setPathList(ArrayList<Path> newPathList) {

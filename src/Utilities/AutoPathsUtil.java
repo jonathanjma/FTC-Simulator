@@ -24,7 +24,7 @@ public class AutoPathsUtil extends BasePathsUtil {
     private final double colorInterval;
 
     private double lX, lY, lTh;
-    private final boolean enableWaits = true;
+    private final boolean enableWaits = false;
 
     public AutoPathsUtil(Group pathsGroup) {
         this.pathsGroup = pathsGroup;
