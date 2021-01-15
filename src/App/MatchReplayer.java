@@ -29,7 +29,7 @@ import static Utilities.ConversionUtil.*;
 public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData168";
+    private final static String logName = "RobotData494";
     // **************************************************************************************************
 
     private VBox simInfoHousing = new VBox(2.5);
@@ -62,7 +62,7 @@ public class MatchReplayer extends PlayerBase {
     private Text timeLb = new Text(515, 45, "Time:");
     private Text curTimeLb = new Text(553, 45, "n/a");
 
-    private boolean prevFeedHome = true;
+    private int prevRings = 0;
 
     private RobotDataUtil dataUtil = new RobotDataUtil(logName);
     private SimpleBooleanProperty startStopDisabled = new SimpleBooleanProperty(false);
@@ -235,7 +235,7 @@ public class MatchReplayer extends PlayerBase {
         numRingsLb.setText(data.numRings + "");
 
         // show shoot animation when rings feeded
-        if (prevFeedHome && !data.feedHome) {
+        if (data.numRings != prevRings && prevRings != 0) {
 
             Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
             ring.setFill(Color.YELLOW);
@@ -254,7 +254,7 @@ public class MatchReplayer extends PlayerBase {
             ringLaunch.setOnFinished(e -> simPane.getChildren().remove(ring));
             ringLaunch.play();
         }
-        prevFeedHome = data.feedHome;
+        prevRings = data.numRings;
     }
 
     public void clearPathPoints() {

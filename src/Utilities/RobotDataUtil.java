@@ -9,9 +9,8 @@ import java.util.ArrayList;
 @SuppressWarnings("FieldCanBeLocal")
 public class RobotDataUtil {
 
-    //private String basePath = "src/Logs/";
+    private String basePath = "src/Logs/";
     //private String basePath = "C:/Users/jonat/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/";
-    private String basePath = "META-INF/logs/";
     private BufferedReader bufferedReader;
 
     private ArrayList<DataPoint> dataArray;
@@ -36,7 +35,7 @@ public class RobotDataUtil {
                             Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),
                             Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
                             Double.parseDouble(data[10]), Integer.parseInt(data[11]), Boolean.parseBoolean(data[12]),
-                            Boolean.parseBoolean(data[13]), 0));
+                            Boolean.parseBoolean(data[13]), Integer.parseInt(data[14])));
                 }
                 lineNum++;
             }
