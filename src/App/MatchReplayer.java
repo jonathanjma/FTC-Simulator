@@ -222,7 +222,7 @@ public class MatchReplayer extends PlayerBase {
         pathPointGroup.getChildren().add(pathPoint);
 
         // remove excess points
-        if (pathPointGroup.getChildren().size() > 500) {
+        if (pathPointGroup.getChildren().size() > 700) {
             pathPointGroup.getChildren().remove(0);
         }
 

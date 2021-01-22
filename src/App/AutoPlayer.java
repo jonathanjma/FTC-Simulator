@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -50,6 +51,8 @@ public class AutoPlayer extends PlayerBase {
     private SimpleStringProperty curTime = new SimpleStringProperty("0.00");
     private boolean slowMode = false;
 
+    private boolean showTooltip = false;
+
     // update robot thread
     private FollowPathData followPathData;
     private Thread robotThread;
@@ -89,14 +92,37 @@ public class AutoPlayer extends PlayerBase {
         Pose start = pathsUtil.getPathList().get(0).getRobotPose(0);
         updateRobot(start.getX(), start.getY(), start.getTheta());
 
-        simPane.setOnMouseClicked(e -> {
-            Tooltip tooltip = new Tooltip(String.format("%.2f, %.2f", getXInch(e.getX()), getYInch(e.getY())));
-            Tooltip.install(simPane, tooltip);
-        });
-
         slowBox.setOnAction(e -> {
             slowMode = !slowMode;
             followPathData.setSlow(slowMode);
+        });
+
+        Tooltip positionTooltip = new Tooltip("");
+        simPane.setOnMouseMoved(e -> {
+            if (showTooltip) {
+                positionTooltip.setText("(x: " + String.format("%.2f", getXInch(e.getX()))
+                        + ", y: " + String.format("%.2f", getYInch(e.getY())) + ")");
+                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
+            }
+        });
+
+        simPane.setOnMouseExited(e -> {
+            if (showTooltip) {
+                positionTooltip.hide();
+            }
+        });
+
+        simPane.setOnMouseEntered(e -> {
+            if (showTooltip) {
+                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
+            }
+        });
+
+        simPane.setOnMouseClicked(e -> {
+            if (showTooltip) {
+                positionTooltip.hide();
+            }
+            showTooltip = !showTooltip;
         });
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
