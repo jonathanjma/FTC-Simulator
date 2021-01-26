@@ -18,14 +18,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static App.Robot.robotLength;
-import static Utilities.ConversionUtil.getXInch;
-import static Utilities.ConversionUtil.getYInch;
+import static Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class AutoPlayer extends PlayerBase {
@@ -124,6 +126,14 @@ public class AutoPlayer extends PlayerBase {
             }
             showTooltip = !showTooltip;
         });
+
+        Shape ring1 = Shape.subtract(new Circle(10), new Circle(5.7)); ring1.setFill(Color.YELLOW);
+        ring1.setLayoutX(getXPixel(AutoPathsUtil.ringPos[0][0])); ring1.setLayoutY(getYPixel(AutoPathsUtil.ringPos[0][1]));
+        Shape ring2 = Shape.subtract(new Circle(10), new Circle(5.7)); ring2.setFill(Color.YELLOW);
+        ring2.setLayoutX(getXPixel(AutoPathsUtil.ringPos[1][0])); ring2.setLayoutY(getYPixel(AutoPathsUtil.ringPos[1][1]));
+        Shape ring3 = Shape.subtract(new Circle(10), new Circle(5.7)); ring3.setFill(Color.YELLOW);
+        ring3.setLayoutX(getXPixel(AutoPathsUtil.ringPos[2][0])); ring3.setLayoutY(getYPixel(AutoPathsUtil.ringPos[2][1]));
+        simPane.getChildren().addAll(ring1, ring2, ring3);
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
         robot.toFront();
