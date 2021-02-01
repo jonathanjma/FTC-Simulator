@@ -3,8 +3,9 @@ package PathingFiles;
 import java.util.ArrayList;
 
 public class Path {
-    private ArrayList<Spline[]> splines = new ArrayList<Spline[]>();
-    private ArrayList<Double> waypointTimes = new ArrayList<Double>();
+
+    private ArrayList<Spline[]> splines = new ArrayList<>();
+    private ArrayList<Double> waypointTimes = new ArrayList<>();
     private ArrayList<Waypoint> waypoints;
     private double totaltime;
 
@@ -12,48 +13,47 @@ public class Path {
     private boolean addPi = false;
     public double totalTime() { return totaltime; }
 
-    public Path(ArrayList<Waypoint> waypoints){
-        //defining waypoint arraylist
+    public Path(ArrayList<Waypoint> waypoints) {
+        // Defining waypoint Arraylist
         this.waypoints = waypoints;
 
-        //define splinegenerate all the splines necessary
+        // Define Splinegenerater, All Splines Necessary
         SplineGenerator splinegen = new SplineGenerator();
 
-        //find total time to make sure nothing is going wrong on Pose calls
-        totaltime = waypoints.get(waypoints.size()-1).time;
+        // Find Total Time to Make Sure Nothing is Going Wrong on Pose Calls
+        totaltime = waypoints.get(waypoints.size() - 1).time;
 
-        for (int i = 0; i < waypoints.size()-1; i++) {
-            //getting the relevant waypoints
+        for (int i = 0; i < waypoints.size() - 1; i++) {
+            // Get Relevant waypoints
             Waypoint waypoint1 = waypoints.get(i);
-            Waypoint waypoint2 = waypoints.get(i+1);
+            Waypoint waypoint2 = waypoints.get(i + 1);
 
-            //finding all the variables for the spline
+            // Define All Variables For Spline
             double startx = waypoint1.x;
             double starty = waypoint1.y;
             double endx = waypoint2.x;
             double endy = waypoint2.y;
             double starttheta = waypoint1.theta;
             double endtheta = waypoint2.theta;
-            double startxdot = waypoint1.xdot;
-            double endxdot = waypoint2.xdot;
-            double startydot = waypoint1.ydot;
-            double endydot = waypoint2.ydot;
-            double startxdotdot = waypoint1.xdotdot;
-            double endxdotdot = waypoint2.xdotdot;
-            double startydotdot = waypoint1.ydotdot;
-            double endydotdot = waypoint2.ydotdot;
-            double time = waypoint2.time-waypoint1.time;
+            double startvx = waypoint1.vx;
+            double endvx = waypoint2.vx;
+            double startvy = waypoint1.vy;
+            double endvy = waypoint2.vy;
+            double startax = waypoint1.ax;
+            double endax = waypoint2.ax;
+            double startay = waypoint1.ay;
+            double enday = waypoint2.ay;
+            double time = waypoint2.time - waypoint1.time;
 
-            //making sure waypoints are correct
-            assert waypoint2.time>waypoint1.time: "Waypoint times are not correct";
+            // Make Sure waypoints Are Correct
+            assert waypoint2.time > waypoint1.time: "Waypoint times are not correct";
 
-
-            //generating splines and adding them to the array
+            // Generate Splines and Add Them to Array
             Spline[] segment = splinegen.SplineBetweenTwoPoints(startx, starty, endx, endy, starttheta, endtheta,
-                    startxdot, endxdot, startydot, endydot, startxdotdot, endxdotdot, startydotdot, endydotdot, time);
+                    startvx, endvx, startvy, endvy, startax, endax, startay, enday, time);
             splines.add(segment);
 
-            //adding the time
+            // Add Time
             waypointTimes.add(waypoint2.time);
         }
     }
@@ -73,15 +73,14 @@ public class Path {
         this.addPi = addPi;
     }
 
-    public Pose getRobotPose(double time){
+    public Pose getRobotPose(double time) {
 
         int splineindex = 0;
-        if(totaltime<=time){
-            splineindex = waypointTimes.size()-1;
-        }
-        else{
+        if (totaltime <= time) {
+            splineindex = waypointTimes.size() - 1;
+        } else {
             for (int i = 0; i < waypointTimes.size(); i++) {
-                if(waypointTimes.get(i)>time){
+                if (waypointTimes.get(i) > time) {
                     splineindex = i;
                     break;
                 }
@@ -91,8 +90,11 @@ public class Path {
         Spline[] currentspline = splines.get(splineindex);
         double x = currentspline[0].position(splinetime);
         double y = currentspline[1].position(splinetime);
-        double theta = Math.atan2(currentspline[1].velocity(splinetime),
-                currentspline[0].velocity(splinetime));
+        double vx = currentspline[0].velocity(splinetime);
+        double vy = currentspline[1].velocity(splinetime);
+        double theta = Math.atan2(vy, vx);
+        double w = (vx * currentspline[1].accel(splinetime) - vy * currentspline[0].accel(splinetime)) /
+                (Math.pow(vx, 2) + Math.pow(vy, 2));
 
         if (thetaSpline != null) {
             theta = thetaSpline.position(time);
@@ -102,6 +104,6 @@ public class Path {
             theta += Math.PI;
         }
 
-        return new Pose(x, y, theta);
+        return new Pose(x, y, theta, vx, vy, w);
     }
 }

@@ -5,50 +5,49 @@ public class Waypoint {
     public double x;
     public double y;
     public double theta;
-    public double xdot;
-    public double ydot;
-    public double xdotdot;
-    public double ydotdot;
+    public double vx;
+    public double vy;
+    public double ax;
+    public double ay;
     public double time;
 
     private double velocity, acceleration, angVelocity;
-    public double getVelocity() {return velocity;}
-    public double getAcceleration() {return acceleration;}
-    public double getAngVelocity() {return angVelocity;}
+    public double getVelocity() { return velocity; }
+    public double getAcceleration() { return acceleration; }
+    public double getAngVelocity() { return angVelocity; }
 
     /**
-     * Generates waypoint for differential drive constraints: velocity and acceleration are in
+     * Generates Waypoint for differential drive constraints: velocity and acceleration are in
      * the same direction as heading
      */
-    public Waypoint(double x, double y, double theta,
-                    double velocity, double acceleration, double angularVelocity, double time){
-        assert velocity==0: "Waypoint Velocity is zero";
+    public Waypoint(double x, double y, double theta, double velocity, double acceleration, double angularVelocity, double time) {
         this.x = x;
         this.y = y;
         this.theta = theta;
-        xdot = velocity*Math.cos(theta);
-        ydot = velocity*Math.sin(theta);
-        xdotdot = acceleration*Math.cos(theta) - velocity*Math.sin(theta)*angularVelocity;
-        ydotdot = acceleration*Math.sin(theta) + velocity*Math.cos(theta)*angularVelocity;
+        vx = velocity * Math.cos(theta);
+        vy = velocity * Math.sin(theta);
+        ax = acceleration * Math.cos(theta) - velocity * Math.sin(theta) * angularVelocity;
+        ay = acceleration * Math.sin(theta) + velocity * Math.cos(theta) * angularVelocity;
         this.time = time;
 
-        this.velocity = velocity; this.acceleration = acceleration; this.angVelocity = angularVelocity;
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+        this.angVelocity = angularVelocity;
     }
+
     /**
      * Generates Waypoint for Mecanum drive constraints: velocity and acceleration vectors can
      * be in any direction.
      */
-    public Waypoint(double x, double y, double theta, double xdot,
-                    double ydot, double xdotdot, double ydotdot, double time){
-
-        assert (Math.sqrt(Math.pow(xdot,2) + Math.pow(ydot,2)) != 0) : "Waypoint Velocity is zero";
+    public Waypoint(double x, double y, double theta, double vx, double vy, double ax, double ay, double time) {
+        assert (Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2)) != 0) : "Waypoint Velocity is zero";
         this.x = x;
         this.y = y;
         this.theta = theta;
-        this.xdot = xdot;
-        this.ydot = ydot;
-        this.xdotdot = xdotdot;
-        this.ydotdot = ydotdot;
+        this.vx = vx;
+        this.vy = vy;
+        this.ax = ax;
+        this.ay = ay;
         this.time = time;
     }
 }

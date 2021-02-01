@@ -47,7 +47,7 @@ public class AutoPathsUtil extends BasePathsUtil {
         ringPos = new double[][] {
                 {86, 130}, {94, 120}, {110, 130}
         };
-//        process = true;
+        process = true;
 
         RingCase ringCase = RingCase.Four; // <------------------------------
 
@@ -85,7 +85,7 @@ public class AutoPathsUtil extends BasePathsUtil {
         Path goToStackPath = new Path(new ArrayList<>(Arrays.asList(goToStackWaypoints)), goToStackThetaSpline);
         drawPath(goToStackPath);
 
-        double intakeStackTime = 1.5;
+        double intakeStackTime = 2;
         Waypoint[] sinxWaypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, 30, 30, 0, 0),
                 new Waypoint(113, 48, 0, 10, 20, 0, intakeStackTime),
@@ -95,7 +95,7 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         waitAtCurPose(2); // hg shoot1
 
-        double bounceBackTime = 3;
+        double bounceBackTime = 3.5;
         Waypoint[] bounceBackWaypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, 50, 60, 0, 0),
 
@@ -119,7 +119,7 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         waitAtCurPose(1.5); // wg1 delivery
 
-        process = true;
+//        process = true;
 
 //        Waypoint[] intakeWobble2Waypoints = new Waypoint[] {
 //                new Waypoint(lX, lY, lTh, 20, 20, 0, 0),
@@ -149,7 +149,7 @@ public class AutoPathsUtil extends BasePathsUtil {
         Path intakeWobble2Path2 = new Path(new ArrayList<>(Arrays.asList(intakeWobble2Waypoints2)), intakeWobble2ThetaSpline2);
         drawPath(intakeWobble2Path2);
 
-        process = false;
+//        process = false;
 
         waitAtCurPose(1.5); // wg2 pickup
 
