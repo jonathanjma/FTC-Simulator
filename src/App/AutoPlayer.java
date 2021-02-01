@@ -108,17 +108,17 @@ public class AutoPlayer extends PlayerBase {
             }
         });
 
-        simPane.setOnMouseExited(e -> {
-            if (showTooltip) {
-                positionTooltip.hide();
-            }
-        });
-
-        simPane.setOnMouseEntered(e -> {
-            if (showTooltip) {
-                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
-            }
-        });
+//        simPane.setOnMouseExited(e -> {
+//            if (showTooltip) {
+//                positionTooltip.hide();
+//            }
+//        });
+//
+//        simPane.setOnMouseEntered(e -> {
+//            if (showTooltip) {
+//                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
+//            }
+//        });
 
         simPane.setOnMouseClicked(e -> {
             if (showTooltip) {
