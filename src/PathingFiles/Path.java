@@ -10,6 +10,7 @@ public class Path {
     private double totaltime;
 
     private Spline thetaSpline = null;
+    private Path thetaPath = null;
     private boolean addPi = false;
     public double totalTime() { return totaltime; }
 
@@ -68,9 +69,9 @@ public class Path {
         this.thetaSpline = thetaSpline;
     }
 
-    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline, boolean addPi){
-        this(waypoints, thetaSpline);
-        this.addPi = addPi;
+    public Path(ArrayList<Waypoint> waypoints, Path thetaPath){
+        this(waypoints);
+        this.thetaPath = thetaPath;
     }
 
     public Pose getRobotPose(double time) {
@@ -99,7 +100,9 @@ public class Path {
         if (thetaSpline != null) {
             theta = thetaSpline.position(time);
         }
-
+        if (thetaPath != null) {
+            theta = thetaPath.getRobotPose(time).getX();
+        }
         if (addPi) {
             theta += Math.PI;
         }

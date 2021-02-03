@@ -10,6 +10,7 @@ import javafx.scene.shape.Polygon;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.PI;
 import static java.lang.Thread.sleep;
 
 public class Simulator {
@@ -19,14 +20,13 @@ public class Simulator {
         while (!SimulatorWindow.started) {doNothing();}
         //////////////////////////////////////////////////////////////////////////// put sim stuff below
 
-        // for y 40 - 60 in
-        for (double input = 40*Math.PI/3; input < 58*Math.PI/3; input += Math.PI/12) {
+        for (double time = 0; time < 2; time += 0.05) {
 
-            double y = 2*Math.sin(input) + input;
-            setFrame(new Frame(109, y, Math.PI/2));
+            double y = 40 + 6 * time + 1.5 * Math.sin(8 * time);
+            setFrame(new Frame(108, y, PI/2));
 
             try {
-                sleep(15);
+                sleep(50);
             } catch (InterruptedException ex) {ex.printStackTrace();}
         }
 
