@@ -217,7 +217,7 @@ public class MatchReplayer extends PlayerBase {
         velocityThLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
-        int velocityFactor = (int) Math.sqrt(Math.pow(data.velocityX, 2) + Math.pow(data.velocityY, 2));
+        int velocityFactor = (int) Math.hypot(data.velocityX, data.velocityY);
         Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityFactor * 2.25, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 

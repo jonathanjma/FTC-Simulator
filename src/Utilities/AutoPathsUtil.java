@@ -39,15 +39,16 @@ public class AutoPathsUtil extends BasePathsUtil {
         this.colorInterval = colorInterval;
     }
 
-    public static double[][] ringPos = {};
+    public static ArrayList<double[]> ringPos;
 
     public void drawAutoPaths() {
 
         pathList = new ArrayList<>();
-        ringPos = new double[][] {
-                {86, 130}, {97, 120}, {110, 130}
-        };
-        process = true;
+        ringPos = new ArrayList<>(3);
+        ringPos.add(new double[] {86, 130});
+        ringPos.add(new double[] {94, 110});
+        ringPos.add(new double[] {110, 120});
+//        process = true;
 
         RingCase ringCase = RingCase.Four; // <------------------------------
 
@@ -104,23 +105,27 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         waitAtCurPose(1.5); // ps shoot
 
-        double bounceBackTime = 4.5;
+        process = true;
+
+        double bounceBackTime = 5.5;
         Waypoint[] bounceBackWaypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, 50, 60, 0, 0),
 
-                new Waypoint(ringPos[0][0], ringPos[0][1] - 10, PI/2, 40, 30, 0, 1.5),
-                new Waypoint(ringPos[0][0] - 2, ringPos[0][1] - 10, PI/2, -30, -30, 0, 2.25),
+                new Waypoint(ringPos.get(0)[0], ringPos.get(0)[1] - 15, PI/2, 30, 40, 0, 1.5),
+                new Waypoint(ringPos.get(0)[0] + 3, ringPos.get(0)[1] - 5, PI/2, -30, -10, 0, 2.5),
 
-                new Waypoint(ringPos[1][0], ringPos[1][1] - 7, PI/2, 30, 30, 0, 3),
-                new Waypoint(ringPos[1][0] - 2, ringPos[1][1] - 10, PI/2, -30, -30, 0, 3.75),
+                new Waypoint(ringPos.get(1)[0], ringPos.get(1)[1] - 15, PI/2, 30, 30, 0, 3.5),
+                new Waypoint(ringPos.get(1)[0] + 3, ringPos.get(1)[1] - 5, PI/2, -30, -10, 0, 4.5),
 
-                new Waypoint(ringPos[2][0], ringPos[2][1] - 3, 2*PI/3, 30, 30, 0, bounceBackTime),
+                new Waypoint(ringPos.get(2)[0], ringPos.get(2)[1], PI/2, 30, 40, 0, bounceBackTime),
         };
         Spline bounceBackThetaSpline = new Spline(PI/2, 0, 0, PI/2, 0, 0, bounceBackTime);
         Path bounceBackPath = new Path(new ArrayList<>(Arrays.asList(bounceBackWaypoints)), bounceBackThetaSpline);
         drawPath(bounceBackPath);
 
-        double deliverWobbleTime = 0.75;
+        process = false;
+
+        double deliverWobbleTime = 1.0;
         Waypoint[] deliverWobbleWaypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, -30, -30, 0, 0),
                 new Waypoint(wobbleCor[0], wobbleCor[1], PI, -30, -30, 0, deliverWobbleTime),
@@ -136,11 +141,13 @@ public class AutoPathsUtil extends BasePathsUtil {
                 new Waypoint(lX, lY, lTh, 40, 40, 0, 0),
                 new Waypoint(100, 36.5, 5*PI/12, 0, 40, 0, intakeWobble2Time),
         };
-        Path intakeWobble2ThetaSpline = new Path(new ArrayList<>(Arrays.asList(
-                new Waypoint(lTh, 0, 0, 3, 0, 0, 0),
-                new Waypoint(17*PI/12, 0, 0, 0, 0, 0, 1.75),
-                new Waypoint(5*PI/12, 0, 0, 0, 0, 0, intakeWobble2Time))));
-        Path intakeWobble2Path = new Path(new ArrayList<>(Arrays.asList(intakeWobble2Waypoints)), intakeWobble2ThetaSpline);
+        Waypoint[] intakeWobble2ThWaypoints = new Waypoint[] {
+                new Waypoint(lTh, 0, 0, -3, 0, 0, 0),
+                new Waypoint(5*PI/12, 0, 0, 0, 0, 0, 1.75),
+                new Waypoint(5*PI/12, 0, 0, 0, 0, 0, intakeWobble2Time),
+        };
+        Path intakeWobble2Theta = new Path(new ArrayList<>(Arrays.asList(intakeWobble2ThWaypoints)));
+        Path intakeWobble2Path = new Path(new ArrayList<>(Arrays.asList(intakeWobble2Waypoints)), intakeWobble2Theta);
         drawPath(intakeWobble2Path);
 
         waitAtCurPose(1.5); // wg2 pickup
@@ -235,7 +242,9 @@ public class AutoPathsUtil extends BasePathsUtil {
             };
             Spline waitThetaSpline = new Spline(lTh, 0, 0, lTh, 0, 0, seconds);
             Path waitPath = new Path(new ArrayList<>(Arrays.asList(waitWaypoints)), waitThetaSpline);
-            pathList.add(waitPath);
+            if (process) {
+                pathList.add(waitPath);
+            }
         }
     }
 
