@@ -39,15 +39,15 @@ public class AutoPathsUtil extends BasePathsUtil {
         this.colorInterval = colorInterval;
     }
 
-    public static ArrayList<double[]> ringPos;
+    public static ArrayList<Ring> rings;
 
     public void drawAutoPaths() {
 
         pathList = new ArrayList<>();
-        ringPos = new ArrayList<>(3);
-        ringPos.add(new double[] {86, 130});
-        ringPos.add(new double[] {94, 110});
-        ringPos.add(new double[] {110, 120});
+        rings = new ArrayList<>(3);
+        rings.add(new Ring(86, 125));
+        rings.add(new Ring(98, 120));
+        rings.add(new Ring(110, 115));
 //        process = true;
 
         RingCase ringCase = RingCase.Four; // <------------------------------
@@ -107,21 +107,63 @@ public class AutoPathsUtil extends BasePathsUtil {
 
         process = true;
 
-        double bounceBackTime = 5.5;
-        Waypoint[] bounceBackWaypoints = new Waypoint[] {
-                new Waypoint(lX, lY, lTh, 50, 60, 0, 0),
+        double bounceBackTime = 6.75, ringTime = 0.75;
+        ArrayList<Waypoint> ringWaypoints = new ArrayList<>(3);
+        ringWaypoints.add(new Waypoint(lX, lY, lTh, 50, 60, 0, 0));
+        if (rings.size() >= 1) {
+            ringTime += 2.5;
+            double[] ringPos = rings.get(0).driveToRing(90, 33);
+            ringWaypoints.add(new Waypoint(ringPos[0] - 4, ringPos[1] - 4, PI/4, 30, 40, 0, 0.75));
+            ringWaypoints.add(new Waypoint(ringPos[0] + 4, ringPos[1] + 4, PI/4, 30, 40, 0, 1.25));
+            if (rings.size() >= 2) {
+                double ringY = rings.get(1).driveToRing(90, 33)[1];
+                ringWaypoints.add(new Waypoint(ringPos[0], ringY - 15, PI/2, -30, -10, 0, 2.00));
+            } else {
+                ringWaypoints.add(new Waypoint(ringPos[0] + 4, ringPos[1] - 10, PI/2, -30, -10, 0, 2.00));
+            }
+        }
+        if (rings.size() >= 2) {
+            ringTime += 2.5;
+            double[] ringPos = rings.get(1).driveToRing(90, 33);
+            ringWaypoints.add(new Waypoint(ringPos[0] - 4, ringPos[1] - 4, PI/4, 30, 40, 0, 2.75));
+            ringWaypoints.add(new Waypoint(ringPos[0] + 4, ringPos[1] + 4, PI/4, 30, 40, 0, 3.25));
+            if (rings.size() == 3) {
+                double ringY = rings.get(2).driveToRing(90, 33)[1];
+                ringWaypoints.add(new Waypoint(ringPos[0], ringY - 15, PI/2, -30, -10, 0, 4.00));
+            } else {
+                ringWaypoints.add(new Waypoint(ringPos[0] + 4, ringPos[1] - 10, PI/2, -30, -10, 0, 4.00));
+            }
+        }
+        if (rings.size() == 3) {
+            ringTime += 2.5;
+            double[] ringPos = rings.get(2).driveToRing(90, 33);
+            ringWaypoints.add(new Waypoint(ringPos[0] - 4, ringPos[1] - 4, PI/4, 30, 40, 0, 4.75));
+            ringWaypoints.add(new Waypoint(ringPos[0] + 4, ringPos[1] + 4, PI/4, 30, 40, 0, 5.25));
+            ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1] - 10, PI/2, -30, -10, 0, 6.00));
+        }
+        ringWaypoints.add(new Waypoint(90, 60, PI/2, 30, 40, 0, ringTime));
 
-                new Waypoint(ringPos.get(0)[0], ringPos.get(0)[1] - 15, PI/2, 30, 40, 0, 1.5),
-                new Waypoint(ringPos.get(0)[0] + 3, ringPos.get(0)[1] - 5, PI/2, -30, -10, 0, 2.5),
+        Waypoint[] ringThWaypoints = {
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, 0),
 
-                new Waypoint(ringPos.get(1)[0], ringPos.get(1)[1] - 15, PI/2, 30, 30, 0, 3.5),
-                new Waypoint(ringPos.get(1)[0] + 3, ringPos.get(1)[1] - 5, PI/2, -30, -10, 0, 4.5),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 0.75),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 1.25),
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, 2.00),
 
-                new Waypoint(ringPos.get(2)[0], ringPos.get(2)[1], PI/2, 30, 40, 0, bounceBackTime),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 2.75),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 3.25),
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, 4.00),
+
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 4.75),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 5.25),
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, 6.00),
+
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, ringTime),
         };
-        Spline bounceBackThetaSpline = new Spline(PI/2, 0, 0, PI/2, 0, 0, bounceBackTime);
-        Path bounceBackPath = new Path(new ArrayList<>(Arrays.asList(bounceBackWaypoints)), bounceBackThetaSpline);
-        drawPath(bounceBackPath);
+
+        Path ringThPath = new Path(new ArrayList<>(Arrays.asList(ringThWaypoints)));
+        Path ringPath = new Path(ringWaypoints, ringThPath);
+        drawPath(ringPath);
 
         process = false;
 

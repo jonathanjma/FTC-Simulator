@@ -2,10 +2,7 @@ package App;
 
 import PathingFiles.Pose;
 import Threads.FollowPathData;
-import Utilities.AutoPathsUtil;
-import Utilities.BasePathsUtil;
-import Utilities.CompileUtil;
-import Utilities.ObstacleUtil;
+import Utilities.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -127,11 +124,11 @@ public class AutoPlayer extends PlayerBase {
             showTooltip = !showTooltip;
         });
 
-        for (double[] ringPos : AutoPathsUtil.ringPos) {
+        for (Ring ringPos : AutoPathsUtil.rings) {
             Shape ring = Shape.subtract(new Circle(10), new Circle(5.7));
             ring.setFill(Color.YELLOW);
-            ring.setLayoutX(getXPixel(ringPos[0]));
-            ring.setLayoutY(getYPixel(ringPos[1]));
+            ring.setLayoutX(getXPixel(ringPos.getX()));
+            ring.setLayoutY(getYPixel(ringPos.getY()));
             simPane.getChildren().add(ring);
         }
 

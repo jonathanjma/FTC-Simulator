@@ -50,6 +50,8 @@ public class FollowPathData implements Runnable {
                             app.updateRobot(curPose.getX(), curPose.getY(), curPose.getTheta());
                             curTime.set(String.format("%.2f", Double.parseDouble(curTime.getValue()) + 0.01));
 
+                            System.out.println(Math.hypot(curPose.getVx(), curPose.getVy()));
+
                             buttonDisableProperties.get(1).set(pathNum == pathList.size() - 1); // next
                             buttonDisableProperties.get(2).set(pathNum == 0); // prev
                         });

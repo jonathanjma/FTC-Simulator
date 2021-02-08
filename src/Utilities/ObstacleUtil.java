@@ -3,6 +3,7 @@ package Utilities;
 import App.Obstacle;
 import App.Robot;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -30,16 +31,16 @@ public class ObstacleUtil {
     public void initializeObstacles() {
 
 //        Obstacle island = new Obstacle(
-//                new Point(200,265),
-//                new Point(200,340),
-//                new Point(400,340),
-//                new Point(400,265)
+//                new Point2D(200,265),
+//                new Point2D(200,340),
+//                new Point2D(400,340),
+//                new Point2D(400,265)
 //        );
 //        Obstacle alliance = new Obstacle(
-//                new Point(5,230),
-//                new Point(robotLength+6,230),
-//                new Point(robotLength+6,400),
-//                new Point(5,400)
+//                new Point2D(5,230),
+//                new Point2D(robotLength+6,230),
+//                new Point2D(robotLength+6,400),
+//                new Point2D(5,400)
 //        );
 
         obList = new ArrayList<>(Arrays.asList(/*island, alliance*/));
@@ -85,20 +86,20 @@ public class ObstacleUtil {
         for (int x = 0; x < 2; x++) {
             Polygon polygon = (x == 0) ? a : b;
 
-            ArrayList<Point> points = parsePolygon(polygon);
+            ArrayList<Point2D> points = parsePolygon(polygon);
             for (int i1 = 0; i1 < points.size(); i1++) {
                 int i2 = (i1 + 1) % points.size();
-                Point p1 = points.get(i1);
-                Point p2 = points.get(i2);
+                Point2D p1 = points.get(i1);
+                Point2D p2 = points.get(i2);
 
-                Point normal = new Point(p2.y - p1.y, p1.x - p2.x);
+                Point2D normal = new Point2D(p2.getY() - p1.getY(), p1.getX() - p2.getX());
 
                 double minA = Double.POSITIVE_INFINITY;
                 double maxA = Double.NEGATIVE_INFINITY;
 
-                ArrayList<Point> aPoints = parsePolygon(a);
-                for (Point p : aPoints) {
-                    double projected = normal.x * p.x + normal.y * p.y;
+                ArrayList<Point2D> aPoints = parsePolygon(a);
+                for (Point2D p : aPoints) {
+                    double projected = normal.getX() * p.getX() + normal.getY() * p.getY();
 
                     if (projected < minA) {
                         minA = projected;
@@ -111,9 +112,9 @@ public class ObstacleUtil {
                 double minB = Double.POSITIVE_INFINITY;
                 double maxB = Double.NEGATIVE_INFINITY;
 
-                ArrayList<Point> bPoints = parsePolygon(b);
-                for (Point p : bPoints) {
-                    double projected = normal.x * p.x + normal.y * p.y;
+                ArrayList<Point2D> bPoints = parsePolygon(b);
+                for (Point2D p : bPoints) {
+                    double projected = normal.getX() * p.getX() + normal.getY() * p.getY();
 
                     if (projected < minB) {
                         minB = projected;
@@ -132,11 +133,11 @@ public class ObstacleUtil {
         return true;
     }
 
-    public ArrayList<Point> parsePolygon(Polygon py) {
-        ArrayList<Point> list = new ArrayList<>();
+    public ArrayList<Point2D> parsePolygon(Polygon py) {
+        ArrayList<Point2D> list = new ArrayList<>();
 
         for (int i = 0; i < py.getPoints().size(); i+=2) {
-            Point pt = new Point(py.getPoints().get(i), py.getPoints().get(i+1));
+            Point2D pt = new Point2D(py.getPoints().get(i), py.getPoints().get(i+1));
             list.add(pt);
         }
         return list;

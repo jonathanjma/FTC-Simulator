@@ -1,13 +1,13 @@
 package App;
 
-import Utilities.Point;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public class Obstacle extends Polygon {
 
-    public Obstacle(Point pt1, Point pt2, Point pt3, Point pt4) {
-        getPoints().addAll(pt1.x, pt1.y, pt2.x, pt2.y, pt3.x, pt3.y, pt4.x, pt4.y);
+    public Obstacle(Point2D pt1, Point2D pt2, Point2D pt3, Point2D pt4) {
+        getPoints().addAll(pt1.getX(), pt1.getY(), pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
         setFill(Color.rgb(128,128,128, 0.5));
         setStroke(Color.BLACK);
         setStrokeWidth(3);
