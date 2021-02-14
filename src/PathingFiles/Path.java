@@ -59,17 +59,17 @@ public class Path {
         }
     }
 
-    public Path(ArrayList<Waypoint> waypoints, boolean addPi){
+    public Path(ArrayList<Waypoint> waypoints, boolean addPi) {
         this(waypoints);
         this.addPi = addPi;
     }
 
-    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline){
+    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline) {
         this(waypoints);
         this.thetaSpline = thetaSpline;
     }
 
-    public Path(ArrayList<Waypoint> waypoints, Path thetaPath){
+    public Path(ArrayList<Waypoint> waypoints, Path thetaPath) {
         this(waypoints);
         this.thetaPath = thetaPath;
     }
@@ -99,11 +99,9 @@ public class Path {
 
         if (thetaSpline != null) {
             theta = thetaSpline.position(time);
-        }
-        if (thetaPath != null) {
+        } else if (thetaPath != null) {
             theta = thetaPath.getRobotPose(time).getX();
-        }
-        if (addPi) {
+        } else if (addPi) {
             theta += Math.PI;
         }
 
