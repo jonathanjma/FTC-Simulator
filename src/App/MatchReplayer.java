@@ -29,7 +29,7 @@ import static Utilities.ConversionUtil.*;
 public class MatchReplayer extends PlayerBase {
 
     // **************************************************************************************************
-    private final static String logName = "RobotData494";
+    private final static String logName = "RobotData3";
     // **************************************************************************************************
 
     private VBox simInfoHousing = new VBox(2.5);
@@ -222,9 +222,9 @@ public class MatchReplayer extends PlayerBase {
         pathPointGroup.getChildren().add(pathPoint);
 
         // remove excess points
-        if (pathPointGroup.getChildren().size() > 700) {
-            pathPointGroup.getChildren().remove(0);
-        }
+//        if (pathPointGroup.getChildren().size() > 700) {
+//            pathPointGroup.getChildren().remove(0);
+//        }
 
         // update acceleration text
         accelXLb.setText(String.format("%.2f", data.accelX));
