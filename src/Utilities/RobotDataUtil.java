@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,13 +11,26 @@ import java.util.stream.Collectors;
 @SuppressWarnings("FieldCanBeLocal")
 public class RobotDataUtil {
 
+    private String logName;
     private String basePath = "robotLogs/";
     //private String basePath = "C:/Users/jonat/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/";
     //private String basePath = "C:/Users/jonat/Downloads/rev_robotics-control_hub_v1_0-ftc.robot_5555/sdcard/FIRST/robotLogs/";
 
     private ArrayList<DataPoint> dataArray;
 
+    public RobotDataUtil(boolean getFromFile) {
+        if (getFromFile) {
+            try {
+                logName = new BufferedReader(new FileReader("src/replay.txt")).readLine();
+                basePath += logName + ".csv";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public RobotDataUtil(String logName) {
+        this.logName = logName;
         basePath += logName + ".csv";
     }
 
@@ -58,5 +72,11 @@ public class RobotDataUtil {
         }
     }
 
-    public int getNumOfPoints() {return dataArray.size();}
+    public int getNumOfPoints() {
+        return dataArray.size();
+    }
+
+    public String getLogName() {
+        return logName;
+    }
 }

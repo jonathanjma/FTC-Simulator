@@ -28,10 +28,6 @@ import static Utilities.ConversionUtil.*;
 @SuppressWarnings("FieldMayBeFinal")
 public class MatchReplayer extends PlayerBase {
 
-    // **************************************************************************************************
-    private final static String logName = "RobotData3";
-    // **************************************************************************************************
-
     private VBox simInfoHousing = new VBox(2.5);
     private HBox simInfo2 = new HBox(5);
 
@@ -65,7 +61,8 @@ public class MatchReplayer extends PlayerBase {
 
     private int prevRings = 0;
 
-    private RobotDataUtil dataUtil = new RobotDataUtil(logName);
+    private RobotDataUtil dataUtil = new RobotDataUtil(true);
+    // private RobotDataUtil dataUtil = new RobotDataUtil("RobotData3");
     private SimpleBooleanProperty startStopDisabled = new SimpleBooleanProperty(false);
 
     // update robot thread
@@ -164,7 +161,7 @@ public class MatchReplayer extends PlayerBase {
 
         mainPane.setBottom(simInfoHousing);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
-        primaryStage.setTitle("Match Replayer- " + logName);
+        primaryStage.setTitle("Match Replayer- " + dataUtil.getLogName());
         primaryStage.setScene(scene);
     }
 
@@ -253,13 +250,18 @@ public class MatchReplayer extends PlayerBase {
             double shooterX = data.x + 6.5 * Math.sin(data.theta);
             double shooterY = data.y - 6.5 * Math.cos(data.theta);
             double targetX;
-            if (data.lastTarget == 0) { targetX = 76.5; }
-            else if (data.lastTarget == 1) { targetX = 84; }
-            else if (data.lastTarget == 2) { targetX = 91.5; }
-            else { targetX = 108; }
-            Line path = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(targetX), getYPixel(150));
+            if (data.lastTarget == 0) {
+                targetX = 76.5;
+            } else if (data.lastTarget == 1) {
+                targetX = 84;
+            } else if (data.lastTarget == 2) {
+                targetX = 91.5;
+            } else {
+                targetX = 108;
+            }
 
-            PathTransition ringLaunch = new PathTransition(Duration.millis(1000), path, ring);
+            Line ringPath = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(targetX), getYPixel(150));
+            PathTransition ringLaunch = new PathTransition(Duration.millis(1000), ringPath, ring);
             ringLaunch.setOnFinished(e -> simPane.getChildren().remove(ring));
             ringLaunch.play();
         }
