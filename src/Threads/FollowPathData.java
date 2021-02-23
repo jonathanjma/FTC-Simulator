@@ -89,11 +89,13 @@ public class FollowPathData implements Runnable {
 
     public void setPathNum(int pathNum) {
         if (pathNum >= 0 && pathNum <= pathList.size()-1) {
-//            System.out.println("set to " + pathNum);
             this.pathNum = pathNum;
             currentTime = 0;
             curPath = pathList.get(pathNum);
             time = curPath.totalTime();
+
+            Pose pose = pathList.get(pathNum).getRobotPose(0);
+            Platform.runLater(() -> app.updateRobot(pose.getX(), pose.getY(), pose.getTheta()));
         }
     }
 

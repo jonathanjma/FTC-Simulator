@@ -43,16 +43,12 @@ public class MatchReplayer extends PlayerBase {
 
     // ui labels
     private Label velocityLb = new Label("  Velocity:");
-    private Label velocityXLb = new Label("n/a");
+    private Label velocityMagLb = new Label("n/a");
     private Label commaLb2 = new Label(",");
-    private Label velocityYLb = new Label("n/a");
-    private Label commaLb3 = new Label(",");
     private Label velocityThLb = new Label("n/a");
     private Label accelLb = new Label("Accel:");
-    private Label accelXLb = new Label("n/a");
-    private Label commaLb4 = new Label(",");
-    private Label accelYLb = new Label("n/a");
-    private Label commaLb5 = new Label(",");
+    private Label accelMagLb = new Label("n/a");
+    private Label commaLb3 = new Label(",");
     private Label accelThLb = new Label("n/a");
     private Label ringsLb = new Label("  # Rings: ");
     private Label numRingsLb = new Label("n/a");
@@ -80,26 +76,22 @@ public class MatchReplayer extends PlayerBase {
         simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
         setFontBold(velocityLb, 14);
-        setFont(velocityXLb, 14); velocityXLb.setPrefWidth(40); setFont(commaLb2, 14);
-        setFont(velocityYLb, 14); velocityYLb.setPrefWidth(40); setFont(commaLb3, 14);
-        setFont(velocityThLb, 14); velocityThLb.setPrefWidth(40);
+        setFont(velocityMagLb, 14); velocityMagLb.setPrefWidth(35); setFont(commaLb2, 14);
+        setFont(velocityThLb, 14); velocityThLb.setPrefWidth(35);
 
         startStopBtn.disableProperty().bind(startStopDisabled);
 
         setFontBold(accelLb, 14);
-        setFont(accelXLb, 14); accelXLb.setPrefWidth(45); setFont(commaLb4, 14);
-        setFont(accelYLb, 14); accelYLb.setPrefWidth(45); setFont(commaLb5, 14);
-        setFont(accelThLb, 14); accelThLb.setPrefWidth(45);
+        setFont(accelMagLb, 14); accelMagLb.setPrefWidth(50); setFont(commaLb3, 14);
+        setFont(accelThLb, 14); accelThLb.setPrefWidth(40);
 
         setFontBold(ringsLb, 14); setFont(numRingsLb, 14);
 
         setFontBold(nodeLb, 14); setFont(nodeNumLb, 14);
         setFontBold(timeLb, 14); setFont(curTimeLb, 14);
 
-        simInfo.getChildren().addAll(velocityLb, velocityXLb, commaLb2, velocityYLb, commaLb3,
-                velocityThLb, startStopBtn, restartBtn);
-        simInfo2.getChildren().addAll(accelLb, accelXLb, commaLb4, accelYLb, commaLb5, accelThLb,
-                ringsLb, numRingsLb);
+        simInfo.getChildren().addAll(velocityLb, velocityMagLb, commaLb2, velocityThLb, startStopBtn, restartBtn);
+        simInfo2.getChildren().addAll(accelLb, accelMagLb, commaLb3, accelThLb, ringsLb, numRingsLb);
         simPane.getChildren().addAll(nodeLb, nodeNumLb, timeLb, curTimeLb, pathPointGroup);
 
         dataUtil.parseLogFile();
@@ -163,7 +155,7 @@ public class MatchReplayer extends PlayerBase {
 
         mainPane.setBottom(simInfoHousing);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
-        primaryStage.setTitle("Match Replayer");
+        primaryStage.setTitle("Match Replayer- " + logName);
         primaryStage.setScene(scene);
     }
 
@@ -212,13 +204,12 @@ public class MatchReplayer extends PlayerBase {
         thetaLb.setText(String.format("%.2f", data.theta));
 
         // update velocity text
-        velocityXLb.setText(String.format("%.2f", data.velocityX));
-        velocityYLb.setText(String.format("%.2f", data.velocityY));
+        double velocityMagnitude = Math.hypot(data.velocityX, data.velocityY);
+        velocityMagLb.setText(String.format("%.2f", velocityMagnitude));
         velocityThLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
-        int velocityFactor = (int) Math.hypot(data.velocityX, data.velocityY);
-        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityFactor * 2.25, 1, 1));
+        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityMagnitude * 2.25, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // remove excess points
@@ -227,8 +218,8 @@ public class MatchReplayer extends PlayerBase {
 //        }
 
         // update acceleration text
-        accelXLb.setText(String.format("%.2f", data.accelX));
-        accelYLb.setText(String.format("%.2f", data.accelY));
+        double accelMagnitude = Math.hypot(data.accelX, data.accelY);
+        accelMagLb.setText(String.format("%.2f", accelMagnitude));
         accelThLb.setText(String.format("%.2f", data.accelTheta));
 
         // update rings in robot
