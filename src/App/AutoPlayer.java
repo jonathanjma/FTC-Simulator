@@ -79,7 +79,7 @@ public class AutoPlayer extends PlayerBase {
         prevBtn.disableProperty().bind(prevDisabled);
 
         Button reloadBtn = new Button("Reload Paths");
-        reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(567);
+        reloadBtn.setLayoutX(513); reloadBtn.setLayoutY(570);
         reloadBtn.setOnAction(e -> reloadPaths());
 
         simInfo.getChildren().addAll(timeLb, curTimeLb, startStopBtn, restartBtn, prevBtn, nextBtn, slowLb, slowBox);

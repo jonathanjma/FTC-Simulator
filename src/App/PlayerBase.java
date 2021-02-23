@@ -15,12 +15,13 @@ public class PlayerBase extends BaseSim {
 
     public HBox simInfo = new HBox(5);
 
-    public Label corLb = new Label("Position: (");
+    public Label corLb = new Label("Pose: (");
     public Label xInchLb = new Label("n/a");
     public Label commaLb1 = new Label(",");
     public Label yInchLb = new Label("n/a");
-    public Label thetaLb1 = new Label(")  Theta:");
+    public Label commaLb2 = new Label(",");
     public Label thetaLb = new Label("n/a");
+    public Label corLb2 = new Label(")");
     public Button startStopBtn;
     public Button restartBtn;
 
@@ -29,7 +30,7 @@ public class PlayerBase extends BaseSim {
 
         setFontBold(corLb, 14);
         setFont(xInchLb, 14); setFont(commaLb1, 14); setFont(yInchLb, 14);
-        setFontBold(thetaLb1, 14); setFont(thetaLb, 14);
+        setFont(commaLb2, 14); setFont(thetaLb, 14); setFontBold(corLb2, 14);
 
         ImageView startStopImg = new ImageView(new Image("imgs/play.png"));
         startStopImg.setFitWidth(20); startStopImg.setFitHeight(20);
@@ -41,7 +42,7 @@ public class PlayerBase extends BaseSim {
         restartBtn.setDisable(true);
 
         simInfo.setAlignment(Pos.CENTER);
-        simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, thetaLb1, thetaLb);
+        simInfo.getChildren().addAll(corLb, xInchLb, commaLb1, yInchLb, commaLb2, thetaLb, corLb2);
     }
 
     public void setState(State state) {

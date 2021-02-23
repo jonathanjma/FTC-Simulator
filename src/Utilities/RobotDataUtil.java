@@ -34,7 +34,7 @@ public class RobotDataUtil {
                             Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),
                             Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
                             Double.parseDouble(data[10]), Integer.parseInt(data[11]), Boolean.parseBoolean(data[12]),
-                            Boolean.parseBoolean(data[13]), Integer.parseInt(data[14])));
+                            Boolean.parseBoolean(data[13]), Integer.parseInt(data[14]), 5, 6.78));
                 }
             }
 

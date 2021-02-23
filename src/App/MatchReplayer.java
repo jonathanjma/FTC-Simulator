@@ -42,16 +42,21 @@ public class MatchReplayer extends PlayerBase {
     private boolean startBtnPressed = false;
 
     // ui labels
-    private Label velocityLb = new Label("  Velocity:");
+    private Label velocityLb = new Label("  Vx, w:");
     private Label velocityMagLb = new Label("n/a");
-    private Label commaLb2 = new Label(",");
-    private Label velocityThLb = new Label("n/a");
-    private Label accelLb = new Label("Accel:");
-    private Label accelMagLb = new Label("n/a");
     private Label commaLb3 = new Label(",");
+    private Label velocityThLb = new Label("n/a");
+    private Label accelLb = new Label("  Ax, a:");
+    private Label accelMagLb = new Label("n/a");
+    private Label commaLb4 = new Label(",");
     private Label accelThLb = new Label("n/a");
-    private Label ringsLb = new Label("  # Rings: ");
+    private Label ringsLb = new Label("# Rings:");
     private Label numRingsLb = new Label("n/a");
+    private Label shootingLb = new Label("  n/a");
+    private Label cyclesLb = new Label("  # Cycles:");
+    private Label numCyclesLb = new Label("n/a");
+    private Label avgCyclesLb = new Label("  Avg Cycle Time:");
+    private Label avgCycleTimeLb = new Label("n/a");
 
     private Text nodeLb = new Text(515, 25, "Node:");
     private Text nodeNumLb = new Text(558, 25, "n/a");
@@ -76,22 +81,26 @@ public class MatchReplayer extends PlayerBase {
         simInfoHousing.getChildren().addAll(simInfo, simInfo2);
 
         setFontBold(velocityLb, 14);
-        setFont(velocityMagLb, 14); velocityMagLb.setPrefWidth(35); setFont(commaLb2, 14);
+        setFont(velocityMagLb, 14); velocityMagLb.setPrefWidth(35); setFont(commaLb3, 14);
         setFont(velocityThLb, 14); velocityThLb.setPrefWidth(35);
 
         startStopBtn.disableProperty().bind(startStopDisabled);
 
         setFontBold(accelLb, 14);
-        setFont(accelMagLb, 14); accelMagLb.setPrefWidth(50); setFont(commaLb3, 14);
-        setFont(accelThLb, 14); accelThLb.setPrefWidth(40);
+        setFont(accelMagLb, 14); accelMagLb.setPrefWidth(40); setFont(commaLb4, 14);
+        setFont(accelThLb, 14); accelThLb.setPrefWidth(35);
 
         setFontBold(ringsLb, 14); setFont(numRingsLb, 14);
+        setFontBold(shootingLb, 14);
+        setFontBold(cyclesLb, 14); setFont(numCyclesLb, 14);
+        setFontBold(avgCyclesLb, 14); setFont(avgCycleTimeLb, 14);
 
         setFontBold(nodeLb, 14); setFont(nodeNumLb, 14);
         setFontBold(timeLb, 14); setFont(curTimeLb, 14);
 
-        simInfo.getChildren().addAll(velocityLb, velocityMagLb, commaLb2, velocityThLb, startStopBtn, restartBtn);
-        simInfo2.getChildren().addAll(accelLb, accelMagLb, commaLb3, accelThLb, ringsLb, numRingsLb);
+        simInfo.getChildren().addAll(velocityLb, velocityMagLb, commaLb3, velocityThLb, accelLb, accelMagLb, commaLb4, accelThLb,
+                startStopBtn, restartBtn);
+        simInfo2.getChildren().addAll(ringsLb, numRingsLb, shootingLb, cyclesLb, numCyclesLb, avgCyclesLb, avgCycleTimeLb);
         simPane.getChildren().addAll(nodeLb, nodeNumLb, timeLb, curTimeLb, pathPointGroup);
 
         dataUtil.parseLogFile();
@@ -219,11 +228,20 @@ public class MatchReplayer extends PlayerBase {
 
         // update acceleration text
         double accelMagnitude = Math.hypot(data.accelX, data.accelY);
-        accelMagLb.setText(String.format("%.2f", accelMagnitude));
-        accelThLb.setText(String.format("%.2f", data.accelTheta));
+        accelMagLb.setText(String.format("%.1f", accelMagnitude));
+        accelThLb.setText(String.format("%.1f", data.accelTheta));
 
         // update rings in robot
         numRingsLb.setText(data.numRings + "");
+
+        if (!data.magHome) {
+            shootingLb.setText("  Shooting");
+        } else {
+            shootingLb.setText("  Intaking Rings");
+        }
+
+        numCyclesLb.setText(data.numCycles + "");
+        avgCycleTimeLb.setText(data.avgCycleTime + "");
 
         // show shoot animation when rings feeded
         if (data.numRings != prevRings && prevRings != 0) {
