@@ -15,6 +15,8 @@ public class Waypoint {
     public double getVelocity() { return velocity; }
     public double getAcceleration() { return acceleration; }
     public double getAngVelocity() { return angVelocity; }
+    public String toString() { return "Waypoint(" + x + ", " + y + ", " + String.format("%.4f", theta) + ", "
+            + getVelocity() + ", " + getAcceleration() + ", " + getAngVelocity() + ", " + time + ")";}
 
     /**
      * Generates Waypoint for differential drive constraints: velocity and acceleration are in

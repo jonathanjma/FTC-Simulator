@@ -97,8 +97,8 @@ public class PathPlanner extends PlannerBase {
         reset.setOnAction(e -> {
             pathsGroup.getChildren().clear();
             currentWaypoints = null;
-            xInchTf.setText("120");
-            yInchTf.setText("25");
+            xInchTf.setText("114");
+            yInchTf.setText("9");
             angleTf1.setText("1");
             angleTf2.setText("2");
             timeTf.setText("0");

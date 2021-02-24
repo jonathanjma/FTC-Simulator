@@ -40,6 +40,7 @@ public class AutoPlayer extends PlayerBase {
     private CheckBox slowBox = new CheckBox();
     private Button nextBtn;
     private Button prevBtn;
+    private Tooltip positionTooltip = new Tooltip("");
 
     private BasePathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
@@ -96,7 +97,6 @@ public class AutoPlayer extends PlayerBase {
             followPathData.setSlow(slowMode);
         });
 
-        Tooltip positionTooltip = new Tooltip("");
         simPane.setOnMouseMoved(e -> {
             if (showTooltip) {
                 positionTooltip.setText("(x: " + String.format("%.2f", getXInch(e.getX()))
@@ -229,7 +229,9 @@ public class AutoPlayer extends PlayerBase {
         }
     }
 
-    @Override public void endTasks() {
+    @Override
+    public void endTasks() {
+        positionTooltip.hide();
         followPathData.endThread();
     }
 }

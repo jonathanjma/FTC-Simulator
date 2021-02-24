@@ -18,14 +18,14 @@ public class AutoPlanner extends PlannerBase {
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
 
-        simSettings.setPadding(new Insets(5, 5, 5, 5));
+        simSettings.setPadding(new Insets(0, 5, 5, 5));
 
         setFont(corLb, 20); setFont(commaLb, 20);
         setFont(angleLb1, 20); setFont(angleLb2, 20);
         setFont(angleLb3, 20);
 
         Button reloadBtn = new Button("Reload Paths");
-        reloadBtn.setLayoutX(510); reloadBtn.setLayoutY(563);
+        reloadBtn.setLayoutX(513); reloadBtn.setLayoutY(570);
         reloadBtn.setOnAction(e -> reloadPaths());
 
         robot = new Robot(robotLength, robotLength);

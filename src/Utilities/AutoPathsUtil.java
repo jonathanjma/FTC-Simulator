@@ -50,7 +50,7 @@ public class AutoPathsUtil extends BasePathsUtil {
         rings.add(new Ring(110, 133));
         process = true;
 
-        RingCase ringCase = RingCase.Four; // <------------------------------
+        RingCase ringCase = RingCase.One; // <------------------------------
 
         double goToStackTime = 0.75;
         double shootHighGoalTime = 1.5;
@@ -280,7 +280,7 @@ public class AutoPathsUtil extends BasePathsUtil {
 
             Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
             Circle pathSegmentBlue = new Circle(getXPixel(144)-x, y, 1.5, Color.rgb(0, 0, colorValue));
-            if (process) {
+            if (process || pathList == null) {
                 pathsGroup.getChildren().addAll(pathSegmentRed, pathSegmentBlue);
             }
         }

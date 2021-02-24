@@ -231,16 +231,18 @@ public class MatchReplayer extends PlayerBase {
         // update rings in robot
         numRingsLb.setText(data.numRings + "");
 
+        // update shooting status
         if (!data.magHome) {
             shootingLb.setText("  Shooting");
         } else {
             shootingLb.setText("  Intaking Rings");
         }
 
+        // update cycle data
         numCyclesLb.setText(data.numCycles + "");
         avgCycleTimeLb.setText(data.avgCycleTime + "");
 
-        // show shoot animation when rings feeded
+        // show shoot animation when rings are feeded
         if (data.numRings != prevRings && prevRings != 0) {
 
             Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
@@ -280,7 +282,8 @@ public class MatchReplayer extends PlayerBase {
         }
     }
 
-    @Override public void endTasks() {
+    @Override
+    public void endTasks() {
         followLogData.endThread();
     }
 }
