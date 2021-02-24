@@ -161,7 +161,7 @@ public class MatchReplayer extends PlayerBase {
 
         mainPane.setBottom(simInfoHousing);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
-        primaryStage.setTitle("Match Replayer- " + dataUtil.getLogName());
+        primaryStage.setTitle(dataUtil.getInfo() + " (" + dataUtil.getLogName() + ") — Match Replayer");
         primaryStage.setScene(scene);
     }
 
@@ -215,7 +215,7 @@ public class MatchReplayer extends PlayerBase {
         velocityThLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
-        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityMagnitude * 2.25, 1, 1));
+        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityMagnitude * 2, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // remove excess points
@@ -240,7 +240,7 @@ public class MatchReplayer extends PlayerBase {
 
         // update cycle data
         numCyclesLb.setText(data.numCycles + "");
-        avgCycleTimeLb.setText(data.avgCycleTime + "");
+        avgCycleTimeLb.setText(!Double.isNaN(data.avgCycleTime) ? String.format("%.2f", data.avgCycleTime) : 0 + "");
 
         // show shoot animation when rings are feeded
         if (data.numRings != prevRings && prevRings != 0) {

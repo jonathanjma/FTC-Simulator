@@ -109,7 +109,7 @@ public class CombinedSim extends Application {
                         null, null)));
         mainPane.setCenter(startPane);
         Scene scene = new Scene(mainPane, sceneWidth, sceneWidth);
-        primaryStage.setTitle("FTC Tools");
+        primaryStage.setTitle("FTC Programming Tools");
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image(CombinedSim.imgPath));
         primaryStage.show();

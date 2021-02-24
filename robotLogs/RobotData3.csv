@@ -1,3 +1,4 @@
+# Teleop, 53 ring run
 Timestamp,SinceStart,X,Y,Theta,VelocityX,VelocityY,VelocityTheta,AccelX,AccelY,AccelTheta,NumRings,MagHome,FeedHome,LastTarget
 21:45:18.834,30.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,true,false,-1
 21:45:18.850,46.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,true,false,-1
