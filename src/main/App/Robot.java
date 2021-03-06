@@ -60,6 +60,11 @@ public class Robot extends Rectangle {
         setRotate(getFXTheta(thetaRad));
     }
 
+    public void setPose(double xInch, double yInch, double thetaRad) {
+        setPosition(xInch, yInch);
+        setTheta(thetaRad);
+    }
+
     public void updateColor() {
         updateColor(new Stop[] {
                 new Stop(0, Color.rgb(0, 0, 0, 0.75)),

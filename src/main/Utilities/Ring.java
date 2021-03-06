@@ -11,6 +11,16 @@ public class Ring {
         this.absY = absY;
     }
 
+    public int id;
+    public Ring(double absX, double absY, int id) {
+        this.absX = absX;
+        this.absY = absY;
+        this.id = id;
+    }
+    public void setPos(double x, double y) {
+        absX = x; absY = y;
+    }
+
     public static ArrayList<Ring> getRingCoords(ArrayList<Ring> rings, double robotX, double robotY) {
 
         rings.sort((r1, r2) -> Double.compare(r1.getAbsDist(robotX, robotY), r2.getAbsDist(robotX, robotY)));
@@ -44,5 +54,10 @@ public class Ring {
     }
     public double[] getAbsCoords() {
         return new double[] {absX, absY};
+    }
+
+    @Override
+    public String toString() {
+        return "Ring[" + absX + ", " + absY + ']';
     }
 }

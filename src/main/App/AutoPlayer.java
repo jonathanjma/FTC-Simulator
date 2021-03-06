@@ -17,12 +17,15 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
+import main.PathingFiles.Path;
 import main.PathingFiles.Pose;
+import main.Paths;
 import main.Threads.FollowPathData;
 import main.Utilities.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static main.App.Robot.robotLength;
 import static main.Utilities.ConversionUtil.*;
@@ -43,7 +46,7 @@ public class AutoPlayer extends PlayerBase {
     private Button prevBtn;
     private Tooltip positionTooltip = new Tooltip("");
 
-    private BasePathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
     private ObstacleUtil obUtil = new ObstacleUtil(obstacleGroup, warningGroup);
 
     private SimpleBooleanProperty startStopDisabled = new SimpleBooleanProperty(false);
@@ -57,6 +60,8 @@ public class AutoPlayer extends PlayerBase {
     // update robot thread
     private FollowPathData followPathData;
     private Thread robotThread;
+
+    private boolean ringFlag = false;
 
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
@@ -119,35 +124,42 @@ public class AutoPlayer extends PlayerBase {
 //        });
 
         simPane.setOnMouseClicked(e -> {
-//            if (showTooltip) {
-//                positionTooltip.hide();
-//            }
-//            showTooltip = !showTooltip;
+            if (e.getClickCount() == 2) {
+                if (showTooltip) {
+                    positionTooltip.hide();
+                }
+                showTooltip = !showTooltip;
+            }
         });
 
-        for (int i = 0; i < AutoPathsUtil.rings.size(); i++) {
-            Ring ringPos = AutoPathsUtil.rings.get(i);
+        for (int i = 0; i < AutoPathsUtil.initRings.size(); i++) {
+            Ring ringPos = AutoPathsUtil.initRings.get(i);
 
             Arc ring = new Arc(getXPixel(ringPos.getX()), getYPixel(ringPos.getY()), 7, 7, 0, 360);
-            ring.setStrokeWidth(6);
-            ring.setStrokeType(StrokeType.OUTSIDE);
-            ring.setStroke(Color.YELLOW);
-            ring.setStrokeLineCap(StrokeLineCap.BUTT);
-            ring.setFill(null);
-            ring.setId(i+"");
+            ring.setStrokeWidth(6); ring.setStroke(Color.YELLOW);
+            ring.setStrokeType(StrokeType.OUTSIDE); ring.setStrokeLineCap(StrokeLineCap.BUTT);
+            ring.setFill(null); ring.setId(i+"");
 
-            simPane.getChildren().addAll(ring);
             ring.setOnMouseDragged(e -> {
                 ring.setCenterX(e.getX()); ring.setCenterY(e.getY());
-                AutoPathsUtil.rings.set(Integer.parseInt(ring.getId()), new Ring(getXInch(e.getX()), getYInch(e.getY())));
 
-//                pathsGroup.getChildren().clear();
-//                AutoPathsUtil.lX = robot.xInch; AutoPathsUtil.lY = robot.yInch; AutoPathsUtil.lTh = robot.thetaRad;
-//                new Paths().bouncePath();
-//
-//                followPathData.setPause(true);
-//                setState(State.Paused);
+                AutoPathsUtil.rings.sort((r1, r2) -> Integer.compare(r1.id, r2.id));
+                AutoPathsUtil.rings.get(Integer.parseInt(ring.getId())).setPos(getXInch(e.getX()), getYInch(e.getY()));
+
+                pathsGroup.getChildren().clear();
+                pathsUtil.getPathList().clear();
+                updateRobot(87, 63, Math.PI/2);
+                AutoPathsUtil.lX = robot.xInch; AutoPathsUtil.lY = robot.yInch; AutoPathsUtil.lTh = robot.thetaRad;
+                AutoPathsUtil.setColorValue(200);
+                new Paths().bouncePath();
+
+                if (state != State.NotStarted) {
+                    followPathData.setPause(true);
+                    setState(State.Paused);
+                }
+                ringFlag = true;
             });
+            simPane.getChildren().addAll(ring);
         }
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
@@ -163,28 +175,29 @@ public class AutoPlayer extends PlayerBase {
                     robotThread.start();
                     setState(State.Playing);
                     restartBtn.setDisable(false);
+                    if (ringFlag) {
+                        followPathData.setPathList(pathsUtil.getPathList());
+                        ringFlag = false;
+                    }
                     break;
                 case Playing:
                     followPathData.setPause(true);
                     setState(State.Paused);
                     break;
                 case Paused:
-                    followPathData.setPause(false);
-                    setState(State.Playing);
+                    if (!ringFlag) {
+                        followPathData.setPause(false);
+                        setState(State.Playing);
+                    } else {
+                        restart();
+                        ringFlag = false;
+                    }
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
-            if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
-                robotThread = new Thread(followPathData, "UpdateRobotThread");
-                robotThread.start();
-                startStopDisabled.set(false);
-            }
-            followPathData.resetPathNum();
-            curTime.set("0.0");
-            followPathData.setPause(false);
-            setState(State.Playing);
+            restart();
         });
 
         nextBtn.setOnAction(e -> {
@@ -193,13 +206,7 @@ public class AutoPlayer extends PlayerBase {
 
         prevBtn.setOnAction(e -> {
             if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
-                robotThread = new Thread(followPathData, "UpdateRobotThread");
-                robotThread.start();
-                startStopDisabled.set(false);
-                followPathData.setPathNum(followPathData.getPathNum()-1);
-                curTime.set("0.0");
-                followPathData.setPause(false);
-                setState(State.Playing);
+                restart(1);
             } else {
                 followPathData.setPathNum(followPathData.getPathNum()-1);
             }
@@ -213,8 +220,7 @@ public class AutoPlayer extends PlayerBase {
 
     public void updateRobot(double x, double y, double theta) {
 
-        robot.setPosition(x, y);
-        robot.setTheta(theta);
+        robot.setPose(x, y, theta);
         robot.updateColor();
 
         obUtil.checkCollisions(robot);
@@ -228,22 +234,37 @@ public class AutoPlayer extends PlayerBase {
         try {
             pathsGroup.getChildren().clear();
             pathsUtil.drawAutoPaths(CompileUtil.reloadPathsUtil());
-            Pose start = this.pathsUtil.getPathList().get(0).getRobotPose(0);
-            updateRobot(start.getX(), start.getY(), start.getTheta());
-            followPathData.setPathList(pathsUtil.getPathList());
-            curTime.set("0.0");
-
-            if (startStopDisabled.get()) {
-                robotThread = new Thread(followPathData, "UpdateRobotThread");
-                robotThread.start();
-                startStopDisabled.set(false);
-                setState(State.Playing);
-            }
+            restart();
             System.out.println("Paths reloaded");
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
             System.out.println("Failed to reload paths");
         }
+    }
+
+    public void restart() {
+        restart(0);
+    }
+
+    // option 0 uses the pathList from the path utility, option 1 sets the decrements the pathNum by 1
+    public void restart(int option) {
+
+        if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
+            robotThread = new Thread(followPathData, "UpdateRobotThread");
+            robotThread.start();
+            startStopDisabled.set(false);
+            if (option == 1) {
+                followPathData.setPathNum(followPathData.getPathNum()-1);
+            }
+        }
+
+        if (option == 0) {
+            followPathData.setPathList(pathsUtil.getPathList());
+        }
+
+        curTime.set("0.0");
+        followPathData.setPause(false);
+        setState(State.Playing);
     }
 
     @Override

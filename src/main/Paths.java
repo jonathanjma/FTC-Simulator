@@ -123,8 +123,8 @@ public class Paths extends BasePaths {
 //        drawPath(intakeWobble2Path);
         Waypoint[] intakeWobble2Waypoints2 = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, -5, -50, 0, 0),
-                new Waypoint(83, 25, PI/2, -0.1, 0, 0, 2.5),
-                new Waypoint(87, 25, PI/2, -0.1, 0, 0, intakeWobble2Time),
+                new Waypoint(83, 27, PI/2, -0.1, 0, 0, 2.5),
+                new Waypoint(87, 27, PI/2, -0.1, 0, 0, intakeWobble2Time),
         };
         Waypoint[] intakeWobble2ThWaypoints2 = new Waypoint[] {
                 new Waypoint(lTh, 0, 0, 0, 0, 0, 0),
@@ -196,8 +196,9 @@ public class Paths extends BasePaths {
         }
 
         if (rings.size() == 0) {
-            rings.add(new Ring(62, 130));
-            rings.add(new Ring(109, 130));
+            sweep = true;
+//            rings.add(new Ring(62, 130));
+//            rings.add(new Ring(109, 130));
         }
 
         Path ringPath;
@@ -221,7 +222,7 @@ public class Paths extends BasePaths {
                         ringPos[2] = PI/2;
                     }
                     ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 20, 30, 0, ringTime + 1.5));
-                    ringTime += 1.5;
+//                    ringTime += 1.5;
                 }
             }
 //            ringWaypoints.add(new Waypoint(123, 134, PI, 30, 20, 0, ringTime + 1.5));
@@ -242,7 +243,7 @@ public class Paths extends BasePaths {
                     new Waypoint(PI/2, 0, 0, 0, 0, 0, ringTime),
             };
             Path ringThPath = new Path(new ArrayList<>(Arrays.asList(ringThWaypoints)));
-            ringPath = new Path(new ArrayList<>(Arrays.asList(ringWaypoints)), ringThPath, new Interval(1.5, ringTime));
+            ringPath = new Path(new ArrayList<>(Arrays.asList(ringWaypoints)), ringThPath, new Interval(1.3, ringTime));
         }
         drawPath(ringPath);
 
