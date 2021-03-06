@@ -1,0 +1,58 @@
+package main.FrameSim;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
+import main.App.CombinedSim;
+
+@SuppressWarnings("FieldMayBeFinal")
+public class SimulatorWindow extends Application {
+
+    /**
+     * Do not run this program!!!
+     * Run Simulator.java
+     */
+
+    private BorderPane mainPane = new BorderPane();
+    private static Pane simPane = new Pane();
+    private HBox simInfo = new HBox(5);
+    private Button startBtn = new Button("Start");
+
+    public static boolean started = false;
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        simInfo.setPadding(new Insets(0, 5, 5, 5));
+        simInfo.setAlignment(Pos.CENTER);
+        simInfo.getChildren().addAll(startBtn);
+
+        startBtn.setOnAction(e -> {
+            startBtn.setVisible(false);
+            started = true;
+        });
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
+
+        simPane.setBackground(new Background(
+                new BackgroundImage(new Image(CombinedSim.imgPath), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                        null, null)));
+        mainPane.setCenter(simPane);
+        mainPane.setBottom(simInfo);
+        Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 35);
+        primaryStage.setTitle("Frame Sim");
+        primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image(CombinedSim.imgPath));
+        primaryStage.show();
+    }
+
+    public static void drawShape(Shape shape) {
+        simPane.getChildren().clear();
+        simPane.getChildren().add(shape);
+    }
+}

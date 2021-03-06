@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="CombinedSim" type="Application" factoryName="Application" singleton="true" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="App.CombinedSim" />
+    <option name="MAIN_CLASS_NAME" value="main.App.CombinedSim" />
     <module name="FTC_Simulator" />
     <method v="2">
       <option name="Make" enabled="true" />

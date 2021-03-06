@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Simulator (frame input)" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="NewSim.Simulator" />
+    <option name="MAIN_CLASS_NAME" value="main.FrameSim.Simulator" />
     <module name="FTC_Simulator" />
     <method v="2">
       <option name="Make" enabled="true" />
