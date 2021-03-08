@@ -17,7 +17,6 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
-import main.PathingFiles.Path;
 import main.PathingFiles.Pose;
 import main.Paths;
 import main.Threads.FollowPathData;
@@ -25,7 +24,6 @@ import main.Utilities.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static main.App.Robot.robotLength;
 import static main.Utilities.ConversionUtil.*;
@@ -198,6 +196,7 @@ public class AutoPlayer extends PlayerBase {
 
         restartBtn.setOnAction(e -> {
             restart();
+            ringFlag = false;
         });
 
         nextBtn.setOnAction(e -> {
@@ -233,7 +232,7 @@ public class AutoPlayer extends PlayerBase {
     public void reloadPaths() {
         try {
             pathsGroup.getChildren().clear();
-            pathsUtil.drawAutoPaths(CompileUtil.reloadPathsUtil());
+            pathsUtil.drawAutoPaths(CompileUtil.reloadPaths());
             restart();
             System.out.println("Paths reloaded");
         } catch (ReflectiveOperationException ex) {
@@ -249,7 +248,7 @@ public class AutoPlayer extends PlayerBase {
     // option 0 uses the pathList from the path utility, option 1 sets the decrements the pathNum by 1
     public void restart(int option) {
 
-        if (followPathData.getPathNum() == pathsUtil.getPathList().size()) {
+        if (!robotThread.isAlive()) {
             robotThread = new Thread(followPathData, "UpdateRobotThread");
             robotThread.start();
             startStopDisabled.set(false);

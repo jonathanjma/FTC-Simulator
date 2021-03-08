@@ -222,11 +222,19 @@ public class Paths extends BasePaths {
                         ringPos[2] = PI/2;
                     }
                     ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 20, 30, 0, ringTime + 1.5));
-//                    ringTime += 1.5;
+                    ringTime += 1.5;
+
+                    if (rings.size() >= 3) {
+                        ringPos = rings.get(2).driveToRing(ringPos[0], ringPos[1]);
+                        if (ringPos[1] > 135) {
+                            ringPos[2] = PI/2;
+                        }
+                        ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 20, 30, 0, ringTime + 1.5));
+                        ringTime += 1.5;
+                    }
                 }
             }
-//            ringWaypoints.add(new Waypoint(123, 134, PI, 30, 20, 0, ringTime + 1.5));
-//            ringTime += 1.5;
+            ringWaypoints.add(new Waypoint(120, 133, PI/2, 20, 20, 0, ringTime + 1.5));
             ringPath = new Path(ringWaypoints);
         } else {
             ringTime = 4.5;

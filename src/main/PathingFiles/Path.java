@@ -14,6 +14,7 @@ public class Path {
     private boolean addPi = false;
     private Interval interval = null;
     public double totalTime() { return totaltime; }
+    public String toString() { return waypoints.toString(); }
 
     public Path(ArrayList<Waypoint> waypoints) {
         // Defining waypoint Arraylist

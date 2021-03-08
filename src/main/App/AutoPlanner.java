@@ -45,7 +45,7 @@ public class AutoPlanner extends PlannerBase {
     public void reloadPaths() {
         try {
             pathsGroup.getChildren().clear();
-            pathsUtil.drawAutoPaths(CompileUtil.reloadPathsUtil());
+            pathsUtil.drawAutoPaths(CompileUtil.reloadPaths());
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
