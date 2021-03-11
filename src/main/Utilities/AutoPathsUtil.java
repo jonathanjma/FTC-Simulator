@@ -28,7 +28,7 @@ public class AutoPathsUtil {
 
     public static double lX, lY, lTh;
     private static final boolean enableWaits = true;
-    public static boolean process = false;
+    public static boolean process = true;
 
     public static ArrayList<Ring> initRings, rings;
 

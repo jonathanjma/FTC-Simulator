@@ -16,9 +16,8 @@ import static main.Utilities.AutoPathsUtil.*;
 public class Paths extends BasePaths {
 
     public void drawPaths() {
-        process = false;
 
-        RingCase ringCase = RingCase.Four; // <------------------------------
+        RingCase ringCase = RingCase.Zero; // <------------------------------
 
         double goToStackTime = 0.75;
         double shootHighGoalTime = 1.5;
@@ -35,8 +34,8 @@ public class Paths extends BasePaths {
         double deliverWobble2Time = 2.0;
         double parkTime = 1.5;
 
-        double[][] wobbleDelivery = {{120, 85}, {93, 106}, {120, 133}};
-        double[][] wobble2Delivery = {{117, 75}, {92, 99}, {116, 127}};
+        double[][] wobbleDelivery = {{120, 92}, {97, 114}, {120, 133}};
+        double[][] wobble2Delivery = {{117, 83}, {94, 106}, {116, 128}};
         double[] wobbleCor;
         double[] wobble2Cor;
         if (ringCase == RingCase.Zero) {
@@ -52,6 +51,8 @@ public class Paths extends BasePaths {
             wobbleCor = wobbleDelivery[2];
             wobble2Cor = wobble2Delivery[2];
         }
+
+//        process = false
 
         if (ringCase != RingCase.Zero) {
             Waypoint[] goToStackWaypoints = new Waypoint[] {
@@ -193,12 +194,6 @@ public class Paths extends BasePaths {
         boolean sweep = true;
         for (Ring ring : rings) {
             sweep &= ring.getY() >= 132;
-        }
-
-        if (rings.size() == 0) {
-            sweep = true;
-//            rings.add(new Ring(62, 130));
-//            rings.add(new Ring(109, 130));
         }
 
         Path ringPath;

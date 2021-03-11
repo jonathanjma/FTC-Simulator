@@ -54,12 +54,11 @@ public class AutoPlayer extends PlayerBase {
     private boolean slowMode = false;
 
     private boolean showTooltip = false;
+    private boolean ringFlag = false;
 
     // update robot thread
     private FollowPathData followPathData;
     private Thread robotThread;
-
-    private boolean ringFlag = false;
 
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
@@ -109,17 +108,17 @@ public class AutoPlayer extends PlayerBase {
             }
         });
 
-//        simPane.setOnMouseExited(e -> {
-//            if (showTooltip) {
-//                positionTooltip.hide();
-//            }
-//        });
-//
-//        simPane.setOnMouseEntered(e -> {
-//            if (showTooltip) {
-//                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
-//            }
-//        });
+        /*simPane.setOnMouseExited(e -> {
+            if (showTooltip) {
+                positionTooltip.hide();
+            }
+        });
+
+        simPane.setOnMouseEntered(e -> {
+            if (showTooltip) {
+                positionTooltip.show((Node) e.getSource(), e.getScreenX() + 15, e.getScreenY());
+            }
+        });*/
 
         simPane.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
@@ -232,6 +231,7 @@ public class AutoPlayer extends PlayerBase {
     public void reloadPaths() {
         try {
             pathsGroup.getChildren().clear();
+            if (state == State.NotStarted) restartBtn.setDisable(false);
             pathsUtil.drawAutoPaths(CompileUtil.reloadPaths());
             restart();
             System.out.println("Paths reloaded");
