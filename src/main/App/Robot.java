@@ -78,41 +78,42 @@ public class Robot extends Rectangle {
         setFill(background);
     }
 
-    public Circle[] getCorners() {
+    public double[][] getCorners() {
         double tl_x = xInch + (robotRad * Math.cos(thetaRad)) - (robotRad * Math.sin(thetaRad));
         double tl_y = yInch + (robotRad * Math.sin(thetaRad)) + (robotRad * Math.cos(thetaRad));
-        Circle tl = new Circle(getXPixel(tl_x),getYPixel(tl_y),5);
-        tl.setFill(Color.BLACK);
 
         double tr_x = xInch + (robotRad * Math.cos(thetaRad)) + (robotRad * Math.sin(thetaRad));
         double tr_y = yInch + (robotRad * Math.sin(thetaRad)) - (robotRad * Math.cos(thetaRad));
-        Circle tr = new Circle(getXPixel(tr_x),getYPixel(tr_y),5);
-        tr.setFill(Color.BLUE);
 
         double bl_x = xInch - (robotRad * Math.cos(thetaRad)) - (robotRad * Math.sin(thetaRad));
         double bl_y = yInch - (robotRad * Math.sin(thetaRad)) + (robotRad * Math.cos(thetaRad));
-        Circle bl = new Circle(getXPixel(bl_x),getYPixel(bl_y),5);
-        bl.setFill(Color.WHITE);
 
         double br_x = xInch - (robotRad * Math.cos(thetaRad)) + (robotRad * Math.sin(thetaRad));
         double br_y = yInch - (robotRad * Math.sin(thetaRad)) - (robotRad * Math.cos(thetaRad));
-        Circle br = new Circle(getXPixel(br_x),getYPixel(br_y),5);
-        br.setFill(Color.RED);
 
-        return new Circle[] {tl,tr,bl,br};
+        return new double[][] {{tl_x, tl_y}, {tr_x, tr_y}, {bl_x, bl_y}, {br_x, br_y}};
     }
 
     public Polygon getPolygon() {
         Polygon polygon = new Polygon();
-        Circle[] points = getCorners();
+        double[][] points = getCorners();
         polygon.getPoints().addAll(
-                points[0].getCenterX(),points[0].getCenterY(),
-                points[1].getCenterX(),points[1].getCenterY(),
-                points[3].getCenterX(),points[3].getCenterY(),
-                points[2].getCenterX(),points[2].getCenterY()
+                getXPixel(points[0][0]), getYPixel(points[0][1]),
+                getXPixel(points[1][0]), getYPixel(points[1][1]),
+                getXPixel(points[2][0]), getYPixel(points[2][1]),
+                getXPixel(points[3][0]), getYPixel(points[3][1])
         );
         polygon.setFill(Color.GREEN);
         return polygon;
+    }
+
+    public Circle[] cornerCircles() {
+        double[][] points = getCorners();
+        Circle tl = new Circle(getXPixel(points[0][0]), getYPixel(points[0][1]),5); tl.setFill(Color.BLACK);
+        Circle tr = new Circle(getXPixel(points[1][0]), getYPixel(points[1][1]),5); tr.setFill(Color.BLUE);
+        Circle bl = new Circle(getXPixel(points[2][0]), getYPixel(points[2][1]),5); bl.setFill(Color.WHITE);
+        Circle br = new Circle(getXPixel(points[3][0]), getYPixel(points[3][1]),5); br.setFill(Color.RED);
+        return new Circle[] {tl,tr,bl,br};
     }
 
     public Rectangle createBoundsRectangle() {
