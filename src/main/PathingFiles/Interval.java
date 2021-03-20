@@ -2,15 +2,18 @@ package main.PathingFiles;
 
 public class Interval {
     public final double start, end;
-    public final boolean addPi;
+    public Spline thetaSpline = null;
+    public Path thetaPath = null;
 
-    public Interval(double start, double end) {
-        this(start, end, false);
-    }
-
-    public Interval(double start, double end, boolean addPi) {
+    public Interval(double start, double end, Spline thetaSpline) {
         this.start = start;
         this.end = end;
-        this.addPi = addPi;
+        this.thetaSpline = thetaSpline;
+    }
+
+    public Interval(double start, double end, Path thetaPath) {
+        this.start = start;
+        this.end = end;
+        this.thetaPath = thetaPath;
     }
 }

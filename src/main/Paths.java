@@ -15,7 +15,7 @@ import static main.Utilities.AutoPathsUtil.*;
 
 public class Paths extends BasePaths {
 
-    private final RingCase ringCase = RingCase.Zero; // <------------------------------
+    private final RingCase ringCase = RingCase.Four; // <------------------------------
 
     public void drawPaths() {
 
@@ -113,9 +113,9 @@ public class Paths extends BasePaths {
                 new Waypoint(lTh, 0, 0, 0, 0, 0, 2.5),
                 new Waypoint(lTh, 0, 0, 0, 0, 0, intakeWobble2Time),
         };
-        Path intakeWobble2ThPath = new Path(new ArrayList<>(Arrays.asList(intakeWobble2ThWaypoints)));
-        Path intakeWobble2Path = new Path(new ArrayList<>(Arrays.asList(intakeWobble2Waypoints)), intakeWobble2ThPath,
-                new Interval(2.5, intakeWobble2Time, true));
+        Path intakeWobble2Path = new Path(new ArrayList<>(Arrays.asList(intakeWobble2Waypoints)), true);
+        intakeWobble2Path.addInterval(new Interval(2.5, intakeWobble2Time,
+                new Path(new ArrayList<>(Arrays.asList(intakeWobble2ThWaypoints)))));
         drawPath(intakeWobble2Path);
 
         waitAtCurPose(stopForWgPickupTime);
@@ -217,7 +217,8 @@ public class Paths extends BasePaths {
                     new Waypoint(PI/2, 0, 0, 0, 0, 0, ringTime),
             };
             Path ringThPath = new Path(new ArrayList<>(Arrays.asList(ringThWaypoints)));
-            ringPath = new Path(new ArrayList<>(Arrays.asList(ringWaypoints)), ringThPath, new Interval(1.3, ringTime));
+            ringPath = new Path(new ArrayList<>(Arrays.asList(ringWaypoints)));
+            ringPath.addInterval(new Interval(1.3, ringTime, ringThPath));
         }
         drawPath(ringPath);
 

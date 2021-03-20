@@ -71,20 +71,12 @@ public class Path {
         this.thetaSpline = thetaSpline;
     }
 
-    public Path(ArrayList<Waypoint> waypoints, Spline thetaSpline, Interval interval) {
-        this(waypoints);
-        this.thetaSpline = thetaSpline;
-        this.interval = interval;
-    }
-
     public Path(ArrayList<Waypoint> waypoints, Path thetaPath) {
         this(waypoints);
         this.thetaPath = thetaPath;
     }
 
-    public Path(ArrayList<Waypoint> waypoints, Path thetaPath, Interval interval) {
-        this(waypoints);
-        this.thetaPath = thetaPath;
+    public void addInterval(Interval interval) {
         this.interval = interval;
     }
 
@@ -111,18 +103,20 @@ public class Path {
         double w = (vx * currentspline[1].accel(splinetime) - vy * currentspline[0].accel(splinetime)) /
                 (Math.pow(vx, 2) + Math.pow(vy, 2));
 
-        if (thetaSpline != null) {
-            if (interval == null || (time >= interval.start && time <= interval.end)) {
+        if (interval == null || (time < interval.start || time > interval.end)) {
+            if (thetaSpline != null) {
                 theta = thetaSpline.position(time);
-            }
-        } else if (thetaPath != null) {
-            if (interval == null || (time >= interval.start && time <= interval.end)) {
+            } else if (thetaPath != null) {
                 theta = thetaPath.getRobotPose(time).getX();
+            } else if (addPi) {
+                theta += Math.PI;
             }
-        }
-
-        if (addPi || (interval != null && interval.addPi && (time < interval.start || time > interval.end))) {
-            theta += Math.PI;
+        } else if (time >= interval.start && time <= interval.end) {
+            if (interval.thetaSpline != null) {
+                theta = interval.thetaSpline.position(time);
+            } else if (interval.thetaPath != null) {
+                theta = interval.thetaPath.getRobotPose(time).getX();
+            }
         }
 
         return new Pose(x, y, theta, vx, vy, w);
