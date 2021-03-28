@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MatchReplayer" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="main.App.CombinedSim" />
-    <module name="FTC_Simulator" />
+    <module name="FTC-Simulator" />
     <option name="PROGRAM_PARAMETERS" value="matchplay" />
     <method v="2">
       <option name="Make" enabled="true" />

@@ -48,7 +48,6 @@ public class AutoPathsUtil {
     }
 
     public void drawAutoPaths(BasePaths paths) {
-
         pathsGroup.getChildren().clear();
         colorValue = initColorValue;
 
@@ -56,7 +55,7 @@ public class AutoPathsUtil {
 
         if (rings == null) {
             rings = new ArrayList<>();
-            rings.add(new Ring(70, 139, 0));
+            rings.add(new Ring(67, 134, 0));
             rings.add(new Ring(86, 139, 1));
             rings.add(new Ring(102, 139, 2));
             initRings = new ArrayList<>(rings);
@@ -68,16 +67,14 @@ public class AutoPathsUtil {
     }
 
     public static void drawPath(Path path) {
-
         double time = path.totalTime();
         for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
-
             Pose curPose = path.getRobotPose(currentTime);
             double x = getXPixel(curPose.getX());
             double y = getYPixel(curPose.getY());
 
             Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
-            Circle pathSegmentBlue = new Circle(getXPixel(144)-x, y, 1.5, Color.rgb(0, 0, colorValue));
+            Circle pathSegmentBlue = new Circle(getXPixel(144) - x, y, 1.5, Color.rgb(0, 0, colorValue));
             if (process || pathList == null) {
                 pathsGroup.getChildren().addAll(pathSegmentRed/*, pathSegmentBlue*/);
             }
@@ -95,9 +92,9 @@ public class AutoPathsUtil {
 
     public static void drawSpline(Spline[] splines, double time) {
         for (double currentTime = 0; currentTime < time; currentTime += 0.01) {
-
             double x = getXPixel(splines[0].position(currentTime));
             double y = getYPixel(splines[1].position(currentTime));
+
             Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
             Circle pathSegmentBlue = new Circle(getXPixel(144)-x, y, 1.5, Color.rgb(0, 0, colorValue));
             pathsGroup.getChildren().addAll(pathSegmentRed, pathSegmentBlue);
@@ -106,7 +103,6 @@ public class AutoPathsUtil {
     }
 
     public static void drawToPoint(double x1, double y1, double x2, double y2) {
-
         x1 = getXPixel(x1); x2 = getXPixel(x2);
         y1 = getYPixel(y1);  y2 = getYPixel(y2);
         Line toPointLineRed = new Line(x1, y1, x2, y2);

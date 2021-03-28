@@ -1,7 +1,7 @@
 package main.Utilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 
 public class Ring {
     private double absX, absY;
@@ -22,16 +22,23 @@ public class Ring {
     }
 
     public static ArrayList<Ring> getRingCoords(ArrayList<Ring> rings, double robotX, double robotY) {
+        rings.sort(Comparator.comparingDouble(r -> r.getY()));
 
-        rings.sort((r1, r2) -> Double.compare(r1.getAbsDist(robotX, robotY), r2.getAbsDist(robotX, robotY)));
         if (rings.size() > 3) {
             rings = new ArrayList<>(rings.subList(0, 3));
         }
 
-        if (rings.size() == 3) {
-            Ring closest = rings.get(0);
-            if (rings.get(1).getAbsDist(closest.absX, closest.absY) > rings.get(2).getAbsDist(closest.absX, closest.absY)) {
-                Collections.swap(rings, 1, 2);
+        if (rings.size() > 0) {
+            if (rings.get(rings.size() - 1).getY() - rings.get(0).getY() > 8) {
+                Ring closest = rings.remove(0);
+                if (closest.getX() <= robotX + 9) {
+                    rings.sort(Comparator.comparingDouble(r -> r.getX()));
+                } else {
+                    rings.sort(Comparator.comparingDouble(r -> -r.getX()));
+                }
+                rings.add(0, closest);
+            } else {
+                rings.sort(Comparator.comparingDouble(r -> r.getX()));
             }
         }
 
