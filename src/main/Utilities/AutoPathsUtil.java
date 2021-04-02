@@ -55,8 +55,8 @@ public class AutoPathsUtil {
 
         if (rings == null) {
             rings = new ArrayList<>();
-            rings.add(new Ring(67, 134, 0));
-            rings.add(new Ring(86, 139, 1));
+            rings.add(new Ring(67, 139, 0));
+            rings.add(new Ring(89, 114, 1));
             rings.add(new Ring(102, 139, 2));
             initRings = new ArrayList<>(rings);
         }

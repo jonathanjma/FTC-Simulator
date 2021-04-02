@@ -145,7 +145,7 @@ public class AutoPlayer extends PlayerBase {
 
                 pathsGroup.getChildren().clear();
                 pathsUtil.getPathList().clear();
-                updateRobot(87, 63, Math.PI/2);
+                updateRobot(111, 63, Math.PI/2);
                 AutoPathsUtil.lX = robot.xInch; AutoPathsUtil.lY = robot.yInch; AutoPathsUtil.lTh = robot.thetaRad;
                 AutoPathsUtil.setColorValue(200);
                 new Paths().bouncePath();

@@ -90,7 +90,7 @@ public class Paths extends BasePaths {
 
         if (!(ringCase == RingCase.Four && sweep)) {
             Waypoint[] deliverWobbleWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh, -40, 50, 0, 0),
+                    new Waypoint(lX, lY, lTh, 30, 30, 0, 0),
                     new Waypoint(wobbleCor[0], wobbleCor[1], PI/2, -30, -30, 0, deliverWobbleTime),
             };
             Path deliverWobblePath = new Path(new ArrayList<>(Arrays.asList(deliverWobbleWaypoints)), true);
@@ -173,50 +173,64 @@ public class Paths extends BasePaths {
             ArrayList<Waypoint> ringThWaypoints = new ArrayList<>();
             ringThWaypoints.add(new Waypoint(lTh, 0, 0, 0, 0, 0, 0));
 
+            System.out.println(rings);
+
             double[] ringPos;
             ringTime = 0;
             if (rings.size() >= 1) {
                 ringPos = rings.get(0).driveToRing(lX, lY);
+                System.out.println("1:"+Arrays.toString(ringPos));
                 ringTime += 1.5;
+                double theta;
                 if (ringPos[1] > 132) {
                     ringPos[1] = 132;
+                    theta = ringPos[0] - lX < 0 ? 3*PI/4 : PI/4;
                     ringPos[2] = 0;
-                    ringThWaypoints.add(new Waypoint(rings.size() > 1 && rings.get(1).getX() - ringPos[0] < 0 ? 3*PI/4 : PI/4, 0, 0, 0, 0, 0, ringTime));
                 } else {
-                    ringThWaypoints.add(new Waypoint(ringPos[2], 0, 0, 0, 0, 0, ringTime));
+                    theta = ringPos[2];
                 }
-                ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 30, 20, 0, ringTime));
+                System.out.println("1:"+theta);
+                ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 30, 10, 0, ringTime));
+                ringThWaypoints.add(new Waypoint(theta, 0, 0, 0, 0, 0, ringTime));
 
                 if (rings.size() >= 2) {
                     ringPos = rings.get(1).driveToRing(ringPos[0], ringPos[1]);
+                    System.out.println("2:"+Arrays.toString(ringPos));
                     ringTime += 1.5;
                     if (ringPos[1] > 132) {
+                        ringPos[1] = 132;
+                        theta = ringPos[0] - rings.get(0).getX() < 0 ? 3*PI/4 : PI/4;
                         ringPos[2] = 0;
-                        ringThWaypoints.add(new Waypoint(rings.size() > 2 && rings.get(2).getX() - ringPos[0] < 0 ? 3*PI/4 : PI/4, 0, 0, 0, 0, 0, ringTime));
                     } else {
-                        ringThWaypoints.add(new Waypoint(ringPos[2], 0, 0, 0, 0, 0, ringTime));
+                        theta = ringPos[2];
                     }
-                    ringWaypoints.add(new Waypoint(ringPos[0], Math.min(132, ringPos[1]), ringPos[2], 30, 10, 0, ringTime));
+                    System.out.println("2:"+theta);
+                    ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], theta, 30, 10, 0, ringTime));
+                    ringThWaypoints.add(new Waypoint(theta, 0, 0, 0, 0, 0, ringTime));
 
                     if (rings.size() >= 3) {
                         ringPos = rings.get(2).driveToRing(ringPos[0], ringPos[1]);
+                        System.out.println("3:"+Arrays.toString(ringPos));
                         ringTime += 1.5;
-                        if (ringPos[1] > 132 && rings.get(1).getY() > 132) {
+                        if (ringPos[1] > 132 && rings.get(2).getY() > 132) {
+                            ringPos[1] = 132;
+                            theta = ringPos[0] - rings.get(1).getX() < 0 ? 3*PI/4 : PI/4;
                             ringPos[2] = 0;
-                            ringThWaypoints.add(new Waypoint(ringPos[0] - rings.get(1).getX() < 0 ? 3*PI/4 : PI/4, 0, 0, 0, 0, 0, ringTime));
                         } else {
-                            ringThWaypoints.add(new Waypoint(ringPos[2], 0, 0, 0, 0, 0, ringTime));
+                            theta = ringPos[2];
                         }
-                        ringWaypoints.add(new Waypoint(ringPos[0], Math.min(132, ringPos[1]), ringPos[2], 30, 10, 0, ringTime));
+                        System.out.println("3:"+theta);
+                        ringWaypoints.add(new Waypoint(ringPos[0], ringPos[1], ringPos[2], 30, 10, 0, ringTime));
+                        ringThWaypoints.add(new Waypoint(theta, 0, 0, 0, 0, 0, ringTime));
                     }
                 }
             }
-            ringTime += 1.5;
-            ringWaypoints.add(new Waypoint(120, 133, PI/2, 30, 30, 0, ringTime));
-            ringThWaypoints.add(new Waypoint(PI/2, 0, 0, 0, 0, 0, ringTime));
+
             Path ringThPath = new Path(ringThWaypoints);
             ringPath = new Path(new ArrayList<>(ringWaypoints));
             ringPath.addInterval(new Interval(1.3, ringTime, ringThPath));
+
+            System.out.println();
         } else {
             ringTime = 4.5;
             Waypoint[] ringWaypoints = new Waypoint[] {
