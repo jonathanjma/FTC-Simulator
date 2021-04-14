@@ -161,6 +161,7 @@ public class AutoPlayer extends PlayerBase {
 
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
         robot.toFront();
+        backBtn.toFront();
 
         followPathData = new FollowPathData(pathsUtil.getPathList(), curTime,
                 new ArrayList<>(Arrays.asList(startStopDisabled, nextDisabled, prevDisabled)), this);

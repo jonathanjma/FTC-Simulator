@@ -30,15 +30,22 @@ public class ObstacleUtil {
 
     public void initializeObstacles() {
 
-        Obstacle perimeter = new Obstacle(
+        Obstacle blueAlliance = new Obstacle(
                 new Point2D(0,0),
                 new Point2D(0,144),
                 new Point2D(48,144),
                 new Point2D(48,0)
         );
 
-        obList = new ArrayList<>(Arrays.asList(perimeter));
-        obstacleGroup.getChildren().addAll(perimeter);
+        Obstacle backWall = new Obstacle(
+                new Point2D(0,144),
+                new Point2D(144,144),
+                new Point2D(144,147),
+                new Point2D(0,147)
+        );
+
+        obList = new ArrayList<>(Arrays.asList(blueAlliance, backWall));
+        obstacleGroup.getChildren().addAll(blueAlliance, backWall);
 
         int wx = 435, wy = 505;
         Rectangle warning = new Rectangle(wx, wy, 160, 60);
