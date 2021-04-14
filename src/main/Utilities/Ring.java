@@ -11,6 +11,7 @@ public class Ring {
         this.absY = absY;
     }
 
+    /////////////////////
     public int id;
     public Ring(double absX, double absY, int id) {
         this.absX = absX;
@@ -20,14 +21,18 @@ public class Ring {
     public void setPos(double x, double y) {
         absX = x; absY = y;
     }
+    /////////////////////
 
     public static ArrayList<Ring> getRingCoords(ArrayList<Ring> rings, double robotX, double robotY) {
+        // Sort rings based on y coordinate
         rings.sort(Comparator.comparingDouble(r -> r.getY()));
 
+        // Return up to three rings
         if (rings.size() > 3) {
             rings = new ArrayList<>(rings.subList(0, 3));
         }
 
+        // Determine left or right sweep
         if (rings.size() > 0) {
             if (rings.get(rings.size() - 1).getY() - rings.get(0).getY() > 8) {
                 Ring closest = rings.remove(0);

@@ -30,23 +30,17 @@ public class ObstacleUtil {
 
     public void initializeObstacles() {
 
-//        Obstacle island = new Obstacle(
-//                new Point2D(200,265),
-//                new Point2D(200,340),
-//                new Point2D(400,340),
-//                new Point2D(400,265)
-//        );
-//        Obstacle alliance = new Obstacle(
-//                new Point2D(5,230),
-//                new Point2D(robotLength+6,230),
-//                new Point2D(robotLength+6,400),
-//                new Point2D(5,400)
-//        );
+        Obstacle perimeter = new Obstacle(
+                new Point2D(0,0),
+                new Point2D(0,144),
+                new Point2D(48,144),
+                new Point2D(48,0)
+        );
 
-        obList = new ArrayList<>(Arrays.asList(/*island, alliance*/));
-        obstacleGroup.getChildren().addAll(/*island, alliance*/);
+        obList = new ArrayList<>(Arrays.asList(perimeter));
+        obstacleGroup.getChildren().addAll(perimeter);
 
-        int wx = 430, wy = 530;
+        int wx = 435, wy = 505;
         Rectangle warning = new Rectangle(wx, wy, 160, 60);
         warning.setFill(Color.rgb(255,0,56));
         warning.setStroke(Color.BLACK);
