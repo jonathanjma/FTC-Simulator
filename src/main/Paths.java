@@ -15,7 +15,7 @@ import static main.Utilities.AutoPathsUtil.*;
 
 public class Paths extends BasePaths {
 
-    private final RingCase ringCase = RingCase.Four; // <------------------------------
+    private final RingCase ringCase = RingCase.Zero; // <------------------------------
 
     public void drawPaths() {
         double goToStackTime = 0.75;
@@ -165,13 +165,13 @@ public class Paths extends BasePaths {
         drawPath(parkPath);
     }
 
-    public boolean bouncePath() {
+    public boolean bouncePath() { // after reloading ring mode paths are not updated???
         boolean sweep = true;
         double ringTime;
 
         rings = Ring.getRingCoords(rings, lX, lY);
 
-        int maxY = 132;
+        int maxY = 130;
         for (Ring ring : rings) {
             sweep &= ring.getY() >= maxY;
         }
@@ -194,10 +194,13 @@ public class Paths extends BasePaths {
                 ringTime += 1.5;
                 if (ringPos[1] > maxY) {
                     ringIntakeTheta = ringPos[0] - lX < 0 ? 3*PI/4 : PI/4;
-                    ringPos[2] = 0;
+                    ringPos[0] -= 2;
+                } else if (Ring.isLowestX(rings, rings.get(0))) {
+                    ringIntakeTheta = PI/2;
                 } else {
                     ringIntakeTheta = ringPos[2];
                 }
+
                 System.out.println("1:" + ringIntakeTheta);
                 ringWaypoints.add(new Waypoint(ringPos[0], Math.min(maxY, ringPos[1]), ringIntakeTheta, 30, 10, 0, ringTime));
                 ringThWaypoints.add(new Waypoint(ringIntakeTheta, 0, 0, 0, 0, 0, ringTime));
@@ -206,10 +209,14 @@ public class Paths extends BasePaths {
             if (rings.size() >= 2) {
                 ringPos = rings.get(1).driveToRing(ringPos[0], ringPos[1]);
                 ringTime += 1.5;
-                if (ringPos[1] > maxY) {
-                    ringIntakeTheta = PI/4;
-                    ringPos[2] = 0;
-                    ringWaypoints.add(new Waypoint(ringPos[0]-5, Math.min(maxY, ringPos[1])-5, ringIntakeTheta, 30, 10, 0, ringTime-0.6));
+                if (ringPos[1] > maxY || Ring.isLowestX(rings, rings.get(1))) {
+                    if (ringPos[1] > maxY && !Ring.isLowestX(rings, rings.get(1))) {
+                        ringIntakeTheta = ringPos[0] - rings.get(0).getX() < 0 ? 3 * PI / 4 : PI / 4;
+                        ringPos[0] -= 2;
+                    } else {
+                        ringIntakeTheta = PI/4;
+                        ringWaypoints.add(new Waypoint(ringPos[0]-5, Math.min(maxY, ringPos[1])-5, ringIntakeTheta, 30, 10, 0, ringTime-0.6));
+                    }
                 } else {
                     ringIntakeTheta = ringPos[2];
                 }
@@ -223,7 +230,7 @@ public class Paths extends BasePaths {
                 ringTime += 1.5;
                 if (ringPos[1] > maxY && rings.get(2).getY() > maxY) {
                     ringIntakeTheta = ringPos[0] - rings.get(1).getX() < 0 ? 3*PI/4 : PI/4;
-                    ringPos[2] = 0;
+                    ringPos[0] -= 2;
                 } else {
                     ringIntakeTheta = ringPos[2];
                 }
@@ -234,7 +241,7 @@ public class Paths extends BasePaths {
 
             Path ringThPath = new Path(ringThWaypoints);
             ringPath = new Path(new ArrayList<>(ringWaypoints));
-            ringPath.addInterval(new Interval(1.3, ringTime, ringThPath));
+            ringPath.addInterval(new Interval(1.4, ringTime, ringThPath));
 
             System.out.println();
         } else {

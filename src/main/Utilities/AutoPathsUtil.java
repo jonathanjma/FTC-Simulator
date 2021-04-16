@@ -27,7 +27,7 @@ public class AutoPathsUtil {
     private static double colorInterval;
 
     public static double lX, lY, lTh;
-    private static final boolean enableWaits = true;
+    private static final boolean enableWaits = false;
     public static boolean process = true;
 
     public static ArrayList<Ring> initRings, rings;

@@ -50,6 +50,16 @@ public class Ring {
         return rings;
     }
 
+    public static boolean isLowestX(ArrayList<Ring> rings, Ring ring) {
+        double low = rings.get(0).getX();
+        for (Ring r : rings) {
+            if (r.getX() < low) {
+                low = r.getX();
+            }
+        }
+        return low == ring.getX();
+    }
+
     public double[] driveToRing(double robotX, double robotY) {
         return new double[] {absX, absY, Math.atan2(absY - robotY, absX - robotX)};
     }
