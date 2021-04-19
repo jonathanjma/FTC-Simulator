@@ -18,9 +18,11 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 import main.PathingFiles.Pose;
-import main.Paths;
 import main.Threads.FollowPathData;
-import main.Utilities.*;
+import main.Utilities.AutoPathsUtil;
+import main.Utilities.CompileUtil;
+import main.Utilities.ObstacleUtil;
+import main.Utilities.Ring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,7 +150,7 @@ public class AutoPlayer extends PlayerBase {
                 updateRobot(111, 63, Math.PI/2);
                 AutoPathsUtil.lX = robot.xInch; AutoPathsUtil.lY = robot.yInch; AutoPathsUtil.lTh = robot.thetaRad;
                 AutoPathsUtil.setColorValue(200);
-                new Paths().bouncePath();
+                pathsUtil.getPaths().bouncePath();
 
                 if (state != State.NotStarted) {
                     followPathData.setPause(true);
@@ -233,7 +235,8 @@ public class AutoPlayer extends PlayerBase {
         try {
             pathsGroup.getChildren().clear();
             if (state == State.NotStarted) restartBtn.setDisable(false);
-            pathsUtil.drawAutoPaths(CompileUtil.reloadPaths());
+            pathsUtil.setPaths(CompileUtil.reloadPaths());
+            pathsUtil.drawAutoPaths();
             restart();
             System.out.println("Paths reloaded");
         } catch (ReflectiveOperationException ex) {

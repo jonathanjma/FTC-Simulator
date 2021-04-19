@@ -14,9 +14,9 @@ public class RobotDataUtil {
     private String logName;
     private String info;
     private String filePath;
-    private final String[] possiblePaths = {"robotLogs/",
+    private final String[] possiblePaths = {
+            "robotLogs/", System.getProperty("user.home") + "/Downloads/",
             System.getProperty("user.home") + "/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/",
-            System.getProperty("user.home") + "/Downloads/rev_robotics-control_hub_v1_0-ftc.robot_5555/sdcard/FIRST/robotLogs/",
             System.getProperty("user.home") + "/Documents/AndroidStudio/DeviceExplorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/"};
 
     private ArrayList<DataPoint> dataPoints;

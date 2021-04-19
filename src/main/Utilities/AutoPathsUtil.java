@@ -20,6 +20,7 @@ public class AutoPathsUtil {
 
     private static Group pathsGroup;
 
+    private BasePaths paths;
     private static ArrayList<Path> pathList;
 
     private static int colorValue;
@@ -38,16 +39,13 @@ public class AutoPathsUtil {
 
     public AutoPathsUtil(Group pathsGroup, int startingColorValue, double colorInterval) {
         AutoPathsUtil.pathsGroup = pathsGroup;
+        paths = new Paths();
         colorValue = startingColorValue;
         initColorValue = colorValue;
         AutoPathsUtil.colorInterval = colorInterval;
     }
 
     public void drawAutoPaths() {
-        drawAutoPaths(new Paths());
-    }
-
-    public void drawAutoPaths(BasePaths paths) {
         pathsGroup.getChildren().clear();
         colorValue = initColorValue;
 
@@ -131,6 +129,14 @@ public class AutoPathsUtil {
 
     public static void setColorValue(int colorValue) {
         AutoPathsUtil.colorValue = colorValue;
+    }
+
+    public void setPaths(BasePaths newPaths) {
+        paths = newPaths;
+    }
+
+    public BasePaths getPaths() {
+        return paths;
     }
 
     public ArrayList<Path> getPathList() {

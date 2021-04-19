@@ -244,7 +244,7 @@ public class MatchReplayer extends PlayerBase {
         avgCycleTimeLb.setText(!Double.isNaN(data.avgCycleTime) ? String.format("%.2f", data.avgCycleTime) : 0 + "");
 
         // show shoot animation when rings are feeded
-        if (data.numRings != prevRings && prevRings != 0) {
+        if (data.numRings != prevRings && prevRings != 0 && prevRings != 4) {
 
             Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
             ring.setFill(Color.YELLOW);
