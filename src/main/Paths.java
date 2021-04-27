@@ -165,7 +165,7 @@ public class Paths extends BasePaths {
         drawPath(parkPath);
     }
 
-    public boolean bouncePath() { // after reloading ring mode paths are not updated???
+    public boolean bouncePath() {
         boolean sweep = true;
         double ringTime;
 

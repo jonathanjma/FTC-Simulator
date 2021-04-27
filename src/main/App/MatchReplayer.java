@@ -138,27 +138,24 @@ public class MatchReplayer extends PlayerBase {
                     setState(State.Paused);
                     break;
                 case Paused:
-                    followLogData.setPause(false);
-                    setState(State.Playing);
+                    if (robotThread.isAlive()) {
+                        followLogData.setPause(false);
+                        setState(State.Playing);
+                    } else {
+                        restart((int) nodeSlider.getValue() - 1);
+                    }
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
-            if (followLogData.getCounter() == dataUtil.getNumOfPoints()) {
-                robotThread = new Thread(followLogData, "UpdateRobotThread");
-                robotThread.start();
-            }
-            //System.out.println(followLogData.getCounter() + " " + dataUtil.getNumOfPoints());
-            startStopDisabled.set(false);
-            followLogData.setCounter(0);
-            followLogData.setPause(false);
-            setState(State.Playing);
+            restart();
         });
 
         robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
         simPane.getChildren().add(robot);
+        nodeSlider.toFront();
 
         mainPane.setBottom(simInfoHousing);
         Scene scene = new Scene(mainPane, CombinedSim.sceneWidth, CombinedSim.sceneWidth + 55);
@@ -180,13 +177,8 @@ public class MatchReplayer extends PlayerBase {
         // update time since start
         curTimeLb.setText(String.format("%.2f", data.sinceStart / 1000));
 
-        // update robot xy
-        robot.setPosition(data.x, data.y);
-        double xCor = getXPixel(data.x);
-        double yCor = getYPixel(data.y);
-
-        // update robot theta
-        robot.setTheta(data.theta);
+        // update robot position
+        robot.setPose(data.x, data.y, data.theta);
 
         // color depending on rings in robot
         if (data.numRings == 3) {
@@ -216,7 +208,7 @@ public class MatchReplayer extends PlayerBase {
         velocityThLb.setText(String.format("%.2f", data.velocityTheta));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
-        Circle pathPoint = new Circle(xCor, yCor, 3, Color.hsb(velocityMagnitude * 2, 1, 1));
+        Circle pathPoint = new Circle(getXPixel(data.x), getYPixel(data.y), 3, Color.hsb(velocityMagnitude * 2, 1, 1));
         pathPointGroup.getChildren().add(pathPoint);
 
         // remove excess points
@@ -269,6 +261,23 @@ public class MatchReplayer extends PlayerBase {
             ringLaunch.play();
         }
         prevRings = data.numRings;
+    }
+
+    public void restart() {
+        restart(0);
+    }
+
+    // restart to different counter values
+    public void restart(int counter) {
+        if (!robotThread.isAlive()) {
+            robotThread = new Thread(followLogData, "UpdateRobotThread");
+            robotThread.start();
+        }
+
+        startStopDisabled.set(false);
+        followLogData.setCounter(counter);
+        followLogData.setPause(false);
+        setState(State.Playing);
     }
 
     public void clearPathPoints() {

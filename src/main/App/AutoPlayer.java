@@ -251,7 +251,6 @@ public class AutoPlayer extends PlayerBase {
 
     // option 0 uses the pathList from the path utility, option 1 sets the decrements the pathNum by 1
     public void restart(int option) {
-
         if (!robotThread.isAlive()) {
             robotThread = new Thread(followPathData, "UpdateRobotThread");
             robotThread.start();
