@@ -60,6 +60,10 @@ public class Ring {
         return low == ring.getX();
     }
 
+    public Ring clone() {
+        return new Ring(absX, absY);
+    }
+
     public double[] driveToRing(double robotX, double robotY) {
         return new double[] {absX, absY, Math.atan2(absY - robotY, absX - robotX)};
     }

@@ -20,22 +20,22 @@ public class Paths extends BasePaths {
     public void drawPaths() {
         double goToStackTime = 0.75;
         double shootHighGoal1Time = 1.5;
-        double intakeStackTime = 3.0;
+        double intakeStackTime = 2.5;
         double shoot1RingTime = 0.75;
-        double intakeStack2Time = 1.0;
+        double intakeStack2Time = 2.25;
         double shootPowerShotsTime = 3.0;
         double deliverWobbleTime = 1.75;
         double ringTime = 0;
         double stopForWgDeliverTime = 0.5;
-        double intakeWobble2Time = 3.5;
-        double goToHighShootTime = 1.25;
+        double intakeWobble2Time = 3.25;
+        double goToHighShootTime = 0.75;
         double stopForWgPickupTime = 0.5;
         double shootHighGoal2Time = 1.5;
-        double deliverWobble2Time = 2.0;
+        double deliverWobble2Time = 2.25;
         double parkTime = 1.5;
 
-        double[][] wobbleDelivery = {{118, 96}, {97, 118}, {126, 132}};
-        double[][] wobble2Delivery = {{116, 79}, {92, 109}, {120, 132}};
+        double[][] wobbleDelivery = {{121, 93}, {97, 116}, {124.5, 128}};
+        double[][] wobble2Delivery = {{116, 79}, {92, 108}, {115.5, 127.5}};
         double[] wobbleCor;
         double[] wobble2Cor;
 
@@ -57,8 +57,8 @@ public class Paths extends BasePaths {
 
         if (ringCase != RingCase.Zero) {
             Waypoint[] goToStackWaypoints = new Waypoint[] {
-                    new Waypoint(114, 9, PI/2, 50, 50, 0, 0),
-                    new Waypoint(109, 36, PI/2, 30, 30, 0, goToStackTime),
+                    new Waypoint(114, 9, PI/2, 30, 30, 0, 0),
+                    new Waypoint(109, 32, PI/2, 5, -30, 0, goToStackTime),
             };
             Path goToStackPath = new Path(new ArrayList<>(Arrays.asList(goToStackWaypoints)));
             drawPath(goToStackPath);
@@ -68,7 +68,7 @@ public class Paths extends BasePaths {
             if (ringCase == RingCase.Four) {
                 Waypoint[] intakeStackWaypoints = new Waypoint[] {
                         new Waypoint(lX, lY, lTh, 0.5, 0, 0, 0),
-                        new Waypoint(109, 37.5, PI/2, 0.5, 0, 0, intakeStackTime),
+                        new Waypoint(110, 36, PI/2, 0.5, 0, 0, intakeStackTime),
                 };
                 Path intakeStackPath = new Path(new ArrayList<>(Arrays.asList(intakeStackWaypoints)));
                 drawPath(intakeStackPath);
@@ -95,11 +95,11 @@ public class Paths extends BasePaths {
 
         process = true;
 
-        boolean sweep = bouncePath();
+        bouncePath();
 
-        if (!(ringCase == RingCase.Four && sweep)) {
+        if (ringCase != RingCase.Four) {
             Waypoint[] deliverWobbleWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh + PI, 30, 30, 0, 0),
+                    new Waypoint(lX, lY, lTh + PI, 40, 30, 0, 0),
                     new Waypoint(wobbleCor[0], wobbleCor[1], PI/2, -30, -30, 0, deliverWobbleTime),
             };
             Path deliverWobblePath = new Path(new ArrayList<>(Arrays.asList(deliverWobbleWaypoints)), true);
@@ -110,8 +110,8 @@ public class Paths extends BasePaths {
 
         Waypoint[] intakeWobble2Waypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, -30, -50, 0, 0),
-                new Waypoint(79, 23.5, PI/2, -0.1, 50, 0, 2.5),
-                new Waypoint(88, 23.5, PI/2, -0.1, -0.1, 0, intakeWobble2Time),
+                new Waypoint(79, 24.5, PI/2, -0.1, 60, 0, 2.5),
+                new Waypoint(87, 24.5, PI/2, -0.1, -0.1, 0, intakeWobble2Time),
         };
         Waypoint[] intakeWobble2ThWaypoints = new Waypoint[] {
                 new Waypoint(lTh, 0, 0, 0, 0, 0, 0),
@@ -127,7 +127,7 @@ public class Paths extends BasePaths {
 
         Waypoint[] goToHighShootWaypoints = new Waypoint[] {
                 new Waypoint(lX, lY, lTh, 40, 40, 0, 0),
-                new Waypoint(106, 61, PI/2, 30, 30, 0, goToHighShootTime),
+                new Waypoint(88, 61, PI/2, 30, 30, 0, goToHighShootTime),
         };
         Path goToHighShootPath = new Path(new ArrayList<>(Arrays.asList(goToHighShootWaypoints)));
         drawPath(goToHighShootPath);
@@ -135,7 +135,7 @@ public class Paths extends BasePaths {
         waitAtCurPose(shootHighGoal2Time);
 
         Waypoint[] deliverWobble2Waypoints = new Waypoint[] {
-                new Waypoint(lX, lY, lTh, 40, 40, 0, 0),
+                new Waypoint(lX, lY, lTh, 50, 40, 0, 0),
                 new Waypoint(wobble2Cor[0], wobble2Cor[1], PI/2, 30, 30, 0, deliverWobble2Time),
         };
         Path deliverWobble2Path = new Path(new ArrayList<>(Arrays.asList(deliverWobble2Waypoints)));
@@ -146,19 +146,19 @@ public class Paths extends BasePaths {
         Waypoint[] parkWaypoints;
         if (ringCase == RingCase.Zero) {
             parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, PI/2, -30, -30, 0, 0),
+                    new Waypoint(lX, lY, lTh, -30, -30, 0, 0),
                     new Waypoint(lX, lY - 15, PI/2, -10, 0, 0, 0.75),
-                    new Waypoint(69, 90, PI/3, 20, 20, 0, parkTime),
+                    new Waypoint(85, 90, PI/3, 20, 20, 0, parkTime),
             };
         } else if (ringCase == RingCase.One) {
             parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, PI/2, -30, -30, 0, 0),
+                    new Waypoint(lX, lY, lTh, -30, -30, 0, 0),
                     new Waypoint(90, 88, PI/2, -30, -30, 0, parkTime),
             };
         } else {
             parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, PI/2, -50, -100, 0, 0),
-                    new Waypoint(104, 88, PI/2, -30, -30, 0, parkTime),
+                    new Waypoint(lX, lY, lTh, -50, -60, 0, 0),
+                    new Waypoint(104, 88, PI/4, -30, -30, 0, parkTime),
             };
         }
         Path parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)), ringCase != RingCase.Zero);
@@ -166,12 +166,41 @@ public class Paths extends BasePaths {
     }
 
     public boolean bouncePath() {
-        boolean sweep = true;
-        double ringTime;
 
         rings = Ring.getRingCoords(rings, lX, lY);
 
-        int maxY = 130;
+        boolean sweep = true;
+        Ring closestRing = null;
+        for (Ring ring : rings) {
+            if (ring.getX() > 72 && ring.getY() > 96 && ring.getY() < 126) {
+                sweep = false;
+                closestRing = ring.clone();
+                break;
+            }
+        }
+
+        double ringTime = 5.0;
+        ArrayList<Waypoint> ringWaypoints = new ArrayList<>();
+        ringWaypoints.add(new Waypoint(lX, lY, lTh, 60, 60, 0, 0));
+        if (!sweep) {
+            ringWaypoints.add(new Waypoint(closestRing.getX(), closestRing.getY(), closestRing.driveToRing(lX, lY)[2], 40, 30, 0, 1.25));
+        }
+        ringWaypoints.add(new Waypoint(sweep ? 62 : 65, 127, 0, 30, 30, 0, sweep ? 2.0 : 2.25));
+        ringWaypoints.add(new Waypoint(116, 127, 0, 30, 20, 0, 3.75));
+        ringWaypoints.add(new Waypoint(124.5, 128, 0, 20, 5, 0, ringTime));
+
+        Waypoint[] ringThWaypoints = new Waypoint[] {
+                new Waypoint(lTh, 0, 0, 0, 0, 0, 0),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, sweep ? 2.0 : 2.25),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 3.75),
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, ringTime),
+        };
+        Path ringThPath = new Path(new ArrayList<>(Arrays.asList(ringThWaypoints)));
+        Path ringPath = new Path(ringWaypoints);
+        ringPath.addInterval(new Interval(sweep ? 1.8 : 2.05, ringTime, ringThPath));
+        drawPath(ringPath);
+
+        /*int maxY = 130;
         for (Ring ring : rings) {
             sweep &= ring.getY() >= maxY;
         }
@@ -245,12 +274,12 @@ public class Paths extends BasePaths {
 
             System.out.println();
         } else {
-            ringTime = 4.5;
+            ringTime = 5.0;
             Waypoint[] ringWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh, 50, 50, 0, 0),
-                    new Waypoint(65, 129, 0, 30, 30, 0, 2.0),
-                    new Waypoint(109, 129, 0, 30, 20, 0, 3.75),
-                    new Waypoint(126, 131, 0, 30, 5, 0, ringTime),
+                    new Waypoint(lX, lY, lTh, 60, 60, 0, 0),
+                    new Waypoint(65, 127, 0, 30, 20, 0, 2.0),
+                    new Waypoint(116, 127, 0, 30, 20, 0, 3.75),
+                    new Waypoint(124.5, 128, 0, 15, 5, 0, ringTime),
             };
             Waypoint[] ringThWaypoints = new Waypoint[] {
                     new Waypoint(lTh, 0, 0, 0, 0, 0, 0),
@@ -262,7 +291,7 @@ public class Paths extends BasePaths {
             ringPath = new Path(new ArrayList<>(Arrays.asList(ringWaypoints)));
             ringPath.addInterval(new Interval(1.8, ringTime, ringThPath));
         }
-        drawPath(ringPath);
+        drawPath(ringPath);*/
 
         return sweep;
     }
