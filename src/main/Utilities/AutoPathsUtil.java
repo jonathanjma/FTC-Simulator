@@ -28,7 +28,7 @@ public class AutoPathsUtil {
     private static double colorInterval;
 
     public static double lX, lY, lTh;
-    private static final boolean enableWaits = false;
+    private static final boolean enableWaits = true;
     public static boolean process = true;
 
     public static ArrayList<Ring> initRings, rings;
@@ -53,9 +53,9 @@ public class AutoPathsUtil {
 
         if (rings == null) {
             rings = new ArrayList<>();
-            rings.add(new Ring(67, 139, 0));
-            rings.add(new Ring(89, 139, 1));
-            rings.add(new Ring(102, 139, 2));
+            rings.add(new Ring(85, 139, 0));
+            rings.add(new Ring(97, 139, 1));
+            rings.add(new Ring(113, 139, 2));
             initRings = new ArrayList<>(rings);
         }
 
@@ -74,7 +74,7 @@ public class AutoPathsUtil {
             Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
             Circle pathSegmentBlue = new Circle(getXPixel(144) - x, y, 1.5, Color.rgb(0, 0, colorValue));
             if (process || pathList == null) {
-                pathsGroup.getChildren().addAll(pathSegmentRed/*, pathSegmentBlue*/);
+                pathsGroup.getChildren().addAll(pathSegmentRed, pathSegmentBlue);
             }
         }
         colorValue -= colorInterval;

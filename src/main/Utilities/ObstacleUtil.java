@@ -33,8 +33,8 @@ public class ObstacleUtil {
         Obstacle blueAlliance = new Obstacle(
                 new Point2D(0,0),
                 new Point2D(0,144),
-                new Point2D(48,144),
-                new Point2D(48,0)
+                new Point2D(72,144),
+                new Point2D(72,0)
         );
 
         Obstacle backWall = new Obstacle(
