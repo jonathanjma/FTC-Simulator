@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -22,9 +23,9 @@ import main.Threads.FollowLogData;
 import main.Utilities.DataPoint;
 import main.Utilities.RobotDataUtil;
 
+import static java.lang.Math.*;
 import static main.App.Robot.robotLength;
-import static main.Utilities.ConversionUtil.getXPixel;
-import static main.Utilities.ConversionUtil.getYPixel;
+import static main.Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class MatchReplayer extends PlayerBase {
@@ -33,6 +34,7 @@ public class MatchReplayer extends PlayerBase {
     private HBox simInfo2 = new HBox(5);
 
     private Group pathPointGroup = new Group();
+    private Group turretGroup = new Group();
 
     private Slider nodeSlider;
     private boolean manual = false;
@@ -154,7 +156,7 @@ public class MatchReplayer extends PlayerBase {
 
         robot = new Robot(robotLength, robotLength);
         updateRobot(dataUtil.getData(0), false);
-        simPane.getChildren().add(robot);
+        simPane.getChildren().addAll(robot, turretGroup);
         nodeSlider.toFront();
 
         mainPane.setBottom(simInfoHousing);
@@ -179,6 +181,29 @@ public class MatchReplayer extends PlayerBase {
 
         // update robot position
         robot.setPose(data.x, data.y, data.theta);
+
+        // update turret
+        turretGroup.getChildren().clear();
+        if (data.turretGlobalTheta != Double.MAX_VALUE) {
+            double cx = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
+            double cy = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
+            double r = 8.5 / 2;
+            Circle turretCircle = new Circle(getXPixel(cx), getYPixel(cy), r * inchToPixel);
+            turretCircle.setFill(Color.GREY);
+
+            double[] xcoords = {cx - r * sin(data.turretGlobalTheta), cx + r*sqrt(2) * cos(data.turretGlobalTheta + PI/4), cx + r*sqrt(2) * cos(data.turretGlobalTheta - PI/4), cx + r * sin(data.turretGlobalTheta)};
+            double[] ycoords = {cy + r * cos(data.turretGlobalTheta), cy + r*sqrt(2) * sin(data.turretGlobalTheta + PI/4), cy + r*sqrt(2) * sin(data.turretGlobalTheta - PI/4), cy - r * cos(data.turretGlobalTheta)};
+            Polygon turretRect = new Polygon();
+            turretRect.getPoints().addAll(
+                    getXPixel(xcoords[0]), getYPixel(ycoords[0]),
+                    getXPixel(xcoords[1]), getYPixel(ycoords[1]),
+                    getXPixel(xcoords[2]), getYPixel(ycoords[2]),
+                    getXPixel(xcoords[3]), getYPixel(ycoords[3])
+            );
+            turretRect.setFill(Color.GREY);
+
+            turretGroup.getChildren().addAll(turretCircle, turretRect);
+        }
 
         // color depending on rings in robot
         if (data.numRings == 3) {
@@ -242,8 +267,8 @@ public class MatchReplayer extends PlayerBase {
             ring.setFill(Color.YELLOW);
             simPane.getChildren().add(ring);
 
-            double shooterX = data.x + 6.5 * Math.sin(data.theta);
-            double shooterY = data.y - 6.5 * Math.cos(data.theta);
+            double shooterX = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
+            double shooterY = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
             double targetX;
             if (data.lastTarget == 0) {
                 targetX = 76.5;

@@ -59,12 +59,21 @@ public class RobotDataUtil {
                     info = lines.get(0).substring(2);
                 } else if (i > 1) {
                     String[] data = lines.get(i).split(",");
-                    dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
-                            Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),
-                            Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
-                            Double.parseDouble(data[10]), Integer.parseInt(data[11]), Boolean.parseBoolean(data[12]),
-                            Boolean.parseBoolean(data[13]), Integer.parseInt(data[14]),
-                            data.length > 15 ? Integer.parseInt(data[15]) : 0, data.length > 15 ? Double.parseDouble(data[16]) : 0));
+                    if (data.length <= 17) {
+                        dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
+                                Double.parseDouble(data[4]), Double.MAX_VALUE, Double.parseDouble(data[5]), Double.parseDouble(data[6]),
+                                Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
+                                Double.parseDouble(data[10]), Integer.parseInt(data[11]), Boolean.parseBoolean(data[12]),
+                                Boolean.parseBoolean(data[13]), Integer.parseInt(data[14]),
+                                data.length > 15 ? Integer.parseInt(data[15]) : 0, data.length > 15 ? Double.parseDouble(data[16]) : 0));
+                    } else {
+                        dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
+                                Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]), Double.parseDouble(data[7]),
+                                Double.parseDouble(data[8]), Double.parseDouble(data[9]), Double.parseDouble(data[10]),
+                                Double.parseDouble(data[11]), Integer.parseInt(data[12]), Boolean.parseBoolean(data[13]),
+                                Boolean.parseBoolean(data[14]), Integer.parseInt(data[15]),
+                                Integer.parseInt(data[16]), Double.parseDouble(data[17])));
+                    }
                 }
             }
 
