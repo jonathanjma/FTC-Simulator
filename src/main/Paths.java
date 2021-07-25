@@ -15,10 +15,10 @@ import static main.Utilities.AutoPathsUtil.*;
 
 public class Paths extends BasePaths {
 
-    private final RingCase ringCase = RingCase.Four; // <------------------------------
+    private final RingCase ringCase = RingCase.One; // <------------------------------
 
     double[][] wobbleDelivery = {{115, 85, PI/2}, {90, 100, PI/2}, {125, 130, 2*PI/3}};
-    double[][] wobble2Delivery = {{130, 70, 5*PI/6}, {108, 93, 5*PI/6}, {126, 119, 2*PI/3}};
+    double[][] wobble2Delivery = {{123, 65, 3*PI/4}, {104, 85, 5*PI/6}, {121, 118, 2*PI/3}};
 
     public void drawPaths() {
 //        drawPathsFull();
@@ -176,8 +176,8 @@ public class Paths extends BasePaths {
             };
         } else if (ringCase == RingCase.One) {
             parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh, -20, -10, 0, 0),
-                    new Waypoint(113, 85, PI/2, -20, -5, 0, parkTime),
+                    new Waypoint(lX, lY, lTh, -10, -5, 0, 0),
+                    new Waypoint(110, 80, PI/2, -10, -5, 0, parkTime),
             };
         } else {
             parkWaypoints = new Waypoint[] {
