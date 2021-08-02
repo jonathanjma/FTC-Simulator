@@ -57,7 +57,7 @@ public class RobotDataUtil {
             for (int i = 0; i < lines.size(); i++) {
                 if (i == 0) {
                     info = lines.get(0).substring(2);
-                } else if (i > 1) {
+                } else if (i > 3) {
                     String[] data = lines.get(i).split(",");
                     if (data.length <= 17) {
                         dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),

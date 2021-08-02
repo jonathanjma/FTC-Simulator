@@ -15,15 +15,15 @@ import static main.Utilities.AutoPathsUtil.*;
 
 public class Paths extends BasePaths {
 
-    private final RingCase ringCase = RingCase.One; // <------------------------------
+    private final RingCase ringCase = RingCase.Zero; // <------------------------------
 
     double[][] wobbleDelivery = {{115, 85, PI/2}, {90, 100, PI/2}, {125, 130, 2*PI/3}};
     double[][] wobble2Delivery = {{123, 65, 3*PI/4}, {104, 85, 5*PI/6}, {121, 118, 2*PI/3}};
 
     public void drawPaths() {
 //        drawPathsFull();
-//        drawPathsPowerShots();
-        drawPathsStarterStack();
+        drawPathsPowerShots();
+//        drawPathsStarterStack();
     }
 
     public void drawPathsPowerShots() {
@@ -66,34 +66,41 @@ public class Paths extends BasePaths {
 
         if (ringCase != RingCase.Four) {
             Waypoint[] goToBounceBackWaypoints = new Waypoint[] {
-                new Waypoint(lX, lY, lTh, 10, 5, 0, 0),
-                new Waypoint(lX, lY + 10, lTh, 10, 5, 0, 0.5),
-                new Waypoint(wobbleDelivery[2][0], wobbleDelivery[2][1], 3*PI/4, 5, 5, 0, goToBounceBackTime),
+                    new Waypoint(lX, lY, lTh,  10, 5, 0, 0),
+                    new Waypoint(85, 129, PI/4, 5, 5, 0, goToBounceBackTime),
             };
             Path goToBounceBackPath = new Path(new ArrayList<>(Arrays.asList(goToBounceBackWaypoints)));
             drawPath(goToBounceBackPath);
         }
 
         Waypoint[] bounceBackWaypoints = new Waypoint[] {
-                new Waypoint(lX, lY, PI, 60, 60, 0, 0),
-                new Waypoint(92, 130, PI, 30, 20, 0, 2.75),
-                new Waypoint(82, 131, PI, 20, 5, 0, bounceBackTime),
+                new Waypoint(lX, lY, PI, 15, 5, 0, 0),
+                new Waypoint(109, 129, PI, 10, 0, 0, 3.0),
+                new Waypoint(114, 129, PI, 1, -10, 0, bounceBackTime),
         };
 
         Waypoint[] bounceBackThWaypoints = new Waypoint[] {
-                new Waypoint(lTh, 0, 0, 0, 0, 0, 0),
-                new Waypoint(3*PI/4, 0, 0, 0, 0, 0, 2.75),
-                new Waypoint(PI/2, 0, 0, 0, 0, 0, bounceBackTime),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 0),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 3.0),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, bounceBackTime),
         };
         Path bounceBackThPath = new Path(new ArrayList<>(Arrays.asList(bounceBackThWaypoints)));
         Path bounceBackPath = new Path(new ArrayList<>(Arrays.asList(bounceBackWaypoints)), bounceBackThPath);
         drawPath(bounceBackPath);
 
         Waypoint[] goToBounceShootWaypoints = new Waypoint[] {
-                new Waypoint(lX, lY, lTh, -40, -30, 0, 0),
-                new Waypoint(85, 63, PI/2, -5, 20, 0, goToShootTime),
+                new Waypoint(lX, lY, PI, 10, 5, 0, 0),
+                new Waypoint(85, 127, PI, 5, 5, 0, 2.0),
+                new Waypoint(85, 63, PI, 5, 5, 0, 4),
         };
-        Path goToShootPath = new Path(new ArrayList<>(Arrays.asList(goToBounceShootWaypoints)), true);
+
+        Waypoint[] goToShootThWaypoints = new Waypoint[] {
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 0),
+                new Waypoint(PI/4, 0, 0, 0, 0, 0, 2.0),
+                new Waypoint(PI/2, 0, 0, 0, 0, 0, 4),
+        };
+        Path goToShootThPath = new Path(new ArrayList<>(Arrays.asList(goToShootThWaypoints)));
+        Path goToShootPath = new Path(new ArrayList<>(Arrays.asList(goToBounceShootWaypoints)), goToShootThPath);
         drawPath(goToShootPath);
 
         waitAtCurPose(shootBounceBackTime);
