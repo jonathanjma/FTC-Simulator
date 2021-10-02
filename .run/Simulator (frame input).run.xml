@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Frame Simulator" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="main.FrameSim.Simulator" />
-    <module name="FTC_Simulator" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
-</component>
