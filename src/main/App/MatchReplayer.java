@@ -271,13 +271,13 @@ public class MatchReplayer extends PlayerBase {
             double shooterY = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
             double targetX;
             if (data.lastTarget == 0) {
-                targetX = 76.5;
+                targetX = dataUtil.isRed() ? 76.5 : 67.5;
             } else if (data.lastTarget == 1) {
-                targetX = 84;
+                targetX = dataUtil.isRed() ? 84 : 60;
             } else if (data.lastTarget == 2) {
-                targetX = 91.5;
+                targetX = dataUtil.isRed() ? 91.5 : 52.5;
             } else {
-                targetX = 108;
+                targetX = dataUtil.isRed() ? 108 : 36;
             }
 
             Line ringPath = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(targetX), getYPixel(150));

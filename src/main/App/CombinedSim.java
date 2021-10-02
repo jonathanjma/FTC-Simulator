@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class CombinedSim extends Application {
 
     public static final int sceneWidth = 600;
-    public static final String imgPath = "main/imgs/field.jpg";
+    public static final String imgPath = "main/imgs/field_freightfrenzy.jpg";
 
     private BorderPane mainPane = new BorderPane();
     private Pane startPane = new Pane();

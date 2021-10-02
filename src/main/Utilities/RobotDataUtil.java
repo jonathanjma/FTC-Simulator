@@ -13,6 +13,7 @@ public class RobotDataUtil {
 
     private String logName;
     private String info;
+    private boolean isRed;
     private String filePath;
     private final String[] possiblePaths = {
             "robotLogs/", System.getProperty("user.home") + "/Downloads/",
@@ -57,6 +58,8 @@ public class RobotDataUtil {
             for (int i = 0; i < lines.size(); i++) {
                 if (i == 0) {
                     info = lines.get(0).substring(2);
+                } else if (i == 1) {
+                    isRed = lines.get(1).contains("Red");
                 } else if (i > 3) {
                     String[] data = lines.get(i).split(",");
                     if (data.length <= 17) {
@@ -108,5 +111,9 @@ public class RobotDataUtil {
 
     public String getInfo() {
         return info;
+    }
+
+    public boolean isRed() {
+        return isRed;
     }
 }
