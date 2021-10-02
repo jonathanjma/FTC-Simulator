@@ -12,23 +12,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 import main.PathingFiles.Pose;
 import main.Threads.FollowPathData;
 import main.Utilities.AutoPathsUtil;
 import main.Utilities.CompileUtil;
 import main.Utilities.ObstacleUtil;
-import main.Utilities.Ring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static main.App.Robot.robotLength;
-import static main.Utilities.ConversionUtil.*;
+import static main.Utilities.ConversionUtil.getXInch;
+import static main.Utilities.ConversionUtil.getYInch;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class AutoPlayer extends PlayerBase {
@@ -56,7 +52,6 @@ public class AutoPlayer extends PlayerBase {
     private boolean slowMode = false;
 
     private boolean showTooltip = false;
-    private boolean ringFlag = false;
 
     // update robot thread
     private FollowPathData followPathData;
@@ -131,36 +126,6 @@ public class AutoPlayer extends PlayerBase {
             }
         });
 
-        for (int i = 0; i < AutoPathsUtil.initRings.size(); i++) {
-            Ring ringPos = AutoPathsUtil.initRings.get(i);
-
-            Arc ring = new Arc(getXPixel(ringPos.getX()), getYPixel(ringPos.getY()), 7, 7, 0, 360);
-            ring.setStrokeWidth(6); ring.setStroke(Color.YELLOW);
-            ring.setStrokeType(StrokeType.OUTSIDE); ring.setStrokeLineCap(StrokeLineCap.BUTT);
-            ring.setFill(null); ring.setId(i+"");
-
-            ring.setOnMouseDragged(e -> {
-                ring.setCenterX(e.getX()); ring.setCenterY(e.getY());
-
-                AutoPathsUtil.rings.sort((r1, r2) -> Integer.compare(r1.id, r2.id));
-                AutoPathsUtil.rings.get(Integer.parseInt(ring.getId())).setPos(getXInch(e.getX()), getYInch(e.getY()));
-
-                pathsGroup.getChildren().clear();
-                pathsUtil.getPathList().clear();
-                updateRobot(111, 63, Math.PI/2);
-                AutoPathsUtil.lX = robot.xInch; AutoPathsUtil.lY = robot.yInch; AutoPathsUtil.lTh = robot.thetaRad;
-                AutoPathsUtil.setColorValue(200);
-                pathsUtil.getPaths().bouncePath();
-
-                if (state != State.NotStarted) {
-                    followPathData.setPause(true);
-                    setState(State.Paused);
-                }
-                ringFlag = true;
-            });
-            simPane.getChildren().addAll(ring);
-        }
-
         simPane.getChildren().addAll(robot, pathsGroup, obstacleGroup, warningGroup, reloadBtn);
         robot.toFront();
         backBtn.toFront();
@@ -175,30 +140,20 @@ public class AutoPlayer extends PlayerBase {
                     robotThread.start();
                     setState(State.Playing);
                     restartBtn.setDisable(false);
-                    if (ringFlag) {
-                        followPathData.setPathList(pathsUtil.getPathList());
-                        ringFlag = false;
-                    }
                     break;
                 case Playing:
                     followPathData.setPause(true);
                     setState(State.Paused);
                     break;
                 case Paused:
-                    if (!ringFlag) {
-                        followPathData.setPause(false);
-                        setState(State.Playing);
-                    } else {
-                        restart();
-                        ringFlag = false;
-                    }
+                    followPathData.setPause(false);
+                    setState(State.Playing);
                     break;
             }
         });
 
         restartBtn.setOnAction(e -> {
             restart();
-            ringFlag = false;
         });
 
         nextBtn.setOnAction(e -> {

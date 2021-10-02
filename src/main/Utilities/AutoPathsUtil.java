@@ -31,8 +31,6 @@ public class AutoPathsUtil {
     private static final boolean enableWaits = true;
     public static boolean process = true;
 
-    public static ArrayList<Ring> initRings, rings;
-
     public AutoPathsUtil(Group pathsGroup) {
         this(pathsGroup, 255, 0);
     }
@@ -50,14 +48,6 @@ public class AutoPathsUtil {
         colorValue = initColorValue;
 
         pathList = new ArrayList<>();
-
-        if (rings == null) {
-            rings = new ArrayList<>();
-            rings.add(new Ring(85, 139, 0));
-            rings.add(new Ring(97, 139, 1));
-            rings.add(new Ring(113, 139, 2));
-            initRings = new ArrayList<>(rings);
-        }
 
         process = true;
 
