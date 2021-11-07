@@ -16,7 +16,7 @@ import static main.Utilities.AutoPathsUtil.*;
 
 public class Paths extends BasePaths {
 
-    private final boolean carousel_side = false;
+    private final boolean carousel_side = true;
     private final int marker_pos = 1;
 
     double[][] wobbleDelivery = {{115, 85, PI / 2}, {90, 100, PI / 2}, {125, 130, 2 * PI / 3}};
