@@ -18,10 +18,14 @@ public class Robot extends Rectangle {
     public double yInch;
     public double thetaRad;
 
-    public final static double robotLength = 18 * inchToPixel;
-    public final static double robotRadius = robotLength / 2;
+    public final static double robotHeight = 13 * inchToPixel;
+    public final static double robotWidth = 18 * inchToPixel;
 
-    private final static int robotRad = 9, fieldWidth = 144;
+    private final static double robotRadX = 6.5, robotRadY = 9, fieldWidth = 144;
+
+    public Robot() {
+        this(robotWidth, robotHeight);
+    }
 
     public Robot(double width, double height) {
         setWidth(width);
@@ -36,23 +40,23 @@ public class Robot extends Rectangle {
 
     public void setPosition(double xInch, double yInch) {
 
-        if (xInch - robotRad < 0) { // left
-            xInch = robotRad;
+        if (xInch - robotRadX < 0) { // left
+            xInch = robotRadX;
         }
-        if (xInch + robotRad > fieldWidth) { // right
-            xInch = fieldWidth - 9;
+        if (xInch + robotRadX > fieldWidth) { // right
+            xInch = fieldWidth - robotRadX;
         }
-        if (yInch - robotRad < 0) { // down
-            yInch = robotRad;
+        if (yInch - robotRadY < 0) { // down
+            yInch = robotRadY;
         }
-        if (yInch + robotRad > fieldWidth) { // up
-            yInch = fieldWidth - 9;
+        if (yInch + robotRadY > fieldWidth) { // up
+            yInch = fieldWidth - robotRadY;
         }
 
         this.xInch = xInch;
         this.yInch = yInch;
-        setX(getXPixel(xInch) - robotRadius);
-        setY(getYPixel(yInch) - robotRadius);
+        setX(getXPixel(xInch) - robotWidth/2);
+        setY(getYPixel(yInch) - robotHeight/2);
     }
 
     public void setTheta(double thetaRad) {
@@ -73,23 +77,23 @@ public class Robot extends Rectangle {
 
     public void updateColor(Stop[] stops) {
         LinearGradient background = new LinearGradient(getXPixel(xInch), getYPixel(yInch),
-                getXPixel(xInch) + robotLength, getYPixel(yInch),
+                getXPixel(xInch) + robotHeight, getYPixel(yInch),
                 false, CycleMethod.NO_CYCLE, stops);
         setFill(background);
     }
 
     public double[][] getCorners() {
-        double tl_x = xInch + (robotRad * Math.cos(thetaRad)) - (robotRad * Math.sin(thetaRad));
-        double tl_y = yInch + (robotRad * Math.sin(thetaRad)) + (robotRad * Math.cos(thetaRad));
+        double tl_x = xInch + (robotRadX * Math.cos(thetaRad)) - (robotRadX * Math.sin(thetaRad));
+        double tl_y = yInch + (robotRadY * Math.sin(thetaRad)) + (robotRadY * Math.cos(thetaRad));
 
-        double tr_x = xInch + (robotRad * Math.cos(thetaRad)) + (robotRad * Math.sin(thetaRad));
-        double tr_y = yInch + (robotRad * Math.sin(thetaRad)) - (robotRad * Math.cos(thetaRad));
+        double tr_x = xInch + (robotRadX * Math.cos(thetaRad)) + (robotRadX * Math.sin(thetaRad));
+        double tr_y = yInch + (robotRadY * Math.sin(thetaRad)) - (robotRadY * Math.cos(thetaRad));
 
-        double bl_x = xInch - (robotRad * Math.cos(thetaRad)) - (robotRad * Math.sin(thetaRad));
-        double bl_y = yInch - (robotRad * Math.sin(thetaRad)) + (robotRad * Math.cos(thetaRad));
+        double bl_x = xInch - (robotRadX * Math.cos(thetaRad)) - (robotRadX * Math.sin(thetaRad));
+        double bl_y = yInch - (robotRadY * Math.sin(thetaRad)) + (robotRadY * Math.cos(thetaRad));
 
-        double br_x = xInch - (robotRad * Math.cos(thetaRad)) + (robotRad * Math.sin(thetaRad));
-        double br_y = yInch - (robotRad * Math.sin(thetaRad)) - (robotRad * Math.cos(thetaRad));
+        double br_x = xInch - (robotRadX * Math.cos(thetaRad)) + (robotRadX * Math.sin(thetaRad));
+        double br_y = yInch - (robotRadY * Math.sin(thetaRad)) - (robotRadY * Math.cos(thetaRad));
 
         return new double[][] {{tl_x, tl_y}, {tr_x, tr_y}, {bl_x, bl_y}, {br_x, br_y}};
     }

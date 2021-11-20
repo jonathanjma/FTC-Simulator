@@ -24,7 +24,6 @@ import main.Utilities.DataPoint;
 import main.Utilities.RobotDataUtil;
 
 import static java.lang.Math.*;
-import static main.App.Robot.robotLength;
 import static main.Utilities.ConversionUtil.*;
 
 @SuppressWarnings("FieldMayBeFinal")
@@ -154,7 +153,7 @@ public class MatchReplayer extends PlayerBase {
             restart();
         });
 
-        robot = new Robot(robotLength, robotLength);
+        robot = new Robot();
         updateRobot(dataUtil.getData(0), false);
         simPane.getChildren().addAll(robot, turretGroup);
         nodeSlider.toFront();

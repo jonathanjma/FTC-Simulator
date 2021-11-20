@@ -5,7 +5,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import main.App.Robot;
 
-import static main.App.Robot.robotLength;
 import static main.Utilities.ConversionUtil.getXPixel;
 import static main.Utilities.ConversionUtil.getYPixel;
 
@@ -16,7 +15,7 @@ public class Frame {
 
     public Frame(double x, double y, double theta) {
 
-        robotRect = new Robot(robotLength, robotLength);
+        robotRect = new Robot();
         robotRect.setPosition(x, y);
         robotRect.setTheta(theta);
         robotRect.updateColor();

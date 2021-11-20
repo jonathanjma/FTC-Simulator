@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 import main.Utilities.AutoPathsUtil;
 import main.Utilities.CompileUtil;
 
-import static main.App.Robot.robotLength;
-
 public class AutoPlanner extends PlannerBase {
 
     private Group pathsGroup = new Group();
@@ -28,8 +26,7 @@ public class AutoPlanner extends PlannerBase {
         reloadBtn.setLayoutX(513); reloadBtn.setLayoutY(570);
         reloadBtn.setOnAction(e -> reloadPaths());
 
-        robot = new Robot(robotLength, robotLength);
-
+        robot = new Robot();
         pathsUtil.drawAutoPaths();
 
         updateRobotPos(2, null);

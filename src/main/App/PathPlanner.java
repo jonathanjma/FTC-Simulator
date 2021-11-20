@@ -19,8 +19,6 @@ import main.Utilities.AutoPathsUtil;
 
 import java.util.ArrayList;
 
-import static main.App.Robot.robotLength;
-
 @SuppressWarnings("FieldMayBeFinal")
 public class PathPlanner extends PlannerBase {
 
@@ -108,7 +106,7 @@ public class PathPlanner extends PlannerBase {
             updateRobotPos(2, null);
         });
 
-        robot = new Robot(robotLength, robotLength);
+        robot = new Robot();
         updateRobotPos(2, null);
         simPane.getChildren().addAll(robot, pathsGroup);
 

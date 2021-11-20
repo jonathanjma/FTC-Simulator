@@ -22,7 +22,6 @@ import main.Utilities.ObstacleUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static main.App.Robot.robotLength;
 import static main.Utilities.ConversionUtil.getXInch;
 import static main.Utilities.ConversionUtil.getYInch;
 
@@ -88,7 +87,7 @@ public class AutoPlayer extends PlayerBase {
         pathsUtil.drawAutoPaths();
         obUtil.initializeObstacles();
 
-        robot = new Robot(robotLength, robotLength);
+        robot = new Robot();
         Pose start = pathsUtil.getPathList().get(0).getRobotPose(0);
         updateRobot(start.getX(), start.getY(), start.getTheta());
 
