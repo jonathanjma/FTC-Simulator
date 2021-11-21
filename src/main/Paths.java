@@ -40,7 +40,7 @@ public class Paths extends BasePaths {
 
             Waypoint[] preloadScoreWaypoints = new Waypoint[]{
                     new Waypoint(135, 78.5, 0, -10, -20, 2, 0.0),
-                    new Waypoint(123, 70, 13*PI/12, 20, 5, 0, preloadScoreTime)
+                    new Waypoint(123, 67, 13*PI/12, 20, 5, 0, preloadScoreTime)
             };
             Path preloadScorePath = new Path(new ArrayList<>(Arrays.asList(preloadScoreWaypoints)), true);
             drawPath(preloadScorePath);
@@ -50,7 +50,7 @@ public class Paths extends BasePaths {
             //cycle
             for (int i = 0; i < 3; i++) {
                 Waypoint[] goToWarehouseWaypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, PI/6, 40, 40, 0, 0),
+                        new Waypoint(lX, lY, lTh, 40, 40, 0, 0),
                         new Waypoint(138, 84, PI/2, 20, 5, 0, goToWarehouseTime1),
                         new Waypoint(139, 125, PI/2, 20, 0, 0, goToWarehouseTime2)
                 };
@@ -60,9 +60,9 @@ public class Paths extends BasePaths {
                 waitAtCurPose(intakeTime);
 
                 Waypoint[] cycleScoreWaypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, PI/2, -20, 5, 0, 0),
+                        new Waypoint(lX, lY, lTh, -20, 5, 0, 0),
                         new Waypoint(138, 84, -PI/2, 20, 5, 0, cycleScoreTime1),
-                        new Waypoint(123, 70, 13*PI/12, 40, 20, 0, cycleScoreTime2)
+                        new Waypoint(123, 67, 13*PI/12, 40, 20, 0, cycleScoreTime2)
                 };
                 Path cycleScorePath = new Path(new ArrayList<>(Arrays.asList(cycleScoreWaypoints)), true);
                 drawPath(cycleScorePath);
@@ -73,7 +73,7 @@ public class Paths extends BasePaths {
             }
 
             Waypoint[] parkWaypoints = new Waypoint[]{
-                    new Waypoint(lX, lY, PI/6, 40, 40, 0, 0),
+                    new Waypoint(lX, lY, lTh, 40, 40, 0, 0),
                     new Waypoint(138, 84, PI/2, 20, 5, 0, parkTime1),
                     new Waypoint(139, 110, -PI/2, -10, 0, 0, parkTime2)
             };
