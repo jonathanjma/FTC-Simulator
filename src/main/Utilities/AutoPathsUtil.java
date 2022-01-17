@@ -61,8 +61,8 @@ public class AutoPathsUtil {
             double x = getXPixel(curPose.getX());
             double y = getYPixel(curPose.getY());
 
-            Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(colorValue, 0, 0));
-            Circle pathSegmentBlue = new Circle(getXPixel(144) - x, y, 1.5, Color.rgb(0, 0, colorValue));
+            Circle pathSegmentRed = new Circle(x, y, 1.5, Color.rgb(Math.abs(colorValue), 0, 0));
+            Circle pathSegmentBlue = new Circle(getXPixel(144) - x, y, 1.5, Color.rgb(0, 0, Math.abs(colorValue)));
             if (process || pathList == null) {
                 pathsGroup.getChildren().addAll(pathSegmentRed, pathSegmentBlue);
             }
