@@ -13,56 +13,39 @@ import static main.Utilities.AutoPathsUtil.*;
 public class Paths extends BasePaths {
 
     private final boolean carousel_side = false;
-    private final int marker_pos = 1;
-
-    double[][] wobbleDelivery = {{115, 85, PI / 2}, {90, 100, PI / 2}, {125, 130, 2 * PI / 3}};
-    double[][] wobble2Delivery = {{123, 65, 3 * PI / 4}, {104, 85, 5 * PI / 6}, {121, 118, 2 * PI / 3}};
 
     public void drawPaths() {
         drawPathsFull();
     }
 
     public void drawPathsFull() {
-        double preloadScoreTime = 0.5;
-        double goToWareHouse1Time = 0.5;
-        double goToWareHouse2Time = 0.5;
-        double cycleScoreTime = 0.5;
-        double parkTime1 = 1;
 
         double depositTime = 0.75;
         double intakeTime = 0.75;
 
         if (!carousel_side) {
-            Waypoint[] preloadScoreWaypoints = new Waypoint[]{
-                    new Waypoint(135, 78.5, 0, -10, -10, 0, 0),
-                    new Waypoint(127, 76, 0, -10, -5, 0, preloadScoreTime)
-            };
-            Path preloadScorePath = new Path(new ArrayList<>(Arrays.asList(preloadScoreWaypoints)), true);
-            drawPath(preloadScorePath);
 
-            waitAtCurPose(depositTime);
+            double goToWarehouseTime = 1;
+            double cycleScoreTime = 1;
+            double parkTime = 0.5;
 
-            Waypoint[] goToWareHouse1Waypoints = new Waypoint[]{
-                    new Waypoint(lX, lY, lTh, 10, 5,0, 0),
-                    new Waypoint(138, 89, PI/2, 10,5,0,goToWareHouse1Time),
-            };
-            Path goToWareHouse1Path = new Path(new ArrayList<>(Arrays.asList(goToWareHouse1Waypoints)));
-            drawPath(goToWareHouse1Path);
+            lX = 138; lY = 78.5; lTh = PI/2;
 
             //cycle
-            for (int i = 0; i < 11; i++) {
-                Waypoint[] goToWarehouse2Waypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, lTh, 20, 10,0, 0),
-                        new Waypoint(138,113,PI/2,30,10,0,goToWareHouse2Time)
+            for (int i = 0; i < 7; i++) {
+
+                Waypoint[] goToWarehouseWaypoints = new Waypoint[] {
+                        new Waypoint(lX, lY, lTh, 10, 10,0, 0),
+                        new Waypoint(138,113,PI/2,10,1,0, goToWarehouseTime)
                 };
-                Path goToWarehouse2Path = new Path(new ArrayList<>(Arrays.asList(goToWarehouse2Waypoints)));
-                drawPath(goToWarehouse2Path);
+                Path goToWarehousePath = new Path(new ArrayList<>(Arrays.asList(goToWarehouseWaypoints)));
+                drawPath(goToWarehousePath);
 
                 waitAtCurPose(intakeTime);
 
-                Waypoint[] cycleScoreWaypoints = new Waypoint[]{
-                        new Waypoint(lX, lY, lTh, -30, 5, 0, 0),
-                        new Waypoint(138, 89, -PI/2, 20, 5, 0, cycleScoreTime),
+                Waypoint[] cycleScoreWaypoints = new Waypoint[] {
+                        new Waypoint(lX, lY, lTh, -10, -10, 0, 0),
+                        new Waypoint(138, 89, PI/2, -10, -1, 0, cycleScoreTime),
                 };
                 Path cycleScorePath = new Path(new ArrayList<>(Arrays.asList(cycleScoreWaypoints)), true);
                 drawPath(cycleScorePath);
@@ -70,15 +53,14 @@ public class Paths extends BasePaths {
                 waitAtCurPose(depositTime);
             }
 
-            Waypoint[] parkWaypoints = new Waypoint[]{
-                    new Waypoint(lX, lY, lTh, 30, 5,0, 0),
-                    new Waypoint(138,113,PI/2,20,-5,0,parkTime1)
+            Waypoint[] parkWaypoints = new Waypoint[] {
+                    new Waypoint(lX, lY, lTh, 30, 10,0, 0),
+                    new Waypoint(138,113,PI/2,20,1,0, parkTime)
             };
             Path parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)));
             drawPath(parkPath);
-
-
-        } else {
+        }
+        /*else {
             double detectBarcodeTime = 0.75;
             double deliverPreloadedFreightTime = 1.0;
             double spinCarouselTime = 1.5;
@@ -163,6 +145,6 @@ public class Paths extends BasePaths {
             };
 
             process = true;
-        }
+        }*/
     }
 }
