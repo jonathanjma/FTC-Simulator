@@ -16,9 +16,11 @@ public class RobotDataUtil {
     private boolean isRed;
     private String filePath;
     private final String[] possiblePaths = {
+            //System.getProperty("user.home") + "/tempstore/logs/",
             "robotLogs/", System.getProperty("user.home") + "/Downloads/",
             System.getProperty("user.home") + "/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/",
-            System.getProperty("user.home") + "/Documents/AndroidStudio/DeviceExplorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/"};
+            System.getProperty("user.home") + "/Documents/AndroidStudio/DeviceExplorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/"
+    };
 
     private ArrayList<DataPoint> dataPoints;
 
@@ -62,21 +64,12 @@ public class RobotDataUtil {
                     isRed = lines.get(1).contains("Red");
                 } else if (i > 3) {
                     String[] data = lines.get(i).split(",");
-                    if (data.length <= 17) {
-                        dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
-                                Double.parseDouble(data[4]), Double.MAX_VALUE, Double.parseDouble(data[5]), Double.parseDouble(data[6]),
-                                Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]),
-                                Double.parseDouble(data[10]), Integer.parseInt(data[11]), Boolean.parseBoolean(data[12]),
-                                Boolean.parseBoolean(data[13]), Integer.parseInt(data[14]),
-                                data.length > 15 ? Integer.parseInt(data[15]) : 0, data.length > 15 ? Double.parseDouble(data[16]) : 0));
-                    } else {
-                        dataPoints.add(new DataPoint(Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
-                                Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]), Double.parseDouble(data[7]),
-                                Double.parseDouble(data[8]), Double.parseDouble(data[9]), Double.parseDouble(data[10]),
-                                Double.parseDouble(data[11]), Integer.parseInt(data[12]), Boolean.parseBoolean(data[13]),
-                                Boolean.parseBoolean(data[14]), Integer.parseInt(data[15]),
-                                Integer.parseInt(data[16]), Double.parseDouble(data[17])));
-                    }
+                    dataPoints.add(new DataPoint(
+                            Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
+                            Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]), Double.parseDouble(data[7]),
+                            Double.parseDouble(data[8]), Double.parseDouble(data[9]), Double.parseDouble(data[10]),
+                            Double.parseDouble(data[11]), Double.parseDouble(data[12]), data[13], Boolean.parseBoolean(data[14]),
+                            Boolean.parseBoolean(data[15]), Boolean.parseBoolean(data[16]), Integer.parseInt(data[17]), Double.parseDouble(data[18])));
                 }
             }
 
@@ -95,7 +88,7 @@ public class RobotDataUtil {
         if (index != 0) {
             DataPoint prev = dataPoints.get(index - 1);
             DataPoint cur = dataPoints.get(index);
-            return cur.sinceStart - prev.sinceStart;
+            return cur.timeSinceSt - prev.timeSinceSt;
         } else {
             return 0;
         }

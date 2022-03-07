@@ -1,6 +1,5 @@
 package main.App;
 
-import javafx.animation.PathTransition;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,20 +10,18 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import main.Threads.FollowLogData;
 import main.Utilities.DataPoint;
 import main.Utilities.RobotDataUtil;
 
-import static java.lang.Math.*;
-import static main.Utilities.ConversionUtil.*;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static main.Utilities.ConversionUtil.getXPixel;
+import static main.Utilities.ConversionUtil.getYPixel;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class MatchReplayer extends PlayerBase {
@@ -40,28 +37,22 @@ public class MatchReplayer extends PlayerBase {
     private boolean startBtnPressed = false;
 
     // ui labels
-    private Label velocityLb = new Label("  Vx, w:");
+    private Label velocityLb = new Label("  V, w:");
     private Label velocityMagLb = new Label("n/a");
     private Label commaLb3 = new Label(",");
     private Label velocityThLb = new Label("n/a");
-    private Label accelLb = new Label("  Ax, a:");
-    private Label accelMagLb = new Label("n/a");
-    private Label commaLb4 = new Label(",");
-    private Label accelThLb = new Label("n/a");
-    private Label ringsLb = new Label("# Rings:");
-    private Label numRingsLb = new Label("n/a");
-    private Label shootingLb = new Label("  n/a");
+    private Label targetHubLb = new Label("Target:");
+    private Label targetHubLb_V = new Label("n/a");
+    private Label stateLb = new Label("  n/a");
     private Label cyclesLb = new Label("  # Cycles:");
     private Label numCyclesLb = new Label("n/a");
     private Label avgCyclesLb = new Label("  Avg Cycle Time:");
     private Label avgCycleTimeLb = new Label("n/a");
 
-    private Text nodeLb = new Text(515, 25, "Node:");
-    private Text nodeNumLb = new Text(558, 25, "n/a");
-    private Text timeLb = new Text(515, 45, "Time:");
-    private Text curTimeLb = new Text(553, 45, "n/a");
-
-    private int prevRings = 0;
+    private Text nodeLb = new Text(10, 565, "Node:");
+    private Text nodeNumLb = new Text(53, 565, "n/a");
+    private Text timeLb = new Text(10, 585, "Time:");
+    private Text curTimeLb = new Text(48, 585, "n/a");
 
     private RobotDataUtil dataUtil = new RobotDataUtil(true);
     // private RobotDataUtil dataUtil = new RobotDataUtil("RobotData3");
@@ -85,21 +76,17 @@ public class MatchReplayer extends PlayerBase {
 
         startStopBtn.disableProperty().bind(startStopDisabled);
 
-        setFontBold(accelLb, 14);
-        setFont(accelMagLb, 14); accelMagLb.setPrefWidth(40); setFont(commaLb4, 14);
-        setFont(accelThLb, 14); accelThLb.setPrefWidth(35);
-
-        setFontBold(ringsLb, 14); setFont(numRingsLb, 14);
-        setFontBold(shootingLb, 14);
+        setFontBold(targetHubLb, 14); setFont(targetHubLb_V, 14);
+        setFontBold(stateLb, 14);
         setFontBold(cyclesLb, 14); setFont(numCyclesLb, 14);
         setFontBold(avgCyclesLb, 14); setFont(avgCycleTimeLb, 14);
 
         setFontBold(nodeLb, 14); setFont(nodeNumLb, 14);
         setFontBold(timeLb, 14); setFont(curTimeLb, 14);
 
-        simInfo.getChildren().addAll(velocityLb, velocityMagLb, commaLb3, velocityThLb, accelLb, accelMagLb, commaLb4, accelThLb,
+        simInfo.getChildren().addAll(velocityLb, velocityMagLb, commaLb3, velocityThLb,
                 startStopBtn, restartBtn);
-        simInfo2.getChildren().addAll(ringsLb, numRingsLb, shootingLb, cyclesLb, numCyclesLb, avgCyclesLb, avgCycleTimeLb);
+        simInfo2.getChildren().addAll(targetHubLb, targetHubLb_V, stateLb, cyclesLb, numCyclesLb, avgCyclesLb, avgCycleTimeLb);
         simPane.getChildren().addAll(nodeLb, nodeNumLb, timeLb, curTimeLb, pathPointGroup);
 
         dataUtil.parseLogFile();
@@ -176,50 +163,90 @@ public class MatchReplayer extends PlayerBase {
         }
 
         // update time since start
-        curTimeLb.setText(String.format("%.2f", data.sinceStart / 1000));
+        curTimeLb.setText(String.format("%.2f", data.timeSinceSt / 1000));
 
         // update robot position
         robot.setPose(data.x, data.y, data.theta);
 
-        // update turret
+        // update slides
         turretGroup.getChildren().clear();
-        if (data.turretGlobalTheta != Double.MAX_VALUE) {
-            double cx = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
-            double cy = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
-            double r = 8.5 / 2;
-            Circle turretCircle = new Circle(getXPixel(cx), getYPixel(cy), r * inchToPixel);
-            turretCircle.setFill(Color.GREY);
 
-            double[] xcoords = {cx - r * sin(data.turretGlobalTheta), cx + r*sqrt(2) * cos(data.turretGlobalTheta + PI/4), cx + r*sqrt(2) * cos(data.turretGlobalTheta - PI/4), cx + r * sin(data.turretGlobalTheta)};
-            double[] ycoords = {cy + r * cos(data.turretGlobalTheta), cy + r*sqrt(2) * sin(data.turretGlobalTheta + PI/4), cy + r*sqrt(2) * sin(data.turretGlobalTheta - PI/4), cy - r * cos(data.turretGlobalTheta)};
-            Polygon turretRect = new Polygon();
-            turretRect.getPoints().addAll(
-                    getXPixel(xcoords[0]), getYPixel(ycoords[0]),
-                    getXPixel(xcoords[1]), getYPixel(ycoords[1]),
-                    getXPixel(xcoords[2]), getYPixel(ycoords[2]),
-                    getXPixel(xcoords[3]), getYPixel(ycoords[3])
-            );
-            turretRect.setFill(Color.GREY);
+        double extendedPos = 11.5 + data.depositSlidesDist;
+        double theta = data.turretTheta;
+        double TURRET_Y_OFFSET = 2.06066;
+        double turretCenterX = data.x + TURRET_Y_OFFSET * cos(data.theta);
+        double turretCenterY = data.y + TURRET_Y_OFFSET * sin(data.theta);
 
-            turretGroup.getChildren().addAll(turretCircle, turretRect);
-        }
+        double[] leftSlidesX = {-2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, -2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
+        double[] leftSlidesY = {-2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, -2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY};
+        double[] rightSlidesX = {2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, 2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
+        double[] rightSlidesY = {2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, 2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + -4.5 * cos(theta) + turretCenterY};
+        Polygon leftSlidesRect = new Polygon();
+        Polygon rightSlidesRect = new Polygon();
+        leftSlidesRect.getPoints().addAll(
+                getXPixel(leftSlidesX[0]), getYPixel(leftSlidesY[0]),
+                getXPixel(leftSlidesX[1]), getYPixel(leftSlidesY[1]),
+                getXPixel(leftSlidesX[2]), getYPixel(leftSlidesY[2]),
+                getXPixel(leftSlidesX[3]), getYPixel(leftSlidesY[3])
+        );
+        rightSlidesRect.getPoints().addAll(
+                getXPixel(rightSlidesX[0]), getYPixel(rightSlidesY[0]),
+                getXPixel(rightSlidesX[1]), getYPixel(rightSlidesY[1]),
+                getXPixel(rightSlidesX[2]), getYPixel(rightSlidesY[2]),
+                getXPixel(rightSlidesX[3]), getYPixel(rightSlidesY[3])
+        );
+        leftSlidesRect.setFill(Color.RED);
+        rightSlidesRect.setFill(Color.RED);
+
+        // update intake slides
+        /*double intakeExtendedPos = 13.5;//data.intakeSlidesExtend ? 13.5 : 0;
+        // @pi/2: cos=0, sin = 1
+        //
+        double[] leftIntakeX = {-2.5 * sin(data.theta) - 9 * cos(data.theta) + data.x, -2.5 * sin(data.theta) - (9 + intakeExtendedPos) * cos(data.theta) + data.x, -3 * sin(data.theta) - (9 + intakeExtendedPos) * sin(data.theta) + data.x, -3 * sin(data.theta) - 9 * cos(data.theta) + data.x};
+        double[] leftIntakeY = {-2.5 * cos(data.theta) + 9 * sin(data.theta) + data.y, -2.5 * cos(data.theta) + (9 + intakeExtendedPos) * sin(data.theta) + data.y, -3 * cos(data.theta) + (9 + intakeExtendedPos) * cos(data.theta) + data.y, -3 * cos(data.theta) + 9 * sin(data.theta) + data.y};
+        double[] rightIntakeX = {2.5 * sin(data.theta) - 9 * cos(data.theta) + data.x, 2.5 * sin(data.theta) - (9 + intakeExtendedPos) * cos(data.theta) + data.x, 3 * sin(data.theta) - (9 + intakeExtendedPos) * sin(data.theta) + data.x, 3 * sin(data.theta) - 9 * cos(data.theta) + data.x};
+        double[] rightIntakeY = {2.5 * cos(data.theta) + 9 * sin(data.theta) + data.y, 2.5 * cos(data.theta) + (9 + intakeExtendedPos) * sin(data.theta) + data.y, 3 * cos(data.theta) + (9 + intakeExtendedPos) * cos(data.theta) + data.y, 3 * cos(data.theta) + 9 * sin(data.theta) + data.y};
+        Polygon intakeLeftRect = new Polygon();
+        Polygon intakeRightRect = new Polygon();
+        intakeLeftRect.getPoints().addAll(
+                getXPixel(leftIntakeX[0]), getYPixel(leftIntakeY[0]),
+                getXPixel(leftIntakeX[1]), getYPixel(leftIntakeY[1]),
+                getXPixel(leftIntakeX[2]), getYPixel(leftIntakeY[2]),
+                getXPixel(leftIntakeX[3]), getYPixel(leftIntakeY[3])
+        );
+        intakeRightRect.getPoints().addAll(
+                getXPixel(rightIntakeX[0]), getYPixel(rightIntakeY[0]),
+                getXPixel(rightIntakeX[1]), getYPixel(rightIntakeY[1]),
+                getXPixel(rightIntakeX[2]), getYPixel(rightIntakeY[2]),
+                getXPixel(rightIntakeX[3]), getYPixel(rightIntakeY[3])
+        );
+        intakeLeftRect.setFill(Color.ORANGE);
+        intakeRightRect.setFill(Color.ORANGE);*/
+
+        turretGroup.getChildren().addAll(leftSlidesRect, rightSlidesRect/*, intakeLeftRect, intakeRightRect*/);
+
+//        double cx = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
+//        double cy = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
+//        double r = 8.5 / 2;
+//        Circle turretCircle = new Circle(getXPixel(cx), getYPixel(cy), r * inchToPixel);
+//        turretCircle.setFill(Color.GREY);
 
         // color depending on rings in robot
-        if (data.numRings == 3) {
-            robot.updateColor(new Stop[] {
-                    new Stop(0, Color.rgb(50, 205, 50, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-        } else if (data.numRings == 2) {
-            robot.updateColor(new Stop[] {
-                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-        } else if (data.numRings == 1) {
-            robot.updateColor(new Stop[] {
-                    new Stop(0, Color.rgb(255, 0, 56, 0.85)),
-                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
-        } else {
-            robot.updateColor();
-        }
+//        if (data.numRings == 3) {
+//            robot.updateColor(new Stop[] {
+//                    new Stop(0, Color.rgb(50, 205, 50, 0.85)),
+//                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+//        } else if (data.numRings == 2) {
+//            robot.updateColor(new Stop[] {
+//                    new Stop(0, Color.rgb(255, 225, 53, 0.85)),
+//                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+//        } else if (data.numRings == 1) {
+//            robot.updateColor(new Stop[] {
+//                    new Stop(0, Color.rgb(255, 0, 56, 0.85)),
+//                    new Stop(1, Color.rgb(192, 192, 192, 0.85))});
+//        } else {
+//            robot.updateColor();
+//        }
 
         // update xy and theta text
         xInchLb.setText(String.format("%.2f", data.x));
@@ -227,9 +254,9 @@ public class MatchReplayer extends PlayerBase {
         thetaLb.setText(String.format("%.2f", data.theta));
 
         // update velocity text
-        double velocityMagnitude = Math.hypot(data.velocityX, data.velocityY);
+        double velocityMagnitude = Math.hypot(data.vx, data.vy);
         velocityMagLb.setText(String.format("%.2f", velocityMagnitude));
-        velocityThLb.setText(String.format("%.2f", data.velocityTheta));
+        velocityThLb.setText(String.format("%.2f", data.w));
 
         // draw robot path dots, color based on velocity (red = slow, green = fast)
         Circle pathPoint = new Circle(getXPixel(data.x), getYPixel(data.y), 3, Color.hsb(velocityMagnitude * 2, 1, 1));
@@ -240,51 +267,19 @@ public class MatchReplayer extends PlayerBase {
 //            pathPointGroup.getChildren().remove(0);
 //        }
 
-        // update acceleration text
-        double accelMagnitude = Math.hypot(data.accelX, data.accelY);
-        accelMagLb.setText(String.format("%.1f", accelMagnitude));
-        accelThLb.setText(String.format("%.1f", data.accelTheta));
+        // update target hub
+        targetHubLb_V.setText(data.depositTarget);
 
-        // update rings in robot
-        numRingsLb.setText(data.numRings + "");
-
-        // update shooting status
-        if (!data.magHome) {
-            shootingLb.setText("  Shooting");
-        } else {
-            shootingLb.setText("  Intaking Rings");
+        // update robot state
+        if (data.intakeTransfer) {
+            stateLb.setText("  Intaking/Transfer");
+        } else if (data.depositing) {
+            stateLb.setText("  Depositing");
         }
 
         // update cycle data
         numCyclesLb.setText(data.numCycles + "");
-        avgCycleTimeLb.setText(!Double.isNaN(data.avgCycleTime) ? String.format("%.2f", data.avgCycleTime) : 0 + "");
-
-        // show shoot animation when rings are feeded
-        if (data.numRings != prevRings && prevRings != 0 && prevRings != 4) {
-
-            Shape ring = Shape.subtract(new Circle(15), new Circle(8.5));
-            ring.setFill(Color.YELLOW);
-            simPane.getChildren().add(ring);
-
-            double shooterX = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
-            double shooterY = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
-            double targetX;
-            if (data.lastTarget == 0) {
-                targetX = dataUtil.isRed() ? 76.5 : 67.5;
-            } else if (data.lastTarget == 1) {
-                targetX = dataUtil.isRed() ? 84 : 60;
-            } else if (data.lastTarget == 2) {
-                targetX = dataUtil.isRed() ? 91.5 : 52.5;
-            } else {
-                targetX = dataUtil.isRed() ? 108 : 36;
-            }
-
-            Line ringPath = new Line(getXPixel(shooterX), getYPixel(shooterY), getXPixel(targetX), getYPixel(150));
-            PathTransition ringLaunch = new PathTransition(Duration.millis(1000), ringPath, ring);
-            ringLaunch.setOnFinished(e -> simPane.getChildren().remove(ring));
-            ringLaunch.play();
-        }
-        prevRings = data.numRings;
+        avgCycleTimeLb.setText(String.format("%.2f", data.avgCycleTime));
     }
 
     public void restart() {

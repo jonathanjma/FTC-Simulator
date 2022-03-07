@@ -2,31 +2,24 @@ package main.Utilities;
 
 public class DataPoint {
 
-    public final double sinceStart, x, y, theta, turretGlobalTheta, velocityX, velocityY, velocityTheta,
-        accelX, accelY, accelTheta, avgCycleTime;
-    public final int numRings, lastTarget, numCycles;
-    public final boolean magHome, feedHome;
+    public final double timeSinceSt, x, y, theta, vx, vy, w, ax, ay, alpha,
+            turretTheta, depositSlidesDist, avgCycleTime;
+    public final int numCycles;
+    public final boolean intakeSlidesExtend, intakeTransfer, depositing;
+    public final String depositTarget;
 
-    public DataPoint(double sinceStart, double x, double y, double theta, double turretGlobalTheta,
-                     double velocityX, double velocityY, double velocityTheta,
-                     double accelX, double accelY, double accelTheta,
-                     int numRings, boolean magHome, boolean feedHome,
-                     int lastTarget, int numCycles, double avgCycleTime) {
-        this.sinceStart = sinceStart;
-        this.x = x;
-        this.y = y;
-        this.theta = theta;
-        this.turretGlobalTheta = turretGlobalTheta;
-        this.velocityX = velocityX;
-        this.velocityY = velocityY;
-        this.velocityTheta = velocityTheta;
-        this.accelX = accelX;
-        this.accelY = accelY;
-        this.accelTheta = accelTheta;
-        this.numRings = numRings;
-        this.lastTarget = lastTarget;
-        this.magHome = magHome;
-        this.feedHome = feedHome;
+    public DataPoint(double timeSinceSt, double x, double y, double theta, double vx, double vy, double w, double ax, double ay, double alpha,
+                     double turretTheta, double depositSlidesDist, String depositTarget, boolean intakeSlidesExtend, boolean intakeTransfer, boolean depositing,
+                     int numCycles, double avgCycleTime) {
+        this.timeSinceSt = timeSinceSt;
+        this.x = x; this.y = y; this.theta = theta;
+        this.vx = vx; this.vy = vy; this.w = w;
+        this.ax = ax; this.ay = ay; this.alpha = alpha;
+        this.turretTheta = turretTheta;
+        this.depositSlidesDist = depositSlidesDist;
+        this.depositTarget = depositTarget;
+        this.intakeSlidesExtend = intakeSlidesExtend;
+        this.intakeTransfer = intakeTransfer; this.depositing = depositing;
         this.numCycles = numCycles;
         this.avgCycleTime = avgCycleTime;
     }

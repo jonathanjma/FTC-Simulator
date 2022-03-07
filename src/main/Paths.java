@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.PI;
-import static main.Utilities.AutoPathsUtil.*;
+import static main.Utilities.AutoPathsUtil.drawPath;
 
 public class Paths extends BasePaths {
 
@@ -29,36 +29,37 @@ public class Paths extends BasePaths {
             double cycleScoreTime = 1;
             double parkTime = 0.5;
 
-            lX = 138; lY = 78.5; lTh = PI/2;
+//            lX = 138; lY = 78.5; lTh = PI/2;
 
             //cycle
-            for (int i = 0; i < 7; i++) {
-
-                Waypoint[] goToWarehouseWaypoints = new Waypoint[] {
-                        new Waypoint(lX, lY, lTh, 10, 10,0, 0),
-                        new Waypoint(138,113,PI/2,10,1,0, goToWarehouseTime)
-                };
-                Path goToWarehousePath = new Path(new ArrayList<>(Arrays.asList(goToWarehouseWaypoints)));
-                drawPath(goToWarehousePath);
-
-                waitAtCurPose(intakeTime);
+//            for (int i = 0; i < 7; i++) {
+//
+//                Waypoint[] goToWarehouseWaypoints = new Waypoint[] {
+//                        new Waypoint(lX, lY, lTh, 10, 10,0, 0),
+//                        new Waypoint(138,113,PI/2,10,1,0, goToWarehouseTime)
+//                };
+//                Path goToWarehousePath = new Path(new ArrayList<>(Arrays.asList(goToWarehouseWaypoints)));
+//                drawPath(goToWarehousePath);
+//
+//                waitAtCurPose(intakeTime);
 
                 Waypoint[] cycleScoreWaypoints = new Waypoint[] {
-                        new Waypoint(lX, lY, lTh, -10, -10, 0, 0),
-                        new Waypoint(138, 89, PI/2, -10, -1, 0, cycleScoreTime),
+                        new Waypoint(138, 111, 3*PI/2, 10, 10, 0, 0),
+                        new Waypoint(138, 84, 3*PI/2, 5, 1, 0, 1),
+                        new Waypoint(130, 78.5, 6*PI/5, 5, 5, 0, 1.5),
                 };
                 Path cycleScorePath = new Path(new ArrayList<>(Arrays.asList(cycleScoreWaypoints)), true);
                 drawPath(cycleScorePath);
 
-                waitAtCurPose(depositTime);
-            }
-
-            Waypoint[] parkWaypoints = new Waypoint[] {
-                    new Waypoint(lX, lY, lTh, 30, 10,0, 0),
-                    new Waypoint(138,113,PI/2,20,1,0, parkTime)
-            };
-            Path parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)));
-            drawPath(parkPath);
+//                waitAtCurPose(depositTime);
+//            }
+//
+//            Waypoint[] parkWaypoints = new Waypoint[] {
+//                    new Waypoint(lX, lY, lTh, 30, 10,0, 0),
+//                    new Waypoint(138,113,PI/2,20,1,0, parkTime)
+//            };
+//            Path parkPath = new Path(new ArrayList<>(Arrays.asList(parkWaypoints)));
+//            drawPath(parkPath);
         }
         /*else {
             double detectBarcodeTime = 0.75;
