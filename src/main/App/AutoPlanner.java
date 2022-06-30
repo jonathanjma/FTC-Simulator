@@ -11,7 +11,7 @@ import main.Utilities.CompileUtil;
 public class AutoPlanner extends PlannerBase {
 
     private Group pathsGroup = new Group();
-    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 20);
+    private AutoPathsUtil pathsUtil = new AutoPathsUtil(pathsGroup, 255, 10);
 
     public void launch(Stage primaryStage) {
         super.launch(primaryStage);
