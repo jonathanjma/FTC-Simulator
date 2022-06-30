@@ -16,10 +16,10 @@ public class RobotDataUtil {
     private boolean isRed;
     private String filePath;
     private final String[] possiblePaths = {
-            //System.getProperty("user.home") + "/tempstore/logs/",
             "robotLogs/", System.getProperty("user.home") + "/Downloads/",
             System.getProperty("user.home") + "/Downloads/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/",
-            System.getProperty("user.home") + "/Documents/AndroidStudio/DeviceExplorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/"
+            System.getProperty("user.home") + "/Documents/AndroidStudio/DeviceExplorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/",
+            System.getProperty("user.home") + "/AppData/Local/Google/AndroidStudio2021.1/device-explorer/rev_robotics-control_hub_v1_0-192.168.43.1_5555/sdcard/FIRST/robotLogs/"
     };
 
     private ArrayList<DataPoint> dataPoints;
@@ -68,8 +68,8 @@ public class RobotDataUtil {
                             Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]),
                             Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]), Double.parseDouble(data[7]),
                             Double.parseDouble(data[8]), Double.parseDouble(data[9]), Double.parseDouble(data[10]),
-                            Double.parseDouble(data[11]), Double.parseDouble(data[12]), data[13], Boolean.parseBoolean(data[14]),
-                            Boolean.parseBoolean(data[15]), Boolean.parseBoolean(data[16]), Integer.parseInt(data[17]), Double.parseDouble(data[18])));
+                            Double.parseDouble(data[11]), data[12], Integer.parseInt(data[13]), Integer.parseInt(data[14]),
+                            Integer.parseInt(data[15]), Integer.parseInt(data[16]), Double.parseDouble(data[17])));
                 }
             }
 

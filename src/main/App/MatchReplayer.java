@@ -171,32 +171,32 @@ public class MatchReplayer extends PlayerBase {
         // update slides
         turretGroup.getChildren().clear();
 
-        double extendedPos = 11.5 + data.depositSlidesDist;
-        double theta = data.turretTheta;
-        double TURRET_Y_OFFSET = 2.06066;
-        double turretCenterX = data.x + TURRET_Y_OFFSET * cos(data.theta);
-        double turretCenterY = data.y + TURRET_Y_OFFSET * sin(data.theta);
-
-        double[] leftSlidesX = {-2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, -2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
-        double[] leftSlidesY = {-2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, -2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY};
-        double[] rightSlidesX = {2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, 2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
-        double[] rightSlidesY = {2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, 2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + -4.5 * cos(theta) + turretCenterY};
-        Polygon leftSlidesRect = new Polygon();
-        Polygon rightSlidesRect = new Polygon();
-        leftSlidesRect.getPoints().addAll(
-                getXPixel(leftSlidesX[0]), getYPixel(leftSlidesY[0]),
-                getXPixel(leftSlidesX[1]), getYPixel(leftSlidesY[1]),
-                getXPixel(leftSlidesX[2]), getYPixel(leftSlidesY[2]),
-                getXPixel(leftSlidesX[3]), getYPixel(leftSlidesY[3])
-        );
-        rightSlidesRect.getPoints().addAll(
-                getXPixel(rightSlidesX[0]), getYPixel(rightSlidesY[0]),
-                getXPixel(rightSlidesX[1]), getYPixel(rightSlidesY[1]),
-                getXPixel(rightSlidesX[2]), getYPixel(rightSlidesY[2]),
-                getXPixel(rightSlidesX[3]), getYPixel(rightSlidesY[3])
-        );
-        leftSlidesRect.setFill(Color.RED);
-        rightSlidesRect.setFill(Color.RED);
+//        double extendedPos = 11.5 + data.depositSlidesDist;
+//        double theta = data.turretTheta;
+//        double TURRET_Y_OFFSET = 2.06066;
+//        double turretCenterX = data.x + TURRET_Y_OFFSET * cos(data.theta);
+//        double turretCenterY = data.y + TURRET_Y_OFFSET * sin(data.theta);
+//
+//        double[] leftSlidesX = {-2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, -2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, -3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
+//        double[] leftSlidesY = {-2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, -2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, -3.5 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY};
+//        double[] rightSlidesX = {2 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX, 2 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - extendedPos * sin(data.turretTheta) + turretCenterX, 3.5 * cos(data.turretTheta) - -4.5 * sin(data.turretTheta) + turretCenterX};
+//        double[] rightSlidesY = {2 * sin(data.turretTheta) + -4.5 * cos(data.turretTheta) + turretCenterY, 2 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + extendedPos * cos(data.turretTheta) + turretCenterY, 3.5 * sin(data.turretTheta) + -4.5 * cos(theta) + turretCenterY};
+//        Polygon leftSlidesRect = new Polygon();
+//        Polygon rightSlidesRect = new Polygon();
+//        leftSlidesRect.getPoints().addAll(
+//                getXPixel(leftSlidesX[0]), getYPixel(leftSlidesY[0]),
+//                getXPixel(leftSlidesX[1]), getYPixel(leftSlidesY[1]),
+//                getXPixel(leftSlidesX[2]), getYPixel(leftSlidesY[2]),
+//                getXPixel(leftSlidesX[3]), getYPixel(leftSlidesY[3])
+//        );
+//        rightSlidesRect.getPoints().addAll(
+//                getXPixel(rightSlidesX[0]), getYPixel(rightSlidesY[0]),
+//                getXPixel(rightSlidesX[1]), getYPixel(rightSlidesY[1]),
+//                getXPixel(rightSlidesX[2]), getYPixel(rightSlidesY[2]),
+//                getXPixel(rightSlidesX[3]), getYPixel(rightSlidesY[3])
+//        );
+//        leftSlidesRect.setFill(Color.RED);
+//        rightSlidesRect.setFill(Color.RED);
 
         // update intake slides
         /*double intakeExtendedPos = 13.5;//data.intakeSlidesExtend ? 13.5 : 0;
@@ -222,8 +222,6 @@ public class MatchReplayer extends PlayerBase {
         );
         intakeLeftRect.setFill(Color.ORANGE);
         intakeRightRect.setFill(Color.ORANGE);*/
-
-        turretGroup.getChildren().addAll(leftSlidesRect, rightSlidesRect/*, intakeLeftRect, intakeRightRect*/);
 
 //        double cx = data.x + 0.5 * sin(data.theta) - 4 * cos(data.theta);
 //        double cy = data.y - 0.5 * cos(data.theta) - 4 * sin(data.theta);
@@ -271,11 +269,11 @@ public class MatchReplayer extends PlayerBase {
         targetHubLb_V.setText(data.depositTarget);
 
         // update robot state
-        if (data.intakeTransfer) {
-            stateLb.setText("  Intaking/Transfer");
-        } else if (data.depositing) {
-            stateLb.setText("  Depositing");
-        }
+//        if (data.intakeTransfer) {
+//            stateLb.setText("  Intaking/Transfer");
+//        } else if (data.depositing) {
+//            stateLb.setText("  Depositing");
+//        }
 
         // update cycle data
         numCyclesLb.setText(data.numCycles + "");
